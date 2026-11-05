@@ -5,7 +5,7 @@
  */
 var SHEET_NAME = 'responses';
 
-var COLUMNS = ['submitted_at', 'submission_id', 'lang', 'group', 'participant_id']
+var COLUMNS = ['submitted_at', 'submission_id', 'lang', 'group', 'name', 'participant_id']
   .concat(['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12','s13','s14','s15'])
   .concat(['strategy_other', 'gender', 'age', 'major', 'l1', 'l1_other',
     'start_age', 'study_years', 'abroad', 'stay_value', 'stay_unit', 'stay_months',

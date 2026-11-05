@@ -55,6 +55,17 @@ button:disabled{opacity:.6;cursor:wait}
 .status{color:var(--pink-dk);margin-top:12px;min-height:1.6em}
 [hidden]{display:none!important}
 @media(max-width:560px){header{padding:32px 0 16px}header h1{font-size:32px}h2{font-size:23px}.scale{grid-template-columns:1fr}.scale label{flex-direction:row;text-align:left;font-size:14px}}
+:root{--ink:#0a0a0a;--ink2:#0a0a0a;--muted:#333;--line:#0a0a0a;--accent:#1f3dff;--accent-dk:#1229c9;--accent-soft:#d9ff3f;--accent-line:#0a0a0a;--pink:#1f3dff;--pink-dk:#1229c9;--pink-soft:#d9ff3f}
+.topnav{background:#1f3dff;border-bottom:3px solid #0a0a0a}.brand,.brand b,.stepno{color:#fff}.brand b{color:#fff}
+header{text-align:left;padding:40px 0 24px}.pill{background:#d9ff3f;color:#0a0a0a;border:2px solid #0a0a0a;border-radius:0;font-weight:700}
+header h1{font-size:72px;font-weight:900;letter-spacing:-.05em;line-height:1}
+.bar{height:14px;border:3px solid #0a0a0a;border-radius:0;background:#fff}.bar i{background:#d9ff3f}
+.card{border:3px solid #0a0a0a;border-radius:0;box-shadow:7px 7px 0 #0a0a0a;margin-bottom:24px}.card.lead{background:#1f3dff;color:#fff}.card.lead h2{color:#d9ff3f;font-size:34px}.grid-card{border-top:3px solid #0a0a0a}
+.scale label{border:2px solid #0a0a0a;border-radius:0;font-weight:700}.scale label:has(input:checked){background:#d9ff3f;color:#0a0a0a;box-shadow:3px 3px 0 #0a0a0a}
+input[type=text],input[type=number],textarea,select{border:2px solid #0a0a0a;border-radius:0}
+label.opt{border-radius:0}button{border-radius:0;border:3px solid #0a0a0a;background:#1f3dff;box-shadow:4px 4px 0 #0a0a0a}button.ghost{background:#fff;color:#0a0a0a}
+label.opt:has(input:checked){background:var(--accent-soft)}
+@media(max-width:560px){header{padding:28px 0 18px}header h1{font-size:44px}.card.lead h2{font-size:26px}.card{box-shadow:5px 5px 0 #0a0a0a}}
 </style>
 </head>
 <body>
@@ -76,6 +87,7 @@ ko:{
  contact:'연구 문의: ', irb:'IRB 승인번호: KHSIRB-26-445',
  privacy:'※ 응답하신 내용은 연구 목적으로만 사용되며, 개인을 식별할 수 있는 형태로 공개되지 않습니다.',
  group:'참가자 구분', groupOpts:[['00','영어학개론 00분반'],['01','영어학개론 01분반'],['other','기타']],
+ name:'이름',
  pid:'연구 참여자 번호', pidHint:'연구진에게 배정받으신 연구 참여자 번호를 기입해 주십시오.',
  s1:'Ⅰ. 과제 수행 전략 설문',
  s1a:'본 설문은 방금 완료하신 「문장 따라 말하기 과제」(들은 영어 문장을 최대한 똑같이 따라 말하는 과제)를 수행하는 동안 여러분이 실제로 사용한 방법에 관한 것입니다. 아래 각 문항은 과제를 수행할 때 사용할 수 있는 여러 방법을 진술한 것입니다.',
@@ -116,6 +128,7 @@ en:{
  contact:'Research inquiries: ', irb:'IRB approval number: KHSIRB-26-445',
  privacy:'※ Your responses will be used for research purposes only and will not be disclosed in a form that can identify you.',
  group:'Participant group', groupOpts:[['00','Introduction to English Linguistics, Section 00'],['01','Introduction to English Linguistics, Section 01'],['other','Other']],
+ name:'Name',
  pid:'Participant number', pidHint:'Please enter the participant number assigned to you by the research team.',
  s1:'I. Task Strategy Questionnaire',
  s1a:'This questionnaire concerns the methods you actually used while completing the sentence repetition task you have just finished (a task in which you repeat English sentences you hear as exactly as possible). Each item below describes a method that can be used when performing the task.',
@@ -177,6 +190,7 @@ function render(){
  if(step===0){
   h+='<section class="card lead"><p class="intro">'+esc(t.intro)+(CONTACT?esc(t.contact+CONTACT)+'\n':'')+esc(t.irb)+'</p><p>'+esc(t.privacy)+'</p></section>';
   h+=card('group',t.group,1,'',radios('group',t.groupOpts));
+  h+=card('name',t.name,1,'',txt('name','short'));
   h+=card('participant_id',t.pid,1,t.pidHint,txt('participant_id','short'));
   h+=nav(false,t.next);
  } else if(step===1){
@@ -228,7 +242,7 @@ function validate(){
  app.querySelectorAll('.bad').forEach(function(c){c.classList.remove('bad')});
  function req(k){if(!v(k))bad(k,t.errReq,e)}
  function n(k,min,max){if(!v(k))bad(k,t.errReq,e);else if(!isNum(v(k),min,max))bad(k,t.errNum,e)}
- if(step===0){req('group');req('participant_id')}
+ if(step===0){req('group');req('name');req('participant_id')}
  if(step===1){for(var i=1;i<=15;i++)if(!(i===7&&lang==='en'))req('s'+i)}
  if(step===2){
   req('gender');n('age',1,120);req('major');req('l1');
