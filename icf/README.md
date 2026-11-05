@@ -1,7 +1,7 @@
 # Informed consent (ICF), online
 
 Consent page (GitHub Pages) with a Google Apps Script backend.
-Participants read the 연구대상자 설명서, answer the eight consent items, and type their name in place of a signature. No copy is sent or offered to the participant.
+Participants read the 연구대상자 설명서, answer the seven consent items, and type their name in place of a signature. No copy is sent or offered to the participant.
 Each submission is saved as a PDF (설명서 + 동의서) in Drive > 2026 EIT Corpus Project > Instruments > 연구참여동의서 > 동의서 PDF. The log Sheet (ICF log) stays in 연구참여동의서.
 
 ## Deploy
@@ -20,13 +20,13 @@ After editing `Code.gs`, use Deploy > Manage deployments > Edit > New version so
 | Where | Content |
 |---|---|
 | PDF, `동의서_<yyyyMMdd-HHmmss>_<성명>.pdf` | 연구대상자 설명서 and 동의서 with the participant's answers, typed name, submission date and time (KST), and the explainers (강지혜 / 이민서) |
-| ICF log, tab `log` | Submission time, ID, name, explainers, items 1–8 (예/아니오), PDF link |
+| ICF log, tab `log` | Submission time, ID, name, explainers, items 1–7 (예/아니오), PDF link |
 
 ## Running a session
 
 1. The RA opens the page on the lab computer. Append `?demo` to test without saving.
-2. The participant reads the 설명서 (page 1), answers items 1–8 (page 2), then types their name and ticks the confirmation box (page 3).
-3. Items 1–5 and 8 are required for participation. If any of them is answered 아니오, the page stops and asks the participant to tell the RA; nothing is saved. Items 6 (공개) and 7 (2차 활용) are optional.
+2. The participant reads the 설명서 (page 1), answers items 1–7 (page 2), then types their name and ticks the confirmation box (page 3).
+3. Items 1–5 are required for participation. If any of them is answered 아니오, the page stops and asks the participant to tell the RA; nothing is saved. Items 6 (공개) and 7 (2차 활용) are optional.
 4. The final screen confirms the submission. Press 처음 화면으로 before the next participant.
 
 ## Editing the text
