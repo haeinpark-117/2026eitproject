@@ -272,7 +272,7 @@ const OPTIONS={"1":[["돈","음식","시간","친구"],["돌","긴 의자","깔�
 const SCHEDULE={"1":{"on":[4.41,16.57,27.14,37.3,49.09,59.67,70.72,82.09,93.36,104.19,115.44,127.14,138.36,149.71,160.78,172.27,182.5,193.03,204.33,215.46,226.71,237.66,248.62,259.24],"end":269.7},"2":{"on":[4.95,16.04,26.44,37.3,47.97,56.9,66.89,76.79,85.92,95.62,105.48,116.25,126.95,137.16,146.94,156.77,167.12,178.16,188.85,199.26,209.76,220.23,231.38,242.34],"end":253.5},"3":{"on":[4.31,14.79,24.92,35.75,45.75,55.51,66.62,77.12,87.34,97.69,109.12,120.81,133.48,144.79,159.73,172.97,184.34,195.52,206.84,218.44,229.29,240.38,251.31,263.8],"end":274.29},"4":{"on":[4.49,16.04,26.27,36.04,45.97,56.38,66.73,77.1,87.87,99.31,109.67,120.33,131.47,142.3,153.03,163.87,173.86,183.49,195.72,205.99,215.99,226.86,237.21,249.14],"end":260.21},"5":{"on":[5.21,14.33,26.2,35.47,45.97,56.67,67.09,78.75,90.01,100.34,111.79,122.64,133.21,143.74,155.16,165.45,176.82,187.23,198.54,208.47,218.88,230.23,240.01,251.11],"end":261.78},"6":{"on":[4.24,15.87,27.07,38.42,50.24,63.15,74.41,85.54,95.5,106.36,116.44,126.53,137.12,147.39,157.72,169.15,180.74,191.18,202.51,213.49,224.34,236.32,248.02,261.22,273.03,284.45,296.22,308.38,318.85,333.13],"end":343.85}};
 const PRACTICE = {
   options: [['강하다','매우 행복하다','과식하다','친절하다'],['~에 대해 이야기하다','~을 나르다','~에 이름을 쓰다','~을 흔들다']],
-  on: [3.0, 15.8], answersAt: 28.0, correct: ['A','B']
+  on: [3.0, 15.8], answersAt: 28.0, endAt: 40.6, correct: ['A','B']
 };
 const EXAMPLE = ['먹었다','기다렸다','보았다','잤다'];
 const LEVEL = {1:'1,000-word level',2:'2,000-word level',3:'3,000-word level',4:'4,000-word level',5:'5,000-word level',6:'Academic Word List'};
@@ -430,7 +430,7 @@ $('soundBtn').addEventListener('click', () => {
   audio.src = state.urls.practice; audio.currentTime = 3.0;
   soundStop = () => { if (audio.currentTime >= 10.2) stopSoundCheck(); };
   audio.addEventListener('timeupdate', soundStop);
-  audio.play();
+  audio.play().catch(() => {});
   $('soundOk').disabled = false;
 });
 function setupReady(){
@@ -495,6 +495,7 @@ $('toPractice').addEventListener('click', () => {
     cards.forEach((c,i) => { c.classList.toggle('cur', i === k && t < PRACTICE.answersAt); if (i <= k) setLocked(c, false); });
     if (k >= 0 && t < PRACTICE.answersAt) $('pracCue').innerHTML = '<span class="playing"></span>연습 '+(k+1)+'번<small>듣고 답을 고르십시오</small>';
     if (t >= PRACTICE.answersAt) reveal();
+    if (t >= PRACTICE.endAt && $('toTest').hidden) pracEnd();
   };
   let revealed = false;
   function reveal(){
@@ -503,7 +504,8 @@ $('toPractice').addEventListener('click', () => {
     $('pracCue').innerHTML = '정답 확인<small>녹음에서 정답을 알려 줍니다</small>';
     $('pracDone').hidden = false;
   }
-  audio.onended = () => { reveal(); $('pracBar').style.width = '100%'; $('pracCue').innerHTML = '연습 끝<small>&nbsp;</small>'; $('toTest').hidden = false; };
+  const pracEnd = () => { reveal(); $('pracBar').style.width = '100%'; $('pracCue').innerHTML = '연습 끝<small>&nbsp;</small>'; $('toTest').hidden = false; };
+  audio.onended = pracEnd;
   $('pracGo').onclick = () => { $('pracStart').hidden = true; audio.play().catch(() => { note('practice play failed'); $('pracStart').hidden = false; }); };
 });
 $('toTest').addEventListener('click', async () => {
@@ -529,7 +531,7 @@ function startPart(){
   $('partStart').hidden = false; $('partNext').hidden = true;
   $('partBar').style.width = '0';
   const grid = $('partGrid'); grid.innerHTML = '';
-  current = -1;
+  current = -1; partEnded = false;
   partCards = OPTIONS[p].map((o,i) => {
     const c = card(i+1, o, (ch, el) => pick(p, i, ch, el), true);
     setLocked(c, true); grid.appendChild(c); return c;
@@ -551,6 +553,7 @@ function showResume(p){
 }
 function tick(p){
   const t = audio.currentTime, on = SCHEDULE[p].on;
+  if (partEnded) return;
   $('partBar').style.width = Math.min(100, t/audio.duration*100)+'%';
   let k = -1; for (let i = 0; i < on.length; i++) if (t >= on[i]) k = i;
   if (k !== current){
@@ -564,7 +567,7 @@ function tick(p){
       if (k > 0) window.scrollTo({top: Math.max(0, target), behavior: 'smooth'});
     }
   }
-  if (t >= SCHEDULE[p].end && k === on.length-1) partCards[k].classList.remove('cur');
+  if (t >= SCHEDULE[p].end && k === on.length-1) endPart(p);
 }
 function pick(p, i, ch, el){
   const a = state.answers[p][i];
@@ -580,7 +583,10 @@ document.addEventListener('keydown', e => {
   const p = state.activeParts[state.idx];
   pick(p, current, m, partCards[current]);
 });
+let partEnded = false;
 function endPart(p){
+  if (partEnded) return;
+  partEnded = true;
   partCards.forEach(c => { c.classList.remove('cur'); c.classList.add('closed'); c.querySelectorAll('.opt').forEach(b => b.disabled = true); });
   savePart(p);
   $('partCue').innerHTML = 'Part '+p+' 끝<small>'+LEVEL[p]+'</small>';
