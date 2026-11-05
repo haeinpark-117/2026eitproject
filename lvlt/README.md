@@ -19,7 +19,7 @@ After editing `Code.gs`, use Deploy > Manage deployments > Edit > New version so
 
 | Tab | Content |
 |---|---|
-| Config | `active_parts` (e.g., `3,4,5,6` to drop 1K and 2K), `show_score` (yes/no), `form_version` |
+| Config | `active_parts` = default levels pre-selected on the setup screen (e.g., `3,4,5,6`); the researcher can change the selection per session there. `show_score` (yes/no), `form_version` |
 | Key | Part, Level, Item, Target, Key (official Answer Key v.9). Edit here if a key changes, then run `rescoreAll()` |
 | Sessions | One row per session: part scores, total correct, items given, completion, incidents |
 | Responses | One row per item: response (A–D or blank), key, correct (1/0), RT from item onset (ms), number of changes. Long format for Rasch or IRT analysis |

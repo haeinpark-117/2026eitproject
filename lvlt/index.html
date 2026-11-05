@@ -56,6 +56,10 @@ input:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-o
 .meter i{display:block;height:100%;width:0;background:var(--pink);transition:width .15s linear}
 .check{display:flex;gap:10px;align-items:flex-start;font-weight:500;margin-top:14px;color:var(--pink-deep)}
 .check input{margin-top:5px;width:18px;height:18px;accent-color:var(--pink)}
+.levels{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.lv{font:600 15px var(--sans);padding:9px 14px;border-radius:10px;border:1px solid var(--blue-line);background:#fff;color:var(--body);cursor:pointer}
+.lv[aria-pressed=true]{background:var(--blue);border-color:var(--blue);color:#fff}
+.lv small{display:block;font:500 11px var(--mono);opacity:.8}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .notice{max-width:800px;margin:22px auto 0;padding:13px 16px;border-radius:10px;background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn-ink);font-size:15.5px}
 .status{font-size:15px;margin-top:10px;color:var(--pink-deep);min-height:24px}
@@ -139,7 +143,9 @@ ol.rules li{margin:4px 0}
       <input id="pid" type="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="예: P001">
       <label for="ra">진행자 <small>이니셜</small></label>
       <input id="ra" type="text" maxlength="40" autocomplete="off" spellcheck="false" placeholder="예: HP">
-      <p class="small" id="partsInfo" style="margin-top:16px">검사 설정을 불러오는 중입니다.</p>
+      <label>실시할 수준 <small>연구자 선택, 누르면 켜고 끔</small></label>
+      <div class="levels" id="levels" role="group" aria-label="실시할 수준"></div>
+      <p class="small" id="partsInfo" style="margin-top:12px">검사 설정을 불러오는 중입니다.</p>
     </div>
     <div class="card pink">
       <span class="tag">Audio</span>
@@ -310,7 +316,7 @@ async function loadConfig(){
   if (DEMO){
     const q = new URLSearchParams(location.search).get('parts');
     if (q) state.activeParts = q.split(',').map(Number).filter(p => SCHEDULE[p]);
-    $('partsInfo').innerHTML = '<span class="err">데모 모드</span>: 응답이 저장되지 않습니다. 실시할 Part: '+state.activeParts.join(', ');
+    renderLevels('<span class="err">데모 모드</span>: 응답이 저장되지 않습니다.');
     return true;
   }
   try {
@@ -318,7 +324,7 @@ async function loadConfig(){
     const j = await r.json();
     if (!j.ok) throw new Error(j.error);
     state.activeParts = j.activeParts; state.showScore = !!j.showScore;
-    $('partsInfo').textContent = '실시할 Part: '+state.activeParts.map(p => p+' ('+LEVEL[p]+')').join(', ');
+    renderLevels('기본값은 Google 시트 Config 탭의 active_parts입니다.');
   } catch(e){
     $('partsInfo').innerHTML = '<span class="err">검사 설정을 불러오지 못했습니다.</span> 인터넷 연결을 확인한 뒤 페이지를 새로 고치십시오.';
     return false;
@@ -337,26 +343,58 @@ async function fetchWithProgress(url, onBytes){
 const SIZES = {practice:708155,1:4441403,2:4167227,3:4503995,4:4289339,5:4316987,6:5626811};
 // Audio is fetched automatically when the page opens, practice file first, so that
 // playback never depends on the network once the test has started.
+const LVNAME = {1:'1K',2:'2K',3:'3K',4:'4K',5:'5K',6:'AWL'};
+function renderLevels(msg){
+  const box = $('levels'); box.innerHTML = '';
+  [1,2,3,4,5,6].forEach(p => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'lv'; b.dataset.p = p;
+    b.setAttribute('aria-pressed', String(state.activeParts.includes(p)));
+    b.innerHTML = LVNAME[p]+'<small>Part '+p+'</small>';
+    b.addEventListener('click', () => {
+      const on = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', String(on));
+      state.activeParts = [...box.querySelectorAll('.lv[aria-pressed=true]')].map(x => Number(x.dataset.p));
+      updateLoadStatus(); setupReady();
+    });
+    box.appendChild(b);
+  });
+  $('partsInfo').innerHTML = msg;
+}
+function selectedReady(){ return state.activeParts.length > 0 && state.activeParts.every(p => state.urls[p]); }
+let loadFailed = false;
+function updateLoadStatus(){
+  if (loadFailed) return;
+  if (!state.urls.practice) return;
+  if (!state.activeParts.length){ $('loadStatus').textContent = '실시할 수준을 하나 이상 선택하십시오.'; return; }
+  $('loadStatus').textContent = selectedReady() ? '선택한 수준의 음원이 준비되었습니다.' : '음원 준비 중입니다.';
+}
+// All audio is fetched automatically when the page opens (practice, then the selected
+// levels, then the rest), so playback never depends on the network during the test
+// and the researcher can change the selected levels at any time before starting.
 let audioReady = null;
 function loadAudio(){
-  $('loadBtn').hidden = true;
-  const files = ['practice'].concat(state.activeParts.filter(p => !state.urls[p]));
+  $('loadBtn').hidden = true; loadFailed = false;
+  const order = ['practice'].concat(state.activeParts, [1,2,3,4,5,6].filter(p => !state.activeParts.includes(p)));
+  const files = order.filter(f => !state.urls[f]);
   const total = files.reduce((s,f) => s+SIZES[f], 0); let got = 0;
   audioReady = (async () => {
     try {
       for (const f of files){
         if (state.urls[f]) continue;
-        $('loadStatus').textContent = '음원 준비 중: '+(f === 'practice' ? '연습 문제' : 'Part '+f);
+        if (!selectedReady()) $('loadStatus').textContent = '음원 준비 중: '+(f === 'practice' ? '연습 문제' : LVNAME[f]);
         const blob = await fetchWithProgress('audio/'+(f === 'practice' ? 'practice' : 'part'+f)+'.mp3', n => {
           got += n; $('loadBar').style.width = Math.min(100, got/total*100)+'%';
         });
         state.urls[f] = URL.createObjectURL(blob);
         if (f === 'practice') $('soundBtn').disabled = false;
+        updateLoadStatus();
       }
       $('loadBar').style.width = '100%';
-      $('loadStatus').textContent = '음원이 모두 준비되었습니다.';
+      updateLoadStatus();
       return true;
     } catch(e){
+      loadFailed = true;
       $('loadStatus').innerHTML = '<span class="err">음원을 불러오지 못했습니다.</span> 인터넷 연결을 확인한 뒤 다시 시도를 누르십시오.';
       $('loadBtn').hidden = false;
       return false;
@@ -381,7 +419,7 @@ $('soundBtn').addEventListener('click', () => {
 });
 function setupReady(){
   const okId = /^[A-Za-z0-9_-]{1,32}$/.test($('pid').value.trim());
-  $('toIntro').disabled = !(okId && $('soundOk').checked);
+  $('toIntro').disabled = !(okId && $('soundOk').checked && state.activeParts.length > 0);
 }
 ['pid','soundOk'].forEach(id => $(id).addEventListener('input', setupReady));
 $('soundOk').addEventListener('change', setupReady);
@@ -396,6 +434,8 @@ $('toIntro').addEventListener('click', async () => {
     } catch(e){ /* the check is advisory only */ }
   }
   stopSoundCheck();
+  state.activeParts.sort((a,b) => a-b);
+  document.querySelectorAll('.lv').forEach(b => b.disabled = true);
   state.pid = pid; state.ra = $('ra').value.trim(); state.sessionId = uuid();
   state.startedAt = kst(new Date());
   $('pidTag').textContent = pid;
@@ -444,8 +484,8 @@ $('toPractice').addEventListener('click', () => {
 });
 $('toTest').addEventListener('click', async () => {
   $('toTest').disabled = true;
-  const ok = state.activeParts.every(p => state.urls[p]) || await audioReady;
-  if (!ok || !state.activeParts.every(p => state.urls[p])){
+  if (!selectedReady()) await audioReady;
+  if (!selectedReady()){
     $('pracDone').textContent = '음원을 아직 불러오지 못했습니다. 진행자에게 알려 주십시오.';
     $('toTest').disabled = false; return;
   }
