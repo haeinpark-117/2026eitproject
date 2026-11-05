@@ -56,7 +56,7 @@ function setup() {
     const cfg = book.getSheets()[0].setName('Config');
     cfg.getRange(1, 1, 4, 3).setValues([
       ['Setting', 'Value', 'Note'],
-      ['active_parts', '1,2,3,4,5,6', 'Parts given, in order (1=1K ... 5=5K, 6=AWL). Example: 3,4,5,6'],
+      ['active_parts', '3,4,5,6', 'Default levels pre-selected on the setup screen (1=1K ... 5=5K, 6=AWL). Example: 1,2,3,4,5,6'],
       ['show_score', 'no', 'yes = show the total on the final screen'],
       ['form_version', CONFIG.FORM_VERSION, 'Written to every session row']
     ]);
@@ -226,10 +226,10 @@ function config_() {
   const vals = sheet_('Config').getDataRange().getValues();
   const m = {};
   vals.slice(1).forEach(function (r) { m[String(r[0]).trim()] = String(r[1]).trim(); });
-  const active = String(m.active_parts || '1,2,3,4,5,6').split(/[\s,]+/)
+  const active = String(m.active_parts || '3,4,5,6').split(/[\s,]+/)
     .map(Number).filter(function (p) { return PARTS[p]; });
   return {
-    activeParts: active.length ? active : [1, 2, 3, 4, 5, 6],
+    activeParts: active.length ? active : [3, 4, 5, 6],
     showScore: /^(yes|y|true|1)$/i.test(m.show_score || ''),
     formVersion: m.form_version || CONFIG.FORM_VERSION
   };
