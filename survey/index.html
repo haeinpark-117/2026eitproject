@@ -86,7 +86,7 @@ ko:{
  intro:'연구 과제명: 인공지능 기반 외국어 평가 진단 시스템 구축을 위한 EIT 응답 코퍼스 개발\n연구책임자: 박해인 (경희대학교 응용영어통번역학과)\n',
  contact:'연구 문의: ', irb:'IRB 승인번호: KHSIRB-26-445',
  privacy:'※ 응답하신 내용은 연구 목적으로만 사용되며, 개인을 식별할 수 있는 형태로 공개되지 않습니다.',
- group:'참가자 구분', groupOpts:[['00','영어학개론 00분반'],['01','영어학개론 01분반'],['other','기타']],
+ group:'참가자 구분', groupOpts:[['sec00','영어학개론 00분반'],['sec01','영어학개론 01분반'],['other','기타']],
  name:'이름',
  pid:'연구 참여자 번호', pidHint:'연구진에게 배정받으신 연구 참여자 번호를 기입해 주십시오.',
  s1:'Ⅰ. 과제 수행 전략 설문',
@@ -116,7 +116,7 @@ ko:{
  write:'다음 보기 중에서 본인의 영어 쓰기 능력을 가장 잘 설명하는 것을 고르세요.',
  writeOpts:['쓰기 불가능','짧은 엽서 또는 문서 작성 가능','짧은 내용의 메모 작성 가능','특정 주제에 대해 간단한 글 작성 가능','관심있는 다양한 분야에 관련된 자세한 글 작성 가능','다양한 장르의 글을 자유자재로 매끄럽게 작성 가능'],
  h3:'3. 공인 영어 시험 점수', h3H:'최근 2년 이내에 응시한 공인 영어 시험이 있는 경우, 아래에 기입해 주십시오. (해당 시험만 작성하시면 됩니다.)',
- testSuffix:' - 점수/등급 및 응시 시기', testH:'점수(등급)와 응시 시기를 기입해 주십시오. (예: 850 / 2025년 3월)',
+ testSuffix:' - 점수/등급 및 응시 시기', testH:'점수(등급)와 응시 시기를 기입해 주십시오. (예: 850 / 2025년 3월)', opicH:'등급과 응시 시기를 기입해 주십시오. (예: IH / 2025년 3월)',
  next:'다음', back:'이전', submit:'제출', sending:'제출 중...',
  errReq:'필수 응답 문항입니다.', errNum:'올바른 숫자를 기입해 주십시오.', errFix:'표시된 문항을 확인해 주십시오.',
  errSend:'제출에 실패하였습니다. 입력 내용은 유지되어 있으니 인터넷 연결을 확인한 뒤 다시 제출해 주십시오.',
@@ -127,7 +127,7 @@ en:{
  intro:'Project title: Development of an EIT Response Corpus for Building an AI-Based Foreign Language Assessment and Diagnostic System\nPrincipal investigator: Hae In Park (Department of Applied English Linguistics and Translation Studies, Kyung Hee University)\n',
  contact:'Research inquiries: ', irb:'IRB approval number: KHSIRB-26-445',
  privacy:'※ Your responses will be used for research purposes only and will not be disclosed in a form that can identify you.',
- group:'Participant group', groupOpts:[['00','Introduction to English Linguistics, Section 00'],['01','Introduction to English Linguistics, Section 01'],['other','Other']],
+ group:'Participant group', groupOpts:[['sec00','Introduction to English Linguistics, Section 00'],['sec01','Introduction to English Linguistics, Section 01'],['other','Other']],
  name:'Name',
  pid:'Participant number', pidHint:'Please enter the participant number assigned to you by the research team.',
  s1:'I. Task Strategy Questionnaire',
@@ -158,7 +158,7 @@ en:{
  write:'Choose the option that best describes your English writing ability.',
  writeOpts:['Unable to write','Can write short postcards or documents','Can write short memos','Can write simple texts on specific topics','Can write detailed texts on various fields of interest','Can write fluently and smoothly in various genres'],
  h3:'3. Standardized English Test Scores', h3H:'If you have taken a standardized English test within the last two years, please enter it below. (Complete only the tests that apply.)',
- testSuffix:' - score/level and test date', testH:'Please enter your score (level) and test date. (e.g., 850 / March 2025)',
+ testSuffix:' - score/level and test date', testH:'Please enter your score (level) and test date. (e.g., 850 / March 2025)', opicH:'Please enter your level and test date. (e.g., IH / March 2025)',
  next:'Next', back:'Back', submit:'Submit', sending:'Submitting...',
  errReq:'This item is required.', errNum:'Please enter a valid number.', errFix:'Please check the marked items.',
  errSend:'Submission failed. Your answers have been kept. Please check your internet connection and submit again.',
@@ -218,7 +218,7 @@ function render(){
   h+=card('self_reading',t.read,1,'',radios('self_reading',levels(t.readOpts)));
   h+=card('self_writing',t.write,1,'',radios('self_writing',levels(t.writeOpts)));
   h+='<div id="tests"'+(v('l1')==='english'?' hidden':'')+'><h3>'+esc(t.h3)+'</h3><p class="hint">'+esc(t.h3H)+'</p>';
-  TESTS.forEach(function(x){h+=card('test_'+x[0],x[1]+t.testSuffix,0,t.testH,txt('test_'+x[0]))});
+  TESTS.forEach(function(x){h+=card('test_'+x[0],x[1]+t.testSuffix,0,x[0]==='opic'?t.opicH:t.testH,txt('test_'+x[0]))});
   h+='</div>'+nav(true,t.submit);
  }
  app.innerHTML=h;
