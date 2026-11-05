@@ -104,7 +104,7 @@ ko:{
  studyT:'연구 안내', infoT:'참가자 정보',
  group:'참가자 구분', groupOpts:[['sec00','영어학개론 00분반'],['sec01','영어학개론 01분반'],['other','기타']],
  name:'이름',
- pid:'연구 참여자 번호', pidHint:'연구진에게 배정받으신 연구 참여자 번호를 기입해 주십시오.',
+ pid:'연구 참여자 번호',
  s1:'Ⅰ. 과제 수행 전략 설문',
  s1a:'본 설문은 방금 완료하신 「문장 따라 말하기 과제」(들은 영어 문장을 최대한 똑같이 따라 말하는 과제)를 수행하는 동안 여러분이 실제로 사용한 방법에 관한 것입니다. 아래 각 문항은 과제를 수행할 때 사용할 수 있는 여러 방법을 진술한 것입니다.',
  s1b:'각 문항의 방법을 방금 과제의 문장 중 어느 정도에서 사용하였는지 가장 잘 나타내는 칸에 표시해 주십시오. 정답이나 오답은 없으며, 실제로 어떻게 하셨는지를 있는 그대로 답해 주시면 됩니다.',
@@ -146,7 +146,7 @@ en:{
  studyT:'Study information', infoT:'Participant information',
  group:'Participant group', groupOpts:[['sec00','Introduction to English Linguistics, Section 00'],['sec01','Introduction to English Linguistics, Section 01'],['other','Other']],
  name:'Name',
- pid:'Participant number', pidHint:'Please enter the participant number assigned to you by the research team.',
+ pid:'Participant number',
  s1:'I. Task Strategy Questionnaire',
  s1a:'This questionnaire concerns the methods you actually used while completing the sentence repetition task you have just finished (a task in which you repeat English sentences you hear as exactly as possible). Each item below describes a method that can be used when performing the task.',
  s1b:'For each item, please mark the option that best indicates in how many of the task sentences you used the method. There are no right or wrong answers. Please answer according to what you actually did.',
@@ -209,7 +209,7 @@ function render(){
  document.querySelector('header').className=step?'compact':'';
  if(step===0){
   h+=panel('STUDY',t.studyT,'<p class="intro">'+esc(t.intro)+(CONTACT?esc(t.contact+CONTACT)+'\n':'')+esc(t.irb)+'</p><p>'+esc(t.privacy)+'</p>','pk');
-  h+=panel('PARTICIPANT',t.infoT,card('group',t.group,1,'',radios('group',t.groupOpts))+pair(card('name',t.name,1,'',txt('name','short')),card('participant_id',t.pid,1,t.pidHint,txt('participant_id','short'))));
+  h+=panel('PARTICIPANT',t.infoT,card('group',t.group,1,'',radios('group',t.groupOpts))+pair(card('name',t.name,1,'',txt('name','short')),card('participant_id',t.pid,1,'',txt('participant_id','short'))));
   h+=nav(false,t.next);
  } else if(step===1){
   h+=panel('PART I',t.s1,'<p>'+esc(t.s1a)+'</p><p>'+esc(t.s1b)+'</p>','pk');
