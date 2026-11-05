@@ -10,7 +10,7 @@ var COLUMNS = ['submitted_at', 'submission_id', 'lang', 'group', 'name', 'partic
   .concat(['strategy_other', 'gender', 'age', 'major', 'l1', 'l1_other',
     'start_age', 'study_years', 'abroad', 'stay_value', 'stay_unit', 'stay_months',
     'use_freq', 'self_speaking', 'self_listening', 'self_reading', 'self_writing',
-    'test_toeic', 'test_toeic_speaking', 'test_toefl_ibt', 'test_ielts']);
+    'test_toeic', 'test_toeic_speaking', 'test_toefl_ibt', 'test_ielts', 'test_opic']);
 
 function getSheet_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
