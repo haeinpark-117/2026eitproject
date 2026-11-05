@@ -3,7 +3,7 @@
 Browser test page (GitHub Pages) with a Google Apps Script backend.
 The answer key is kept only in the Google Sheet; responses are scored there.
 
-Source test: McLean, S., Kramer, B., & Beglar, D. (2015). The creation and validation of a listening vocabulary levels test. *Language Teaching Research, 19*(6), 741–760. https://doi.org/10.1177/1362168814567889. Audio (LVLT.Audio.v.5) and items are used under CC BY-NC-SA; the Korean options come from `LVLT_Korean_Item_Bank_draft.xlsx` (2026-11-05).
+Source test: McLean, S., Kramer, B., & Beglar, D. (2015). The creation and validation of a listening vocabulary levels test. *Language Teaching Research, 19*(6), 741–760. https://doi.org/10.1177/1362168814567889. Audio (LVLT.Audio.v.5) and items are used under CC BY-NC-SA; the Korean options come from the "Item bank (revised)" sheet of `LVLT_Korean_Item_Bank_draft.xlsx` (2026-11-05).
 
 ## Deploy
 
