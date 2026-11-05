@@ -207,7 +207,7 @@ ol.rules li{margin:4px 0}
       <p class="answerline" style="margin-top:12px">정답은 b입니다.</p>
     </div>
   </div>
-  <div class="actions"><button class="btn" id="toPractice" type="button">연습 문제로</button></div>
+  <div class="actions"><button class="btn" id="toPractice" type="button">다음</button></div>
 </section>
 
 <!-- PRACTICE -->
@@ -220,7 +220,7 @@ ol.rules li{margin:4px 0}
   <div class="startbox" id="pracStart"><p><b>연습 문제 2개</b>시작을 누르면 음성이 바로 나옵니다. 듣고 답을 고르십시오.</p><button class="btn go" id="pracGo" type="button">&#9654; 시작</button></div>
   <div class="rows" id="pracGrid"></div>
   <div class="notice" id="pracDone" hidden style="background:var(--pink-bg);border-color:var(--pink-line);color:var(--pink-deep)">연습 문제의 정답은 1번 a, 2번 b입니다. 궁금한 점이 있으면 지금 진행자에게 질문하십시오.</div>
-  <div class="actions"><button class="btn" id="toTest" type="button" hidden>본 검사 시작</button></div>
+  <div class="actions"><button class="btn" id="toTest" type="button" hidden>다음</button></div>
 </section>
 
 <!-- TEST PART -->
@@ -234,7 +234,7 @@ ol.rules li{margin:4px 0}
   </div>
   <div class="startbox" id="partStart"><p><b id="partStartTitle">Part 1 · 24문항</b>시작을 누르면 음성이 바로 나옵니다. 음성은 한 번만 나오며 멈출 수 없습니다.</p><button class="btn go" id="partGo" type="button">&#9654; 시작</button></div>
   <div class="rows" id="partGrid"></div>
-  <div class="actions" id="partNext" hidden><p class="status" id="partSave" style="width:100%;text-align:center;margin:0"></p><button class="btn" id="nextBtn" type="button">다음 Part로</button></div>
+  <div class="actions" id="partNext" hidden><p class="status" id="partSave" style="width:100%;text-align:center;margin:0"></p><button class="btn" id="nextBtn" type="button">다음</button></div>
 </section>
 
 <!-- DONE -->
@@ -587,7 +587,7 @@ function endPart(p){
   $('partBar').style.width = '100%';
   state.idx++;
   const last = state.idx >= state.activeParts.length;
-  $('nextBtn').textContent = last ? '검사 마치기' : 'Part '+state.activeParts[state.idx]+'로';
+  $('nextBtn').textContent = '다음';
   $('partNext').hidden = false;
   $('nextBtn').focus({preventScroll:true});
   $('partNext').scrollIntoView({block:'center', behavior:'smooth'});
