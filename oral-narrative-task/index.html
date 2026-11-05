@@ -79,7 +79,7 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
 .lvl i{display:block;height:100%;width:0;background:var(--ink);opacity:.55}
 .rec{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--pink);margin-right:8px;animation:p 1.3s infinite}
 @keyframes p{50%{opacity:.25}}
-.raend{display:block;margin:20px auto 0;background:none;border:0;font:500 14px var(--sans);color:var(--body);text-decoration:underline;cursor:pointer}
+.stagebtn{display:block;margin:22px auto 0}
 .file{font:500 14px var(--mono);word-break:break-all}
 .err{color:var(--err);font-weight:600}
 @media (prefers-reduced-motion:reduce){.rec{animation:none}}
@@ -186,7 +186,8 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
     <div class="bar"><i id="bar"></i></div>
     <div class="lvl" id="lvlWrap" hidden aria-hidden="true"><i id="taskLevel"></i></div>
   </div>
-  <button class="raend" id="raEnd" type="button" hidden data-i18n="b_raend">RA only: end recording early</button>
+  <button class="btn line stagebtn" id="skipPrep" type="button" hidden data-i18n="b_skip">Start speaking now</button>
+  <button class="btn line stagebtn" id="raEnd" type="button" hidden data-i18n="b_raend">Finish my answer</button>
 </section>
 
 <!-- FINISH -->
@@ -223,7 +224,7 @@ const T = {
     opt_mic:'Allow microphone access first', b_allow:'Allow microphone', b_test:'Record 4-second test', b_again:'Record again',
     l_ok:'I heard the beep and the test recording clearly.', b_next:'Continue to instructions', b_force:'Continue anyway',
     chip_ins:'Instructions', h_ins:'Please read carefully.', b_begin:'Begin the 1-minute preparation',
-    b_raend:'RA only: end recording early', b_raconfirm:'Click again to confirm',
+    b_skip:'Start speaking now', b_raend:'Finish my answer', b_raconfirm:'Click again to confirm',
     b_retry:'Retry upload', b_dl:'Download backup', b_new:'New session',
     tag_prepare:'Prepare', tag_speak:'Speak',
     cue_prep:'Prepare your answer<small>You may take notes.</small>', cue_wait:'Wait for the beep',
@@ -255,7 +256,7 @@ const T = {
     opt_mic:'먼저 마이크 사용을 허용하십시오', b_allow:'마이크 허용', b_test:'4초 테스트 녹음', b_again:'다시 녹음',
     l_ok:'신호음과 테스트 녹음이 분명하게 들렸습니다.', b_next:'지시문으로 이동', b_force:'그대로 진행',
     chip_ins:'지시문', h_ins:'주의 깊게 읽어 주십시오.', b_begin:'1분 준비 시작',
-    b_raend:'연구 보조원 전용: 녹음 조기 종료', b_raconfirm:'확인하려면 한 번 더 클릭하십시오',
+    b_skip:'지금 답변 시작', b_raend:'답변 종료', b_raconfirm:'확인하려면 한 번 더 클릭하십시오',
     b_retry:'다시 업로드', b_dl:'백업 다운로드', b_new:'새 세션',
     tag_prepare:'준비', tag_speak:'답변',
     cue_prep:'답변을 준비하십시오<small>메모를 할 수 있습니다.</small>', cue_wait:'신호음을 기다리십시오',
@@ -536,11 +537,15 @@ $('beginBtn').onclick = async () => {
   $('stageTag').textContent = t('tag_prepare');
   setCue(t('cue_prep'));
   show('task', 'prepare');
-  countdown(PREP_SECONDS, startSpeaking);
+  state.prepStart = performance.now();
+  state.endPrep = countdown(PREP_SECONDS, startSpeaking);
+  $('skipPrep').hidden = false;
 };
 
 async function startSpeaking() {
   if ($('s-task').hidden) return;
+  $('skipPrep').hidden = true;
+  state.session.prep = Math.round((performance.now() - state.prepStart) / 100) / 10;
   $('stage').classList.add('speak');
   $('stageTag').textContent = t('tag_speak');
   $('clock').textContent = '2:00';
@@ -579,18 +584,20 @@ async function startSpeaking() {
   saveRecording();
 }
 
-const raEnd = $('raEnd');
-raEnd.onclick = () => {
-  if (raEnd.dataset.armed) {
-    state.session.endedEarly = true;
-    raEnd.hidden = true;
-    if (state.endTimer) state.endTimer();
-    return;
-  }
-  raEnd.dataset.armed = '1';
-  raEnd.textContent = t('b_raconfirm');
-  setTimeout(() => { delete raEnd.dataset.armed; raEnd.textContent = t('b_raend'); }, 4000);
-};
+function confirmClick(btn, label, action) {
+  btn.onclick = () => {
+    if (btn.dataset.armed) { delete btn.dataset.armed; action(); return; }
+    btn.dataset.armed = '1';
+    btn.textContent = t('b_raconfirm');
+    setTimeout(() => { delete btn.dataset.armed; btn.textContent = t(label); }, 4000);
+  };
+}
+confirmClick($('skipPrep'), 'b_skip', () => { if (state.endPrep) state.endPrep(); });
+confirmClick($('raEnd'), 'b_raend', () => {
+  state.session.endedEarly = true;
+  $('raEnd').hidden = true;
+  if (state.endTimer) state.endTimer();
+});
 
 /* Saving */
 function finishScreen(title, text, chip) {
@@ -633,7 +640,7 @@ async function saveRecording() {
     if (!state.blob.size) throw new Error('The recording is empty.');
     const body = JSON.stringify({
       sessionId: s.id, participantId: s.pid, raName: s.name, startedAt: s.startedAt,
-      prepSeconds: PREP_SECONDS, plannedSeconds: SPEAK_SECONDS, actualSeconds: s.actual,
+      prepSeconds: s.prep, plannedSeconds: SPEAK_SECONDS, actualSeconds: s.actual,
       endedEarly: s.endedEarly, incident: s.incident, peakLevel: Math.round(state.peak * 1000) / 1000,
       mimeType: state.mime, userAgent: navigator.userAgent, audioBase64: await toBase64(state.blob)
     });
