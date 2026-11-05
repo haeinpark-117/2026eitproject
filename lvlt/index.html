@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>LVLT 한국어판</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b0b12; --body:#55566a; --line:#e4e4ee; --bg:#fff;
+  --blue:#2f35f5; --blue-deep:#2328c9; --blue-bg:#ebedff; --blue-line:#cfd3fb;
+  --pink:#ff1a8c; --pink-deep:#6e1148; --pink-bg:#ffedf6; --pink-line:#fbcfe6;
+  --ok:#0a7d4f; --ok-bg:#e3f6ee; --warn-bg:#fff6dd; --warn-line:#f1dc9c; --warn-ink:#6b5200; --err:#c8102e;
+  --sans:Inter,"Noto Sans KR",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh;background:var(--bg);color:var(--ink);font:400 17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;word-break:keep-all}
+body::before{content:"";position:fixed;inset:60px 0 auto;height:130px;background:radial-gradient(60% 100% at 50% 0,#eeeefe 0,transparent 100%);z-index:-1}
+nav{height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:5}
+.brand{font-weight:800;letter-spacing:-.02em;font-size:17px}
+.brand b{color:var(--blue);font-weight:800}
+.steps{display:flex;gap:26px;list-style:none;margin:0;padding:0;font-size:15px;color:#8a8b9c}
+.steps .on{color:var(--ink);font-weight:700}
+.steps .done{color:var(--blue)}
+.pidtag{font:600 13px var(--mono);color:var(--body)}
+main{flex:1;width:100%;max-width:1140px;margin:0 auto;padding:34px 36px 48px}
+[hidden]{display:none!important}
+.hero{text-align:center;margin-bottom:38px}
+.chip{display:inline-block;font:600 13px/1 var(--mono);letter-spacing:.14em;color:var(--blue);background:var(--blue-bg);border:1px solid var(--blue-line);padding:10px 15px;border-radius:99px;text-transform:uppercase}
+h1{font-size:clamp(34px,5vw,54px);line-height:1.12;letter-spacing:-.04em;font-weight:800;margin:20px 0 12px}
+.lede{max-width:640px;margin:0 auto;color:var(--body);font-size:18px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.cards.single{grid-template-columns:minmax(0,800px);justify-content:center}
+.card{position:relative;border-radius:18px;padding:34px 30px 28px;border:1px solid var(--blue-line);background:var(--blue-bg)}
+.card.pink{border-color:var(--pink-line);background:var(--pink-bg)}
+.tag{position:absolute;top:-13px;left:30px;font:600 11.5px/1 var(--mono);letter-spacing:.14em;color:#fff;background:var(--blue);padding:8px 13px;border-radius:99px;text-transform:uppercase}
+.pink .tag{background:var(--pink)}
+h2{font-size:22px;letter-spacing:-.025em;margin:0 0 10px;font-weight:800}
+.card p{margin:0 0 11px;color:#3e3f56}
+.pink p{color:var(--pink-deep)}
+label{display:block;font-weight:600;font-size:15px;margin:14px 0 6px}
+label small{font-weight:400;color:var(--body)}
+input[type=text]{width:100%;font:500 16px var(--sans);color:var(--ink);padding:11px 13px;border:1px solid var(--blue-line);border-radius:10px;background:#fff}
+input:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.btn{font:700 16px var(--sans);color:#fff;background:var(--blue);border:0;border-radius:10px;padding:14px 24px;cursor:pointer}
+.btn:hover{background:var(--blue-deep)}
+.btn:disabled{background:#c9cad8;cursor:not-allowed}
+.btn.line{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.pinkbtn{background:var(--pink)}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}
+.meter{height:10px;border-radius:99px;background:#fff;border:1px solid var(--pink-line);overflow:hidden;margin:14px 0}
+.meter i{display:block;height:100%;width:0;background:var(--pink);transition:width .15s linear}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:500;margin-top:14px;color:var(--pink-deep)}
+.check input{margin-top:5px;width:18px;height:18px;accent-color:var(--pink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.notice{max-width:800px;margin:22px auto 0;padding:13px 16px;border-radius:10px;background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn-ink);font-size:15.5px}
+.status{font-size:15px;margin-top:10px;color:var(--pink-deep);min-height:24px}
+.err{color:var(--err);font-weight:600}
+ol.rules{margin:0;padding-left:1.2em;color:#3e3f56}
+ol.rules li{margin:4px 0}
+.listen{font:500 15px var(--mono);color:var(--body);background:#fff;border:1px dashed var(--blue-line);border-radius:10px;padding:10px 14px;margin:6px 0 14px}
+.answerline{font-weight:700;color:var(--blue)}
+
+/* Item cards */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr));max-width:640px;margin:0 auto}
+.item{border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px;background:#fff;transition:border-color .15s, box-shadow .15s, opacity .15s}
+.item .num{display:flex;justify-content:space-between;align-items:center;font:700 15px var(--sans);margin:0 2px 6px}
+.item .now{font:600 10.5px/1 var(--mono);letter-spacing:.12em;color:#fff;background:var(--blue);padding:5px 8px;border-radius:99px;visibility:hidden}
+.item.cur{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-line)}
+.item.cur .now{visibility:visible}
+.item.locked{opacity:.38}
+.item.closed{opacity:.6}
+.opt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;font:500 15.5px/1.35 var(--sans);color:var(--ink);background:transparent;border:1px solid transparent;border-radius:9px;padding:7px 8px;cursor:pointer;word-break:keep-all}
+.opt span{font:600 14px/1.45 var(--mono);color:var(--body);flex:none}
+.opt:hover:not(:disabled){background:var(--blue-bg)}
+.opt[aria-pressed=true]{background:var(--blue);color:#fff;border-color:var(--blue)}
+.opt[aria-pressed=true] span{color:#fff}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--ok-bg);border-color:var(--ok)}
+.opt.right[aria-pressed=true]{background:var(--ok);border-color:var(--ok)}
+
+/* Part header */
+.sticky{position:sticky;top:60px;z-index:4;background:#fff;padding-top:6px;margin:0 -8px;padding-left:8px;padding-right:8px}
+.parthead{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:6px 0 18px}
+.parthead h1{margin:10px 0 0;font-size:clamp(30px,4vw,44px)}
+.cue{font-size:18px;font-weight:700;text-align:right;letter-spacing:-.01em}
+.cue small{display:block;font-weight:400;font-size:15px;color:var(--body)}
+.bar{height:8px;border-radius:99px;background:var(--blue-bg);overflow:hidden;margin-bottom:22px}
+.bar i{display:block;height:100%;width:0;background:var(--blue);transition:width .25s linear}
+.playing{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--pink);margin-right:8px;animation:p 1.3s infinite}
+@keyframes p{50%{opacity:.25}}
+.big{font-size:clamp(76px,12vw,128px);line-height:.95;letter-spacing:-.05em;font-weight:800;font-variant-numeric:tabular-nums;color:var(--blue);text-align:center;margin:18px 0}
+.file{font:500 14px var(--mono);word-break:break-all}
+.small{font-size:14px;color:var(--body)}
+.credit{max-width:1140px;margin:0 auto;padding:0 36px 26px;font-size:12.5px;color:#8a8b9c;text-align:center}
+@media (prefers-reduced-motion:reduce){.playing{animation:none}.bar i,.meter i{transition:none}}
+@media (max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:820px){
+  nav{padding:0 16px}.steps{display:none}
+  main{padding:26px 16px 32px}.credit{padding:0 16px 20px}
+  .cards{grid-template-columns:1fr;gap:28px}
+  .parthead{flex-direction:column;align-items:flex-start}.cue{text-align:left}
+}
+@media (max-width:420px){.grid,.grid.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">LVLT <b>한국어판</b></div>
+  <ol class="steps" id="steps">
+    <li data-s="setup">준비</li><li data-s="intro">안내</li><li data-s="practice">연습</li><li data-s="test">검사</li><li data-s="done">완료</li>
+  </ol>
+  <div class="pidtag" id="pidTag"></div>
+</nav>
+<main>
+
+<!-- RA SETUP -->
+<section id="s-setup">
+  <div class="hero">
+    <span class="chip">Research assistant · Setup</span>
+    <h1>검사를 준비합니다.</h1>
+    <p class="lede">참여자가 앉기 전에 두 단계를 모두 마쳐 주십시오. 음원은 검사 시작 전에 모두 내려받습니다.</p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <span class="tag">Session</span>
+      <h2>세션 정보</h2>
+      <label for="pid">참여자 ID <small>코드만 입력, 이름 금지</small></label>
+      <input id="pid" type="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="예: P001">
+      <label for="ra">진행자 <small>이니셜</small></label>
+      <input id="ra" type="text" maxlength="40" autocomplete="off" spellcheck="false" placeholder="예: HP">
+      <p class="small" id="partsInfo" style="margin-top:16px">검사 설정을 불러오는 중입니다.</p>
+    </div>
+    <div class="card pink">
+      <span class="tag">Audio</span>
+      <h2>음원과 소리 확인</h2>
+      <p>헤드폰을 연결한 뒤 음원을 내려받고, 소리 확인 버튼으로 음량을 맞추십시오.</p>
+      <div class="meter" aria-hidden="true"><i id="loadBar"></i></div>
+      <div class="row">
+        <button class="btn pinkbtn" id="loadBtn" type="button">음원 내려받기</button>
+        <button class="btn line" id="soundBtn" type="button" disabled>소리 확인</button>
+      </div>
+      <div class="status" id="loadStatus" role="status"></div>
+      <label class="check" style="font-size:15.5px"><input type="checkbox" id="soundOk" disabled><span>헤드폰에서 영어 음성이 편안한 크기로 들렸습니다.</span></label>
+    </div>
+  </div>
+  <div class="notice" id="setupNotice" hidden role="alert"></div>
+  <div class="actions"><button class="btn" id="toIntro" type="button" disabled>참여자 안내 화면으로</button></div>
+</section>
+
+<!-- INSTRUCTIONS -->
+<section id="s-intro" hidden>
+  <div class="hero">
+    <span class="chip">Listening Vocabulary Levels Test</span>
+    <h1>어휘력 검사</h1>
+    <p class="lede">영어 단어가 예문과 함께 제시됩니다. 들려주는 영어 단어의 의미와 가장 가까운 한국어 뜻을 a~d 중에서 고르십시오.</p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <span class="tag">How it works</span>
+      <h2>검사 방법</h2>
+      <ol class="rules">
+        <li>각 문항은 <b>한 번만</b> 들려드립니다. 다시 듣거나 멈출 수 없습니다.</li>
+        <li>지금 듣고 있는 문항에 <b>NOW</b> 표시가 나타납니다. 아직 나오지 않은 문항은 고를 수 없습니다.</li>
+        <li>한 Part가 끝나기 전까지는 앞 문항의 답을 바꿀 수 있습니다.</li>
+        <li>단어의 뜻을 전혀 모르겠다면 고르지 않고 넘어가십시오.</li>
+        <li>그러나 조금이라도 알고 있다고 생각되면 답을 선택해 보십시오.</li>
+        <li>듣기 시험이므로 검사 중에는 말하거나 소리를 내지 마십시오.</li>
+      </ol>
+    </div>
+    <div class="card pink">
+      <span class="tag">Example</span>
+      <h2>예시 문제</h2>
+      <div class="listen">듣는 내용 · waited: I waited for a bus.</div>
+      <div class="grid two" style="grid-template-columns:1fr;max-width:none" id="exampleGrid"></div>
+      <p class="answerline" style="margin-top:12px">정답은 b입니다.</p>
+    </div>
+  </div>
+  <div class="actions"><button class="btn" id="toPractice" type="button">연습 문제 시작</button></div>
+</section>
+
+<!-- PRACTICE -->
+<section id="s-practice" hidden>
+  <div class="parthead">
+    <div><span class="chip">Practice</span><h1>연습 문제</h1></div>
+    <div class="cue" id="pracCue">잠시 후 시작합니다<small>헤드폰으로 들으십시오</small></div>
+  </div>
+  <div class="bar"><i id="pracBar"></i></div>
+  <div class="grid two" id="pracGrid"></div>
+  <div class="notice" id="pracDone" hidden style="background:var(--ok-bg);border-color:var(--ok);color:var(--ok)">연습 문제의 정답은 1번 a, 2번 b입니다. 궁금한 점이 있으면 지금 진행자에게 질문하십시오.</div>
+  <div class="actions"><button class="btn" id="toTest" type="button" hidden>본 검사 시작</button></div>
+</section>
+
+<!-- TEST PART -->
+<section id="s-part" hidden>
+  <div class="sticky">
+  <div class="parthead">
+    <div><span class="chip" id="partChip">Part 1 of 6</span><h1 id="partTitle">Part 1</h1></div>
+    <div class="cue" id="partCue"><span class="playing"></span>듣는 중<small>&nbsp;</small></div>
+  </div>
+  <div class="bar"><i id="partBar"></i></div>
+  </div>
+  <div class="grid" id="partGrid"></div>
+</section>
+
+<!-- BREAK -->
+<section id="s-break" hidden>
+  <div class="hero">
+    <span class="chip" id="breakChip">Next part</span>
+    <h1 id="breakTitle">다음 Part</h1>
+    <div class="big" id="breakClock">15</div>
+    <p class="lede">잠시 쉬십시오. 다음 Part가 자동으로 시작됩니다.</p>
+    <p class="status" id="breakSave"></p>
+  </div>
+</section>
+
+<!-- DONE -->
+<section id="s-done" hidden>
+  <div class="hero">
+    <span class="chip">Complete</span>
+    <h1>검사가 끝났습니다.</h1>
+    <p class="lede">수고하셨습니다. 진행자에게 알려 주십시오.</p>
+  </div>
+  <div class="cards single">
+    <div class="card">
+      <span class="tag">Research assistant</span>
+      <h2>저장 확인</h2>
+      <p id="doneStatus">저장 상태를 확인하는 중입니다.</p>
+      <p id="doneScore" class="answerline" hidden></p>
+      <p class="small">세션 ID: <span class="file" id="doneSession"></span></p>
+      <div class="row" style="margin-top:12px">
+        <button class="btn line" id="retryBtn" type="button" hidden>다시 저장</button>
+        <button class="btn line" id="backupBtn" type="button">응답 백업 파일 받기</button>
+        <button class="btn" id="newBtn" type="button">새 참여자</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<p class="credit">Listening Vocabulary Levels Test (McLean, Kramer, &amp; Beglar, 2015), Korean adaptation (draft). Audio and items used under CC BY-NC-SA.</p>
+
+<script>
+'use strict';
+// Apps Script web app URL (ends in /exec). Leave the placeholder to run in demo mode (nothing is saved).
+const API = 'PASTE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+const OPTIONS={"1":[["돈","음식","시간","친구"],["돌","걸상","깔개","잔가지"],["가난하다","행복하다","매우 관심이 있다","키가 크다"],["헤엄친다","배운다","공을 던진다","운전한다"],["물에 뜨다","뛰어오르다","주차하다","달리다"],["부모","지갑","펜","신발"],["회의","소풍","시험","약속"],["아주 나쁜 것","아무것도","아주 좋은 것","무언가"],["건너다","밀다","빨리 먹다","기다리다"],["실제의","오래된","둥근","다른"],["한 명이라도","아무도 없는","좋은","오래된"],["오랫동안","아주 빨리","멀리","너의 집까지"],["음식","이야기","사람들의 모임","놀이"],["일으켰다","고쳤다","설명했다","이해했다"],["하나도 없다","충분하다","조금 있다","많이 있다"],["몇 시에","무슨 이유로","어디에","어떻게"],["은행","바다 동물","학교","집"],["그림을 그렸다","말했다","자랐다","심하게 울었다"],["잠옷","손목시계","꽃","빵"],["열다","기억하다","처리하다","믿다"],["바다","야영지","요양소","호텔"],["호수","어린아이","지도자","조용한 곳"],["과거","충격적인 일","밤","여름"],["상냥하다","아주 크다","아주 빠르다","둥글다"]],"2":[["유지하다","확대하다","개량하다","입수하다"],["질문","시기","해야 할 일","책"],["(구두) 굽","성적","가격","기준"],["해답","쉬는 곳","다음 단계","기초"],["강하다","유명하다","부자다","화가 나 있다"],["서랍","차고","냉장고","우리"],["술집","은행","상점가","수영장"],["초안","빈칸","동그라미","큰 구멍"],["첩자","바보","작가","전문가"],["사업가","학생","목수","군인"],["좋은 때","질문","돈","결과"],["수리했다","두 번 보았다","깊이 생각했다","반대했다"],["빌려준다","낙서한다","청소한다","이름을 쓴다"],["돌아왔다","생각했다","거절했다","늦게까지 남았다"],["연설","전력 질주","음악","음식"],["돈","시간","압력","나쁜 말"],["그를 지원했다","그에게 순서를 양보했다","그를 언급했다","그에게 대답했다"],["흑백 동물의 한 종류","책장","이웃","군대"],["아이","무릎","돈","소지품"],["밧줄","땅을 파는 도구","지갑","사다리"],["댄스파티","첫 시도","대기실","상표"],["고쳤다","밀봉했다","주의 깊게 살펴보았다","열었다"],["밀렸다","초대받았다","경고를 받았다","소집되었다"],["비축","오븐","빚","고용주"]],"3":[["반복되었다","양도되었다","할인되었다","복원되었다"],["계약","화합물","회사","예상"],["목사","이유","후자","대답"],["막혔다","분할되었다","금테가 둘러졌다","(도로가) 포장되었다"],["개선책","음식점","조리법","방정식"],["세균","꽃의 한 종류","낙타","도난품"],["관객","행동","큰돈","섬"],["연료","진통제","천","단열재"],["비단","검고 단단한 나무","모피","빛나는 금속"],["(남에게) 말했다","설명했다","생각해 냈다","비판했다"],["박물관","습관","전설","정기적인 행사"],["완전히 변경되었다","한가운데에 있다","모방되었다","강제되었다"],["시간","지원","문제","해답"],["발견했다","검사했다","열심히 했다","축하했다"],["자립심","고독","힘","자만"],["산을 뚫은 길","막대기","하이픈","커튼"],["칭찬","집안일 돕기","보상","청중"],["재검토했다","수리했다","복제했다","폐기했다"],["방법","속도","태도","양"],["의자","냉난방","직원","고용주"],["효율적이었다","화가 나 있었다","유능했다","상처받기 쉬웠다"],["장식되었다","고립되었다","파괴되었다","오염되었다"],["건물","동의","생각","성분"],["(천을) 짜다","융합하다","설득하다","속이다"]],"4":[["인내심","여가","신념","지혜"],["약속","뚜껑","접시","끈"],["졸업했다","울었다","죽었다","걱정했다"],["장식품으로 가득하다","세를 주었다","비어 있다","귀신이 나온다"],["핀","정육면체","머그잔","엽서"],["물에 담그다","껍질을 벗기다","표백하다","잘게 다지다"],["보람이 없었다","만족했다","괴로웠다","활기찼다"],["출발했다","부정했다","언덕을 내려갔다","악화되었다"],["의견 차이","휴가","논의","연애"],["야망","공감","창의성","삶의 즐거움"],["달려갔다","어슬렁거렸다","싸웠다","힐끗 보았다"],["밖에서 먹었다","물에 빠져 죽었다","깊이 팠다","나무를 베었다"],["잘 자랐다","변화했다","남았다","시작되었다"],["나뭇잎","부드러운 신발","뚜껑","유리창"],["취미로 하는","교체","국가 대표","구기 종목"],["대피했다","몸수색을 당했다","겁을 먹었다","모함을 당했다"],["자랑하다","다치다","무리하다","응석을 받아 주다"],["대리석","단단한 나무","무른 금속","천"],["어두워졌다","줄어들었다","흐려졌다","추워졌다"],["비행기 조종사","가정부","보안관","가정교사"],["육군 부대","문","왕","범죄자"],["춤추며 돌아다녔다","조용해졌다","급격히 떨어졌다","가만히 있었다"],["길거리에서 공연했다","상을 치렀다","열심히 일했다","돈을 아껴 썼다"],["값비싸다","구하기 어렵다","인기가 있다","깨지기 쉽다"]],"5":[["문질러 닦고 있다","수리하고 있다","걱정하고 있다","밑그림을 그리고 있다"],["해적","요정","용","공룡"],["지렁이","큰 사고","수녀","정체불명의 빛"],["강력한 원조","정신적 지지","콘크리트","퇴비"],["소형 모형","벽돌집","미생물","계획"],["게","크래커","필사본","귀뚜라미"],["어휘","기술","큰돈","총"],["물주전자","휴대전화","베레모","시체"],["취해 있다","떠돌아다니고 있다","콧노래를 부르고 있다","열심히 일하고 있다"],["방향이 바뀌었다","다리가 놓였다","더러워졌다","넓고 깊어졌다"],["산","도랑","쓰레기 더미","아름다운 경치"],["마술사","기술자","소아과 의사","음악가"],["두통","큰돈","질문","좋은 생각"],["큰 잔","오래된 차","속옷","비바람이 들이치지 않는 문 앞 공간"],["인기가 없다","법으로 정해져 있다","자주 화제가 된다","안정되어 있다"],["문제","과학 실험","학살","스포츠 행사"],["발진","거미","소형 버스","물고기의 한 종류"],["교회","곡예단","경기장","합주단"],["긴 안락의자","재단기","호스","유모차"],["빨간 열매가 열리는 나무","접수처","상징 도안","별장"],["기념하다","동의하는 척하다","항의하다","칭찬하다"],["사기꾼","병원에서 일하는 사람","다리가 불편한 사람","건축가"],["봉투","조미료","전압의 단위","자석"],["범죄","춤의 한 종류","전쟁","오염"]],"6":[["계약","개념","방법","법안"],["일정하다","훌륭하다","간단하다","비슷하다"],["항목","설문 조사","회의","측면"],["뼈대","층","구성 부분","상대"],["보상하다","배제하다","찾아내다","소집하다"],["국내의","전문적인","등록된","유명한"],["알려지지 않은","외부의","객관적인","뒤이어 일어나는"],["논법","표적","영상","조항"],["협력하다","이동하다","모이다","진화하다"],["타협점","우선 사항","출판물","후계자"],["반대 방향으로","순서대로","같은 음으로","예정대로"],["독단적이었다","결정적이었다","딱딱했다","충분했다"],["명백했다","성숙했다","서로 같았다","절제되었다"],["다른 선택지","과제","논평","상호작용"],["주제","일정","동료","논문"],["합법적이다","사용할 수 있다","명백하다","중요하다"],["요소","견적","부지","수출"],["손에 넣다","규제하다","도입하다","찾아 구하다"],["통합하다","진급시키다","조화시키다","유지하다"],["연속","단계","규모","매개변수"],["추구하다","고치다","감시하다","촉진하다"],["밝혔다","사용했다","인정했다","되찾았다"],["정확한","최소한의","유연한","다양한"],["이념","계층 제도","화학 제품","옷의 유행"],["여러 뜻을 지닌다","똑같다","왜곡되어 있다","현대적이다"],["높이 평가했다","쌓았다","보완했다","순응했다"],["이기적으로 이용했다","조작했다","포기했다","축소했다"],["질적이다","동시에 일어난다","일시적이다","엄격하다"],["모르는 사이에","주고받으며","그로 인해","~에도 불구하고"],["주기","관점","연결망","지위"]]};
+const SCHEDULE={"1":{"on":[4.41,16.57,27.14,37.3,49.09,59.67,70.72,82.09,93.36,104.19,115.44,127.14,138.36,149.71,160.78,172.27,182.5,193.03,204.33,215.46,226.71,237.66,248.62,259.24],"end":269.7},"2":{"on":[4.95,16.04,26.44,37.3,47.97,56.9,66.89,76.79,85.92,95.62,105.48,116.25,126.95,137.16,146.94,156.77,167.12,178.16,188.85,199.26,209.76,220.23,231.38,242.34],"end":253.5},"3":{"on":[4.31,14.79,24.92,35.75,45.75,55.51,66.62,77.12,87.34,97.69,109.12,120.81,133.48,144.79,159.73,172.97,184.34,195.52,206.84,218.44,229.29,240.38,251.31,263.8],"end":274.29},"4":{"on":[4.49,16.04,26.27,36.04,45.97,56.38,66.73,77.1,87.87,99.31,109.67,120.33,131.47,142.3,153.03,163.87,173.86,183.49,195.72,205.99,215.99,226.86,237.21,249.14],"end":260.21},"5":{"on":[5.21,14.33,26.2,35.47,45.97,56.67,67.09,78.75,90.01,100.34,111.79,122.64,133.21,143.74,155.16,165.45,176.82,187.23,198.54,208.47,218.88,230.23,240.01,251.11],"end":261.78},"6":{"on":[4.24,15.87,27.07,38.42,50.24,63.15,74.41,85.54,95.5,106.36,116.44,126.53,137.12,147.39,157.72,169.15,180.74,191.18,202.51,213.49,224.34,236.32,248.02,261.22,273.03,284.45,296.22,308.38,318.85,333.13],"end":343.85}};
+const PRACTICE = {
+  options: [['강하다','매우 행복하다','과식하다','친절하다'],['~에 대해 이야기하다','~을 나르다','~에 이름을 쓰다','~을 흔들다']],
+  on: [3.0, 15.8], answersAt: 28.0, correct: ['A','B']
+};
+const EXAMPLE = ['먹었다','기다렸다','보았다','잤다'];
+const LEVEL = {1:'1,000-word level',2:'2,000-word level',3:'3,000-word level',4:'4,000-word level',5:'5,000-word level',6:'Academic Word List'};
+const BREAK_SECONDS = 15;
+const L = ['A','B','C','D'];
+const DEMO = API.indexOf('PASTE_') === 0 || new URLSearchParams(location.search).has('demo');
+
+const $ = id => document.getElementById(id);
+const state = {
+  pid:'', ra:'', sessionId:'', startedAt:'', activeParts:[1,2,3,4,5,6], showScore:false,
+  urls:{}, answers:{}, incidents:[], saved:{}, finalSaved:false, score:null, idx:0
+};
+const audio = new Audio();
+audio.preload = 'auto';
+if (DEMO) window.__audio = audio; // test hook (demo mode only)
+
+function show(name){
+  ['setup','intro','practice','part','break','done'].forEach(s => $('s-'+s).hidden = s !== name);
+  const step = {setup:'setup',intro:'intro',practice:'practice',part:'test',break:'test',done:'done'}[name];
+  const order = ['setup','intro','practice','test','done'];
+  document.querySelectorAll('#steps li').forEach(li => {
+    const i = order.indexOf(li.dataset.s), j = order.indexOf(step);
+    li.className = i === j ? 'on' : (i < j ? 'done' : '');
+  });
+  window.scrollTo(0,0);
+}
+function uuid(){ return (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+Math.random().toString(16).slice(2)).replace(/[^A-Za-z0-9-]/g,''); }
+function kst(d){ return new Date(d.getTime()+9*3600e3).toISOString().replace('T',' ').slice(0,19); }
+function note(msg){ state.incidents.push(kst(new Date()).slice(11)+' '+msg); }
+
+/* ---------- Card rendering ---------- */
+function card(num, opts, onPick){
+  const el = document.createElement('div');
+  el.className = 'item';
+  el.innerHTML = '<div class="num"><span>'+num+'.</span><span class="now">NOW</span></div>';
+  opts.forEach((t,i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'opt'; b.dataset.c = L[i];
+    b.setAttribute('aria-pressed','false');
+    b.innerHTML = '<span>'+L[i].toLowerCase()+'.</span>';
+    b.appendChild(document.createTextNode(t));
+    b.addEventListener('click', () => onPick && onPick(L[i], el));
+    el.appendChild(b);
+  });
+  return el;
+}
+function setPressed(el, choice){
+  el.querySelectorAll('.opt').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.c === choice)));
+}
+function setLocked(el, locked){
+  el.classList.toggle('locked', locked);
+  el.querySelectorAll('.opt').forEach(b => b.disabled = locked);
+}
+
+/* ---------- Setup ---------- */
+async function loadConfig(){
+  if (DEMO){
+    const q = new URLSearchParams(location.search).get('parts');
+    if (q) state.activeParts = q.split(',').map(Number).filter(p => SCHEDULE[p]);
+    $('partsInfo').innerHTML = '<span class="err">데모 모드</span>: 응답이 저장되지 않습니다. 실시할 Part: '+state.activeParts.join(', ');
+    return;
+  }
+  try {
+    const r = await fetch(API+'?action=config', {cache:'no-store'});
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error);
+    state.activeParts = j.activeParts; state.showScore = !!j.showScore;
+    $('partsInfo').textContent = '실시할 Part: '+state.activeParts.map(p => p+' ('+LEVEL[p]+')').join(', ');
+  } catch(e){
+    $('partsInfo').innerHTML = '<span class="err">검사 설정을 불러오지 못했습니다.</span> 인터넷 연결을 확인한 뒤 페이지를 새로 고치십시오.';
+    $('loadBtn').disabled = true;
+  }
+}
+
+async function fetchWithProgress(url, onBytes){
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(url+' '+r.status);
+  if (!r.body || !r.body.getReader){ const b = await r.blob(); onBytes(b.size); return b; }
+  const reader = r.body.getReader(); const chunks = [];
+  for(;;){ const {done, value} = await reader.read(); if (done) break; chunks.push(value); onBytes(value.length); }
+  return new Blob(chunks, {type:'audio/mpeg'});
+}
+const SIZES = {practice:708155,1:4441403,2:4167227,3:4503995,4:4289339,5:4316987,6:5626811};
+$('loadBtn').addEventListener('click', async () => {
+  $('loadBtn').disabled = true;
+  const files = ['practice'].concat(state.activeParts);
+  const total = files.reduce((s,f) => s+SIZES[f], 0); let got = 0;
+  try {
+    for (const f of files){
+      $('loadStatus').textContent = '내려받는 중: '+(f === 'practice' ? '연습 문제' : 'Part '+f);
+      const blob = await fetchWithProgress('audio/'+(f === 'practice' ? 'practice' : 'part'+f)+'.mp3', n => {
+        got += n; $('loadBar').style.width = Math.min(100, got/total*100)+'%';
+      });
+      state.urls[f] = URL.createObjectURL(blob);
+    }
+    $('loadBar').style.width = '100%';
+    $('loadStatus').textContent = '음원을 모두 내려받았습니다.';
+    $('soundBtn').disabled = false;
+  } catch(e){
+    $('loadStatus').innerHTML = '<span class="err">음원을 내려받지 못했습니다.</span> 다시 시도하십시오.';
+    $('loadBtn').disabled = false;
+  }
+});
+let soundStop = null;
+function stopSoundCheck(){
+  if (soundStop){ audio.removeEventListener('timeupdate', soundStop); soundStop = null; }
+  audio.pause();
+}
+$('soundBtn').addEventListener('click', () => {
+  stopSoundCheck();
+  audio.onended = null; audio.ontimeupdate = null; audio.onwaiting = null;
+  audio.src = state.urls.practice; audio.currentTime = 3.0;
+  soundStop = () => { if (audio.currentTime >= 10.2) stopSoundCheck(); };
+  audio.addEventListener('timeupdate', soundStop);
+  audio.play();
+  $('soundOk').disabled = false;
+});
+function setupReady(){
+  const okId = /^[A-Za-z0-9_-]{1,32}$/.test($('pid').value.trim());
+  $('toIntro').disabled = !(okId && $('soundOk').checked);
+}
+['pid','soundOk'].forEach(id => $(id).addEventListener('input', setupReady));
+$('soundOk').addEventListener('change', setupReady);
+
+$('toIntro').addEventListener('click', async () => {
+  const pid = $('pid').value.trim();
+  $('setupNotice').hidden = true;
+  if (!DEMO){
+    try {
+      const j = await (await fetch(API+'?action=check&pid='+encodeURIComponent(pid), {cache:'no-store'})).json();
+      if (j.ok && j.count > 0 && !confirmRepeat(j.count)) return;
+    } catch(e){ /* the check is advisory only */ }
+  }
+  stopSoundCheck();
+  state.pid = pid; state.ra = $('ra').value.trim(); state.sessionId = uuid();
+  state.startedAt = kst(new Date());
+  $('pidTag').textContent = pid;
+  $('exampleGrid').innerHTML = '';
+  const ex = card(1, EXAMPLE, null); setPressed(ex, 'B'); ex.querySelectorAll('.opt').forEach(b => b.disabled = true);
+  $('exampleGrid').appendChild(ex);
+  show('intro');
+});
+function confirmRepeat(n){
+  const pid = $('pid').value.trim();
+  if (state.pidAck === pid) return true;
+  state.pidAck = pid;
+  $('setupNotice').hidden = false;
+  $('setupNotice').textContent = '이 참여자 ID로 저장된 세션이 이미 '+n+'개 있습니다. 같은 사람이 다시 응시하는 것이 맞으면 버튼을 한 번 더 누르십시오.';
+  return false;
+}
+
+/* ---------- Practice ---------- */
+$('toPractice').addEventListener('click', () => {
+  show('practice');
+  const grid = $('pracGrid'); grid.innerHTML = '';
+  const cards = PRACTICE.options.map((o,i) => {
+    const c = card(i+1, o, (ch, el) => setPressed(el, ch));
+    setLocked(c, true); grid.appendChild(c); return c;
+  });
+  $('toTest').hidden = true; $('pracDone').hidden = true;
+  audio.src = state.urls.practice; audio.currentTime = 0;
+  audio.ontimeupdate = () => {
+    const t = audio.currentTime;
+    $('pracBar').style.width = Math.min(100, t/audio.duration*100)+'%';
+    let k = -1; PRACTICE.on.forEach((s,i) => { if (t >= s) k = i; });
+    cards.forEach((c,i) => { c.classList.toggle('cur', i === k && t < PRACTICE.answersAt); if (i <= k) setLocked(c, false); });
+    if (k >= 0 && t < PRACTICE.answersAt) $('pracCue').innerHTML = '<span class="playing"></span>연습 '+(k+1)+'번<small>듣고 답을 고르십시오</small>';
+    if (t >= PRACTICE.answersAt) reveal();
+  };
+  let revealed = false;
+  function reveal(){
+    if (revealed) return; revealed = true;
+    cards.forEach((c,i) => { c.classList.remove('cur'); c.querySelectorAll('.opt').forEach(b => { b.disabled = true; if (b.dataset.c === PRACTICE.correct[i]) b.classList.add('right'); }); });
+    $('pracCue').innerHTML = '정답 확인<small>녹음에서 정답을 알려 줍니다</small>';
+    $('pracDone').hidden = false;
+  }
+  audio.onended = () => { reveal(); $('pracBar').style.width = '100%'; $('pracCue').innerHTML = '연습 끝<small>&nbsp;</small>'; $('toTest').hidden = false; };
+  setTimeout(() => audio.play().catch(() => note('practice autoplay blocked')), 600);
+});
+$('toTest').addEventListener('click', () => { state.idx = 0; startPart(); });
+
+/* ---------- Test parts ---------- */
+let partCards = [], partStart = 0, current = -1;
+function startPart(){
+  const p = state.activeParts[state.idx];
+  const sch = SCHEDULE[p];
+  state.answers[p] = OPTIONS[p].map(() => ({choice:'', rtMs:null, changes:0}));
+  $('partChip').textContent = 'Part '+(state.idx+1)+' of '+state.activeParts.length;
+  $('partTitle').textContent = 'Part '+p;
+  $('partCue').innerHTML = '<span class="playing"></span>곧 시작합니다<small>'+LEVEL[p]+'</small>';
+  $('partBar').style.width = '0';
+  const grid = $('partGrid'); grid.innerHTML = '';
+  current = -1;
+  partCards = OPTIONS[p].map((o,i) => {
+    const c = card(i+1, o, (ch, el) => pick(p, i, ch, el));
+    setLocked(c, true); grid.appendChild(c); return c;
+  });
+  show('part');
+  audio.src = state.urls[p]; audio.currentTime = 0;
+  audio.ontimeupdate = () => tick(p);
+  audio.onended = () => endPart(p);
+  audio.onwaiting = () => note('P'+p+' audio waiting at '+audio.currentTime.toFixed(1)+'s');
+  audio.play().catch(() => { note('P'+p+' autoplay blocked'); showResume(p); });
+}
+function showResume(p){
+  $('partCue').innerHTML = '<button class="btn" type="button" id="resumeBtn">음원 재생</button>';
+  $('resumeBtn').onclick = () => audio.play().then(() => tick(p));
+}
+function tick(p){
+  const t = audio.currentTime, on = SCHEDULE[p].on;
+  $('partBar').style.width = Math.min(100, t/audio.duration*100)+'%';
+  let k = -1; for (let i = 0; i < on.length; i++) if (t >= on[i]) k = i;
+  if (k !== current){
+    current = k;
+    partCards.forEach((c,i) => { c.classList.toggle('cur', i === k); if (i <= k) setLocked(c, false); });
+    if (k >= 0){
+      $('partCue').innerHTML = '<span class="playing"></span>'+(k+1)+'번 / '+on.length+'<small>'+LEVEL[p]+'</small>';
+      const r = partCards[k].getBoundingClientRect();
+      const top = document.querySelector('#s-part .sticky').getBoundingClientRect().bottom;
+      if (r.top < top + 8 || r.bottom > innerHeight - 10) partCards[k].scrollIntoView({block:'center', behavior:'smooth'});
+    }
+  }
+  if (t >= SCHEDULE[p].end && k === on.length-1) partCards[k].classList.remove('cur');
+}
+function pick(p, i, ch, el){
+  const a = state.answers[p][i];
+  if (a.choice && a.choice !== ch) a.changes++;
+  a.choice = (a.choice === ch) ? '' : ch;          // clicking the same option again clears it
+  a.rtMs = a.choice ? Math.round((audio.currentTime - SCHEDULE[p].on[i]) * 1000) : null;
+  setPressed(el, a.choice);
+}
+document.addEventListener('keydown', e => {
+  if ($('s-part').hidden || current < 0) return;
+  const m = {a:'A',b:'B',c:'C',d:'D','1':'A','2':'B','3':'C','4':'D'}[e.key.toLowerCase()];
+  if (!m) return;
+  const p = state.activeParts[state.idx];
+  pick(p, current, m, partCards[current]);
+});
+function endPart(p){
+  partCards.forEach(c => { c.classList.remove('cur'); c.classList.add('closed'); c.querySelectorAll('.opt').forEach(b => b.disabled = true); });
+  savePart(p);
+  state.idx++;
+  if (state.idx >= state.activeParts.length){ finish(); return; }
+  const next = state.activeParts[state.idx];
+  $('breakChip').textContent = 'Part '+(state.idx+1)+' of '+state.activeParts.length;
+  $('breakTitle').textContent = 'Part '+next+' 준비';
+  show('break');
+  let s = BREAK_SECONDS; $('breakClock').textContent = s;
+  const timer = setInterval(() => {
+    s--; $('breakClock').textContent = Math.max(0,s);
+    if (s <= 0){ clearInterval(timer); startPart(); }
+  }, 1000);
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden && !audio.paused) note('page hidden during audio'); });
+window.addEventListener('beforeunload', e => {
+  if (state.sessionId && !state.finalSaved){ e.preventDefault(); e.returnValue = ''; }
+});
+
+/* ---------- Saving ---------- */
+function payload(p, final){
+  return {
+    sessionId: state.sessionId, participantId: state.pid, raName: state.ra, startedAt: state.startedAt,
+    activeParts: state.activeParts, part: p, final: !!final, incidents: state.incidents.slice(),
+    userAgent: navigator.userAgent,
+    answers: p == null ? [] : state.answers[p].map((a,i) => ({item:i+1, choice:a.choice, rtMs:a.rtMs, changes:a.changes}))
+  };
+}
+async function post(body){
+  if (DEMO) return {ok:true, demo:true};
+  let last;
+  for (let i = 0; i < 4; i++){
+    try {
+      const r = await fetch(API, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body)});
+      const j = await r.json(); if (j.ok) return j; last = j.error;
+    } catch(e){ last = String(e); }
+    await new Promise(res => setTimeout(res, 1500*(i+1)));
+  }
+  throw new Error(last || 'save failed');
+}
+function savePart(p){
+  $('breakSave').textContent = 'Part '+p+' 응답을 저장하는 중입니다.';
+  state.saved[p] = 'pending';
+  return post(payload(p)).then(() => {
+    state.saved[p] = 'ok'; $('breakSave').textContent = 'Part '+p+' 응답이 저장되었습니다.';
+  }).catch(err => {
+    state.saved[p] = 'fail'; note('save P'+p+' failed: '+err.message);
+    $('breakSave').textContent = 'Part '+p+' 저장에 실패했습니다. 검사는 계속하며, 마지막에 다시 저장합니다.';
+  });
+}
+async function finish(){
+  show('done');
+  $('doneSession').textContent = state.sessionId;
+  await saveAll();
+}
+async function saveAll(){
+  $('retryBtn').hidden = true;
+  $('doneStatus').textContent = '응답을 저장하는 중입니다. 이 화면을 닫지 마십시오.';
+  try {
+    while (Object.values(state.saved).includes('pending')) await new Promise(r => setTimeout(r, 500));
+    for (const p of state.activeParts){ if (state.saved[p] !== 'ok'){ await post(payload(p)); state.saved[p] = 'ok'; } }
+    const j = await post(payload(null, true));
+    state.finalSaved = true;
+    $('doneStatus').textContent = DEMO ? '데모 모드이므로 저장하지 않았습니다.' : '모든 응답이 Google 시트에 저장되었습니다.';
+    if (j.total){ $('doneScore').hidden = false; $('doneScore').textContent = '점수: '+j.total; }
+  } catch(e){
+    $('doneStatus').innerHTML = '<span class="err">저장하지 못했습니다.</span> 인터넷 연결을 확인한 뒤 다시 저장을 누르십시오. 계속 실패하면 백업 파일을 받아 연구 책임자에게 전달하십시오.';
+    $('retryBtn').hidden = false;
+  }
+}
+$('retryBtn').addEventListener('click', saveAll);
+$('backupBtn').addEventListener('click', () => {
+  const data = {sessionId:state.sessionId, participantId:state.pid, raName:state.ra, startedAt:state.startedAt,
+    activeParts:state.activeParts, answers:state.answers, incidents:state.incidents, userAgent:navigator.userAgent};
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}));
+  a.download = 'LVLT_'+state.pid+'_'+state.startedAt.replace(/[^0-9]/g,'').slice(0,12)+'.json';
+  a.click();
+});
+$('newBtn').addEventListener('click', () => {
+  if (!state.finalSaved && !DEMO && !window.confirm('저장되지 않은 응답이 있습니다. 그래도 새로 시작하시겠습니까?')) return;
+  state.finalSaved = true; location.reload();
+});
+
+loadConfig();
+</script>
+</body>
+</html>
