@@ -4,9 +4,8 @@
  * 1. Run setup() once. It creates the "ICF log" spreadsheet inside the 연구참여동의서 folder.
  * 2. Deploy as a web app:  Execute as: Me    Who has access: Anyone
  *
- * Each submission is saved as a PDF (연구대상자 설명서 + 동의서) in the same folder,
- * logged in the spreadsheet, and returned to the page so the participant can download a copy.
- * If the participant enters an e-mail address, the PDF is also sent there.
+ * Each submission is saved as a PDF (연구대상자 설명서 + 동의서) in the same folder
+ * and logged in the spreadsheet.
  *
  * The consent text below must match icf/index.html. Edit both together.
  */
@@ -16,7 +15,6 @@ const CONFIG = {
   SHEET_NAME: 'ICF log',
   TIMEZONE: 'Asia/Seoul',
   EXPLAINER: '강지혜 / 이민서',
-  SEND_COPY_EMAIL: true,
   FORM_VERSION: 'ICF 2026-11-05'
 };
 
@@ -127,7 +125,7 @@ const FOOTER = '연구책임자 박해인: haeinpark@khu.ac.kr\n경희대학교 
 
 const LOG_HEADERS = ['Submitted at (KST)', 'Submission ID', 'Name', 'Explainer']
   .concat(CONSENT_ITEMS.map(function (it, i) { return 'Item ' + (i + 1); }))
-  .concat(['Eligible', 'PDF', 'Copy e-mailed', 'Form version']);
+  .concat(['Eligible', 'PDF', 'Form version']);
 
 /** Run once from the editor. Creates the log spreadsheet in the consent folder. */
 function setup() {
@@ -189,29 +187,12 @@ function doPost(e) {
       .getAs('application/pdf').setName(fileName);
     const file = DriveApp.getFolderById(CONFIG.FOLDER_ID).createFile(pdf);
 
-    let mailed = '';
-    const email = String(d.email || '').trim();
-    if (CONFIG.SEND_COPY_EMAIL && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      try {
-        MailApp.sendEmail({
-          to: email,
-          subject: '[연구 참여 동의서 사본] ' + STUDY.title,
-          body: name + ' 님,\n\n연구 참여 동의서 사본을 첨부합니다. 연구 참여가 끝날 때까지 보관해 주십시오.\n\n' +
-                '연구자료의 삭제를 원하시면 참여일로부터 14일 이내에 동의담당자에게 요청해 주십시오.\n\n' + FOOTER,
-          attachments: [file.getBlob()]
-        });
-        mailed = 'yes';
-      } catch (err) {
-        mailed = 'failed: ' + err.message;
-      }
-    }
-
     sh.appendRow([Utilities.formatDate(data.timestamp, CONFIG.TIMEZONE, 'yyyy-MM-dd HH:mm:ss'), d.submission_id,
       clean_(name), CONFIG.EXPLAINER]
       .concat(CONSENT_ITEMS.map(function (it) { return answers[it.key]; }))
-      .concat(['yes', file.getUrl(), mailed, CONFIG.FORM_VERSION]));
+      .concat(['yes', file.getUrl(), CONFIG.FORM_VERSION]));
 
-    return json_({ ok: true, fileName: fileName, mailed: mailed, pdf: Utilities.base64Encode(file.getBlob().getBytes()) });
+    return json_({ ok: true, fileName: fileName });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
   } finally {

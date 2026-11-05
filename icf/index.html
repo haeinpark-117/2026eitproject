@@ -53,7 +53,7 @@ td.k{width:24%;white-space:nowrap}
 .q{font-weight:700;display:block;margin-bottom:6px;color:var(--ink2)}
 .req{color:var(--pink)}
 .hint{color:var(--muted);font-size:15px;margin:0 0 8px}
-input[type=text],input[type=email]{font:inherit;padding:10px 12px;border:1px solid var(--accent-line);border-radius:10px;background:#fff;color:inherit;width:100%;max-width:420px}
+input[type=text]{font:inherit;padding:10px 12px;border:1px solid var(--accent-line);border-radius:10px;background:#fff;color:inherit;width:100%;max-width:420px}
 input:focus{outline:2px solid var(--accent);outline-offset:1px}
 .fixed{display:inline-block;padding:10px 14px;border-radius:10px;background:#fff;border:1px dashed var(--accent-line);font-weight:700}
 label.chk{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;background:#fff;border:1px solid var(--accent-line);cursor:pointer;max-width:720px}
@@ -188,12 +188,12 @@ const PRIVACY_NOTE = '※ 연구자료는 고유 코드로 관리하며, 음성 
 const FOOTER = '연구책임자 박해인: haeinpark@khu.ac.kr\n경희대학교 서울캠퍼스 생명윤리심의위원회(서울시 동대문구 경희대로 26): 02-961-2342';
 
 var STEPS = ['연구대상자 설명서', '연구대상자 동의서', '동의 확인'];
-var step = 0, A = {}, F = { name: '', email: '', sign: false }, sent = false;
+var step = 0, A = {}, F = { name: '', sign: false }, sent = false;
 var sid = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
 var app = document.getElementById('app');
 
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function panel(badge,title,body,cls){return '<section class="panel '+(cls||'')+'"><span class="badge">'+esc(badge)+'</span>'+(title?'<h2>'+esc(title)+'</h2>':'')+body+'</section>'}
+function panel(badge,title,body,cls,req){return '<section class="panel '+(cls||'')+'"><span class="badge">'+esc(badge)+'</span>'+(title?'<h2>'+esc(title)+(req?' <span class="req">*</span>':'')+'</h2>':'')+body+'</section>'}
 function rows(t){return '<table>'+t.map(function(r){return '<tr><td class="k">'+esc(r[0])+'</td><td class="pre">'+esc(r[1])+'</td></tr>'}).join('')+'</table>'}
 function today(){var d=new Date();return d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일'}
 function nav(back,label){return '<div class="status" id="status"></div><div class="nav">'+(back?'<button type="button" class="ghost" id="back">이전</button>':'<span></span>')+'<button type="button" id="next">'+esc(label)+'</button></div>'}
@@ -223,7 +223,7 @@ function render(){
     '</div><div class="errmsg">응답해 주십시오.</div></div>';
   });
   h+=panel('CONSENT','연구대상자 동의서','<p><b>'+esc(STUDY.title)+'</b></p><p>'+esc(CONSENT_INTRO)+'</p>','pk');
-  h+=panel('ITEMS','동의 항목 <span class="req">*</span>',it+'<div id="stopmsg"></div>');
+  h+=panel('ITEMS','동의 항목',it+'<div id="stopmsg"></div>','',true);
   h+=panel('PRIVACY','개인정보 수집 항목 및 보유기간','<table><tr><th>수집 항목</th><th>수집 목적</th><th>보유기간</th></tr>'+PRIVACY_TABLE.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+esc(c)+'</td>'}).join('')+'</tr>'}).join('')+'</table><p class="note">'+esc(PRIVACY_NOTE)+'</p>');
   h+=nav(true,'다음: 동의 확인');
  } else {
@@ -232,7 +232,6 @@ function render(){
   f+='<div class="field" data-k="sign"><label class="chk"><input type="checkbox" id="sign"'+(F.sign?' checked':'')+'><span>위에 성명을 입력하고 제출함으로써 서명을 갈음하여 본 동의서에 동의합니다. <span class="req">*</span></span></label><div class="errmsg">확인란에 표시해 주십시오.</div></div>';
   f+='<div class="field"><span class="q">서명일</span><span class="fixed">'+today()+'</span><p class="hint" style="margin-top:6px">제출 시각으로 자동 기록됩니다.</p></div>';
   f+='<div class="field"><span class="q">연구설명자</span><span class="fixed">'+esc(CONFIG.EXPLAINER)+'</span></div>';
-  f+='<div class="field" data-k="email"><span class="q">동의서 사본(PDF)을 받을 이메일 <span class="tag" style="font:12px var(--mono);color:var(--muted)">선택</span></span><p class="hint">입력하시면 제출 직후 동의서 사본이 발송됩니다.</p><input type="email" id="email" autocomplete="off" value="'+esc(F.email)+'"><div class="errmsg">이메일 형식을 확인해 주십시오.</div></div>';
   h+=panel('SIGN','동의 확인',f);
   h+='<p class="note" style="margin-top:20px">'+esc(FOOTER).replace(/\n/g,'<br>')+'</p>';
   h+=nav(true,'동의서 제출');
@@ -244,7 +243,7 @@ function render(){
 }
 function collect(){
  if(step===1)app.querySelectorAll('input[type=radio]:checked').forEach(function(e){A[e.name]=e.value});
- if(step===2){F.name=document.getElementById('name').value.trim();F.email=document.getElementById('email').value.trim();F.sign=document.getElementById('sign').checked}
+ if(step===2){F.name=document.getElementById('name').value.trim();F.sign=document.getElementById('sign').checked}
 }
 function mark(k,list){var c=app.querySelector('[data-k="'+k+'"]');if(c){c.classList.add('bad');list.push(c)}}
 function onNext(){
@@ -264,32 +263,32 @@ function onNext(){
  if(step<2){step++;render();scrollTo(0,0);return}
  if(!F.name)mark('name',e);
  if(!F.sign)mark('sign',e);
- if(F.email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(F.email))mark('email',e);
  if(e.length){st.textContent='표시된 항목을 확인해 주십시오.';e[0].scrollIntoView({block:'center'});return}
  submit();
 }
 function submit(){
  var b=document.getElementById('next'),st=document.getElementById('status');
  b.disabled=true;b.textContent='제출 중...';
- var body={submission_id:sid,name:F.name,email:F.email,sign:F.sign,answers:A};
- var req=DEMO?Promise.resolve({ok:true,demo:true}):fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}).then(function(r){return r.json()});
- req.then(function(j){if(!j.ok)throw new Error(j.error||'failed');sent=true;done(j)})
-  .catch(function(){b.disabled=false;b.textContent='동의서 제출';st.textContent='제출에 실패하였습니다. 입력 내용은 유지되어 있으니 인터넷 연결을 확인한 뒤 다시 제출해 주십시오.'});
+ var body={submission_id:sid,name:F.name,sign:F.sign,answers:A};
+ function fail(msg){b.disabled=false;b.textContent='동의서 제출';st.textContent=msg}
+ if(!DEMO&&!/^https:\/\/script\.google\.com\//.test(ENDPOINT)){fail('저장 서버(Apps Script 웹앱)가 아직 연결되지 않았습니다. 연구조원에게 알려 주십시오.');return}
+ var req=DEMO?Promise.resolve({ok:true,demo:true}):fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)})
+  .then(function(r){return r.json()},function(){throw {net:true}});
+ req.then(function(j){if(!j.ok)throw {server:j.error||'unknown'};sent=true;done(j)})
+  .catch(function(x){
+   if(x&&x.server)fail('저장 중 서버 오류가 발생하였습니다 ('+x.server+'). 연구조원에게 알려 주십시오.');
+   else if(x&&x.net)fail('제출에 실패하였습니다. 입력 내용은 유지되어 있으니 인터넷 연결을 확인한 뒤 다시 제출해 주십시오.');
+   else fail('서버 응답을 읽지 못하였습니다. 웹앱 배포 설정(액세스 권한: 모든 사용자)을 확인해 주십시오.');
+  });
 }
 function done(j){
  document.getElementById('bar').style.width='100%';
  document.getElementById('stepno').textContent='';
  var h='<p>'+esc(F.name)+' 님, 연구 참여에 동의해 주셔서 감사합니다.</p>';
  if(j.demo)h+='<p class="note">데모 모드: 저장되지 않았습니다.</p>';
- if(j.mailed==='yes')h+='<p>입력하신 이메일로 동의서 사본을 보냈습니다.</p>';
- else if(j.mailed)h+='<p class="note">이메일 발송에 실패하였습니다. 아래 버튼으로 사본을 내려받거나 연구조원에게 요청해 주십시오.</p>';
- h+='<div class="btns">'+(j.pdf?'<button type="button" id="dl">동의서 사본 내려받기 (PDF)</button>':'')+'<button type="button" class="ghost" id="again">처음 화면으로</button></div>';
+ h+='<div class="btns"><button type="button" class="ghost" id="again">처음 화면으로</button></div>';
  app.innerHTML=panel('DONE','제출이 완료되었습니다.',h,'done');
  scrollTo(0,0);
- if(j.pdf)document.getElementById('dl').onclick=function(){
-  var bin=atob(j.pdf),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([u],{type:'application/pdf'}));a.download=j.fileName||'consent.pdf';a.click();
- };
  document.getElementById('again').onclick=function(){location.href=location.pathname+(DEMO?'?demo':'')};
 }
 window.addEventListener('beforeunload',function(e){if(!sent&&(Object.keys(A).length||F.name)){e.preventDefault();e.returnValue=''}});
