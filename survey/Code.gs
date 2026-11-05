@@ -3,7 +3,7 @@
  * Bind this script to the response spreadsheet (Extensions > Apps Script),
  * then deploy as a web app: Execute as Me, Who has access Anyone.
  */
-var SHEET_NAME = 'responses';
+var SHEET_NAME = 'Responses';
 
 var COLUMNS = ['submitted_at', 'submission_id', 'lang', 'group', 'name', 'participant_id']
   .concat(['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12','s13','s14','s15'])
