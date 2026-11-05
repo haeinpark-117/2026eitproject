@@ -2,7 +2,7 @@
  * LVLT (Korean version): storage and scoring backend (Google Apps Script)
  *
  * 1. Run setup() once. It creates the "LVLT Korean Online" spreadsheet inside the
- *    LVLT Drive folder, with Config, Key, Sessions, and Responses tabs.
+ *    LVLT Drive folder, with Config, Key, Participant level, and Item level tabs.
  * 2. Deploy as a web app:  Execute as: Me    Who has access: Anyone
  *
  * The answer key lives only in the Key tab of the spreadsheet (never in the web page).
@@ -36,9 +36,13 @@ const SEED_TARGETS = {
   6: ['concept','similar','item','component','compensate','professional','external','clause','migrate','priority','reverse','arbitrary','mutual','alternative','colleague','legal','site','institute','retain','phase','pursue','recover','diverse','hierarchy','distort','accumulate','abandon','rigid','notwithstanding','perspective']
 };
 
+// Two result tabs: one row per participant session, and one row per item.
+const TAB = { participant: 'Participant level', item: 'Item level' };
+const OLD_TAB = { 'Participant level': 'Sessions', 'Item level': 'Responses' };
+
 const SESSION_HEADERS = [
   'Last saved (KST)', 'Session ID', 'Participant ID', 'Participant name', 'Started at (KST)', 'Form version',
-  'Parts administered', 'P1 1K', 'P2 2K', 'P3 3K', 'P4 4K', 'P5 5K', 'P6 AWL',
+  'Levels administered', '1K (/24)', '2K (/24)', '3K (/24)', '4K (/24)', '5K (/24)', 'AWL (/30)',
   'Total correct', 'Total items', 'Completed', 'Incidents', 'Browser'
 ];
 const RESPONSE_HEADERS = [
@@ -74,11 +78,11 @@ function setup() {
     key.getRange(1, 1, 1, 5).setFontWeight('bold');
     key.setFrozenRows(1);
 
-    const ses = book.insertSheet('Sessions');
+    const ses = book.insertSheet(TAB.participant);
     ses.getRange(1, 1, 1, SESSION_HEADERS.length).setValues([SESSION_HEADERS]).setFontWeight('bold');
     ses.setFrozenRows(1);
 
-    const res = book.insertSheet('Responses');
+    const res = book.insertSheet(TAB.item);
     res.getRange(1, 1, 1, RESPONSE_HEADERS.length).setValues([RESPONSE_HEADERS]).setFontWeight('bold');
     res.setFrozenRows(1);
 
@@ -96,7 +100,7 @@ function doGet(e) {
     }
     if (params.action === 'check') {
       const pid = cleanId_(params.pid, 'participant ID');
-      const n = rows_('Sessions', SESSION_HEADERS.length).filter(function (r) { return String(r[2]) === pid; }).length;
+      const n = rows_(TAB.participant, SESSION_HEADERS.length).filter(function (r) { return String(r[2]) === pid; }).length;
       return json_({ ok: true, count: n });
     }
     return json_({ ok: true, service: 'lvlt-korean' });
@@ -129,8 +133,8 @@ function doPost(e) {
     let partScore = null;
 
     if (part !== null) {
-      const res = sheet_('Responses');
-      const already = rows_('Responses', RESPONSE_HEADERS.length).some(function (r) {
+      const res = sheet_(TAB.item);
+      const already = rows_(TAB.item, RESPONSE_HEADERS.length).some(function (r) {
         return String(r[1]) === sessionId && Number(r[3]) === part;
       });
       if (!already) {
@@ -153,7 +157,6 @@ function doPost(e) {
     }
 
     upsertSession_(sessionId, pid, d, stamp, c);
-    buildParticipants();
     const totals = sessionTotals_(sessionId);
     const reply = { ok: true, part: part, saved: true };
     if (d.final && c.showScore) reply.total = totals.correct + ' / ' + totals.items;
@@ -166,12 +169,13 @@ function doPost(e) {
 }
 
 function upsertSession_(sessionId, pid, d, stamp, c) {
-  const ses = sheet_('Sessions');
-  const data = rows_('Sessions', SESSION_HEADERS.length);
+  const ses = sheet_(TAB.participant);
+  const data = rows_(TAB.participant, SESSION_HEADERS.length);
   let rowIndex = -1;
   for (let i = 0; i < data.length; i++) if (String(data[i][1]) === sessionId) { rowIndex = i + 2; break; }
   if (rowIndex === -1) {
     rowIndex = ses.getLastRow() + 1;
+    ses.getRange(rowIndex, 5).setNumberFormat('@');   // keep the start time as written (date + time)
     ses.getRange(rowIndex, 1, 1, 7).setValues([[stamp, sessionId, pid, safe_(d.participantName), safe_(d.startedAt),
       c.formVersion, safe_((d.activeParts || []).join(','))]]);
     ses.getRange(rowIndex, 18).setValue(safe_(d.userAgent));
@@ -186,7 +190,7 @@ function upsertSession_(sessionId, pid, d, stamp, c) {
 function sessionTotals_(sessionId) {
   const byPart = {};
   let correct = 0, items = 0;
-  rows_('Responses', RESPONSE_HEADERS.length).forEach(function (r) {
+  rows_(TAB.item, RESPONSE_HEADERS.length).forEach(function (r) {
     if (String(r[1]) !== sessionId) return;
     const p = Number(r[3]);
     byPart[p] = (byPart[p] || 0) + Number(r[9]);
@@ -199,66 +203,20 @@ function sessionTotals_(sessionId) {
 /** Run after editing the Key tab: recomputes Correct and all session scores. */
 function rescoreAll() {
   const key = keyMap_();
-  const res = sheet_('Responses');
-  const data = rows_('Responses', RESPONSE_HEADERS.length);
+  const res = sheet_(TAB.item);
+  const data = rows_(TAB.item, RESPONSE_HEADERS.length);
   if (!data.length) return;
   const fixed = data.map(function (r) {
     const k = key[Number(r[3]) + '-' + Number(r[5])] || { key: '', target: '' };
     return [k.target, r[7], k.key, r[7] !== '' && r[7] === k.key ? 1 : 0];
   });
   res.getRange(2, 7, fixed.length, 4).setValues(fixed);
-  const ses = sheet_('Sessions');
-  rows_('Sessions', SESSION_HEADERS.length).forEach(function (r, i) {
+  const ses = sheet_(TAB.participant);
+  rows_(TAB.participant, SESSION_HEADERS.length).forEach(function (r, i) {
     const t = sessionTotals_(String(r[1]));
     const cells = [1, 2, 3, 4, 5, 6].map(function (p) { return t.byPart[p] == null ? '' : t.byPart[p]; });
     ses.getRange(i + 2, 8, 1, 8).setValues([cells.concat([t.correct, t.items])]);
   });
-  buildParticipants();
-}
-
-/**
- * Participant-level (wide) views, one row per session, rebuilt from Sessions and Responses.
- *   Participants         : responses as letters (A-D, blank = no answer)
- *   Participants (0-1)   : the same items scored 1/0 against the Key tab (for Rasch/IRT)
- * Rebuilt after every save and after rescoreAll(); run by hand any time.
- * Columns cover all 150 items; parts that were not given stay blank (not 0).
- */
-function buildParticipants() {
-  const items = [];
-  Object.keys(PARTS).forEach(function (p) {
-    for (let i = 1; i <= PARTS[p].n; i++) items.push({ p: Number(p), i: i, col: PARTS[p].level + '_' + ('0' + i).slice(-2) });
-  });
-  const meta = ['Participant ID', 'Participant name', 'Session ID', 'Started at (KST)', 'Completed',
-    'Parts administered', 'P1 1K', 'P2 2K', 'P3 3K', 'P4 4K', 'P5 5K', 'P6 AWL', 'Total correct', 'Total items'];
-  const byKey = {};
-  rows_('Responses', RESPONSE_HEADERS.length).forEach(function (r) {
-    byKey[String(r[1]) + '|' + Number(r[3]) + '|' + Number(r[5])] = { resp: String(r[7]), correct: Number(r[9]) };
-  });
-  const letters = [], scored = [];
-  rows_('Sessions', SESSION_HEADERS.length).forEach(function (r) {
-    const sid = String(r[1]);
-    const head = [r[2], r[3], sid, r[4], r[15], r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14]];
-    const a = head.slice(), b = head.slice();
-    items.forEach(function (it) {
-      const x = byKey[sid + '|' + it.p + '|' + it.i];
-      a.push(x ? x.resp : '');
-      b.push(x ? x.correct : '');
-    });
-    letters.push(a); scored.push(b);
-  });
-  const header = meta.concat(items.map(function (it) { return it.col; }));
-  writeTab_('Participants', header, letters);
-  writeTab_('Participants (0-1)', header, scored);
-}
-
-function writeTab_(name, header, rows) {
-  const book = book_();
-  const sh = book.getSheetByName(name) || book.insertSheet(name);
-  sh.clearContents();
-  sh.getRange(1, 1, 1, header.length).setValues([header]).setFontWeight('bold');
-  if (rows.length) sh.getRange(2, 1, rows.length, header.length).setValues(rows);
-  sh.setFrozenRows(1);
-  sh.setFrozenColumns(2);
 }
 
 function keyMap_() {
@@ -285,7 +243,19 @@ function config_() {
 function book_() {
   return SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('SHEET_ID'));
 }
-function sheet_(name) { return book_().getSheetByName(name); }
+function sheet_(name) {
+  const book = book_();
+  let sh = book.getSheetByName(name);
+  if (!sh && OLD_TAB[name]) {            // one-time rename of tabs made by the first version
+    sh = book.getSheetByName(OLD_TAB[name]);
+    if (sh) {
+      sh.setName(name);
+      const h = name === TAB.participant ? SESSION_HEADERS : RESPONSE_HEADERS;
+      sh.getRange(1, 1, 1, h.length).setValues([h]).setFontWeight('bold');
+    }
+  }
+  return sh;
+}
 function rows_(name, width) {
   const s = sheet_(name);
   const last = s.getLastRow();
