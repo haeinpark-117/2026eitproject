@@ -90,8 +90,8 @@ ko:{
  age:'연령', ageH:'만 나이를 숫자로 기입해 주십시오. (예: 23)', major:'전공',
  l1:'모국어', l1Opts:[['korean','한국어'],['english','영어'],['other','기타:']],
  h2:'2. 영어 학습 배경',
- startAge:'영어를 처음 배우기 시작한 나이', startAgeH:'만 나이를 숫자로 기입해 주십시오. (예: 8)',
- years:'총 영어 학습 기간', yearsH:'약 몇 년인지 숫자로 기입해 주십시오. (예: 12)',
+ startAge:'영어를 처음 배우기 시작한 나이', startAgeH:'만 나이를 숫자로 기입해 주십시오. (예: 8) 영어 원어민은 건너뛰어도 됩니다.',
+ years:'총 영어 학습 기간', yearsH:'약 몇 년인지 숫자로 기입해 주십시오. (예: 12) 영어 원어민은 건너뛰어도 됩니다.',
  abroad:'영어권 국가 거주·체류 경험', abroadOpts:[['no','없음'],['yes','있음']],
  stay:'영어권 국가 거주·체류 기간', stayH:'숫자를 기입하고 단위를 선택해 주십시오. (예: 18 / 개월)', unitPick:'단위 선택', units:[['years','년'],['months','개월']],
  freq:'현재 영어 사용 빈도 (일상·업무·학업 등)', freqOpts:[['rarely','거의 없음'],['w1_2','주 1~2회'],['w3_5','주 3~5회'],['daily','거의 매일']],
@@ -100,7 +100,7 @@ ko:{
  listen:'다음 보기 중에서 본인의 영어 듣기 능력을 가장 잘 설명하는 것을 고르세요.',
  listenOpts:['듣기 불가능','아주 기초적인 단어 또는 문장들을 듣고 이해 가능','사용 빈도수가 높은 단어 및 표현들을 듣고 이해 가능','일상 대화의 요점 파악 가능','긴 연설 및 강의 내용을 듣고 이해 가능','어떠한 종류의 대화도 편안하게 듣고 이해 가능'],
  read:'다음 보기 중에서 본인의 영어 읽기 능력을 가장 잘 설명하는 것을 고르세요.',
- readOpts:['읽기 불가능','기초적인 이름, 단어, 또는 문장을 읽고 이해 가능','짧고 간단한 글을 읽고 이해 가능','일상에서 자주 접하는 내용의 글을 읽고 이해 가능','길고 다소 복잡한 글의 내용을 읽고 이해 가능'],
+ readOpts:['읽기 불가능','기초적인 이름, 단어, 또는 문장을 읽고 이해 가능','짧고 간단한 글을 읽고 이해 가능','일상에서 자주 접하는 내용의 글을 읽고 이해 가능','길고 다소 복잡한 글의 내용을 읽고 이해 가능','어떠한 종류의 글도 자유롭게 읽고 이해 가능'],
  write:'다음 보기 중에서 본인의 영어 쓰기 능력을 가장 잘 설명하는 것을 고르세요.',
  writeOpts:['쓰기 불가능','짧은 엽서 또는 문서 작성 가능','짧은 내용의 메모 작성 가능','특정 주제에 대해 간단한 글 작성 가능','관심있는 다양한 분야에 관련된 자세한 글 작성 가능','다양한 장르의 글을 자유자재로 매끄럽게 작성 가능'],
  h3:'3. 공인 영어 시험 점수', h3H:'최근 2년 이내에 응시한 공인 영어 시험이 있는 경우, 아래에 기입해 주십시오. (해당 시험만 작성하시면 됩니다.)',
@@ -120,6 +120,7 @@ en:{
  s1:'I. Task Strategy Questionnaire',
  s1a:'This questionnaire concerns the methods you actually used while completing the sentence repetition task you have just finished (a task in which you repeat English sentences you hear as exactly as possible). Each item below describes a method that can be used when performing the task.',
  s1b:'For each item, please mark the option that best indicates in how many of the task sentences you used the method. There are no right or wrong answers. Please answer according to what you actually did.',
+ s7Skip:'Native speakers of English may skip this item.',
  gridT:'Task strategies', gridH:'For each item, please select in how many sentences you used the method.',
  scale:['① Not at all','② In only some sentences','③ In about half of the sentences','④ In most sentences','⑤ In almost all sentences'],
  items:['I tried to repeat as many words as possible exactly as I heard them, rather than focusing on the meaning of the sentence.','I tried to convey the main message of the sentence rather than the individual words.','I tried to pay attention to the accuracy (e.g., grammar, pronunciation) of the English I was repeating.','I tried to understand the meaning of the whole sentence before repeating it.','I tried to notice words, expressions, and sentence structures that I already knew in the sentence.','While listening to the sentence, I paid particular attention to key words or expressions.','I translated the English sentence I heard into my first language in my head to understand it, and then repeated it in English.','Before repeating, I silently rehearsed the sentence I heard once in my mind.','I tried to remember the content of the sentence by connecting it to everyday situations that I might actually experience.','I tried to divide long sentences into smaller units so that I could understand and remember them part by part.','I focused on a specific part of the sentence (e.g., the beginning or the end) rather than the whole sentence and prioritized repeating that part.','When I could not think of the exact expression, I replaced it with another expression with a similar meaning.','When I could not think of a particular word, I filled the gap with a word such as "something."','I guessed the parts I could not hear well based on the surrounding context.','When I did not understand the meaning, I imitated the sounds I heard regardless of their meaning.'],
@@ -130,8 +131,8 @@ en:{
  age:'Age', ageH:'Please enter your age in years as a number. (e.g., 23)', major:'Major',
  l1:'First language', l1Opts:[['korean','Korean'],['english','English'],['other','Other:']],
  h2:'2. English Learning Background',
- startAge:'Age at which you first began learning English', startAgeH:'Please enter your age in years as a number. (e.g., 8)',
- years:'Total length of English study', yearsH:'Please enter the approximate number of years. (e.g., 12)',
+ startAge:'Age at which you first began learning English', startAgeH:'Please enter your age in years as a number. (e.g., 8) Native speakers of English may skip this item.',
+ years:'Total length of English study', yearsH:'Please enter the approximate number of years. (e.g., 12) Native speakers of English may skip this item.',
  abroad:'Experience living or staying in an English-speaking country', abroadOpts:[['no','No'],['yes','Yes']],
  stay:'Length of residence or stay in an English-speaking country', stayH:'Please enter a number and select the unit. (e.g., 18 / Months)', unitPick:'Select unit', units:[['years','Years'],['months','Months']],
  freq:'Current frequency of English use (daily life, work, study, etc.)', freqOpts:[['rarely','Rarely'],['w1_2','1-2 times a week'],['w3_5','3-5 times a week'],['daily','Almost every day']],
@@ -140,7 +141,7 @@ en:{
  listen:'Choose the option that best describes your English listening ability.',
  listenOpts:['Unable to understand spoken English','Can understand very basic words or sentences','Can understand high-frequency words and expressions','Can grasp the main points of everyday conversations','Can understand long speeches and lectures','Can comfortably understand any kind of conversation'],
  read:'Choose the option that best describes your English reading ability.',
- readOpts:['Unable to read','Can understand basic names, words, or sentences','Can understand short, simple texts','Can understand texts on familiar everyday content','Can understand long, somewhat complex texts'],
+ readOpts:['Unable to read','Can understand basic names, words, or sentences','Can understand short, simple texts','Can understand texts on familiar everyday content','Can understand long, somewhat complex texts','Can comfortably read and understand any kind of text'],
  write:'Choose the option that best describes your English writing ability.',
  writeOpts:['Unable to write','Can write short postcards or documents','Can write short memos','Can write simple texts on specific topics','Can write detailed texts on various fields of interest','Can write fluently and smoothly in various genres'],
  h3:'3. Standardized English Test Scores', h3H:'If you have taken a standardized English test within the last two years, please enter it below. (Complete only the tests that apply.)',
@@ -182,7 +183,7 @@ function render(){
   h+='<section class="card lead"><h2>'+esc(t.s1)+'</h2><p>'+esc(t.s1a)+'</p><p>'+esc(t.s1b)+'</p></section>';
   h+='<section class="card grid-card"><span class="q">'+esc(t.gridT)+' <span class="req">*</span></span><p class="hint">'+esc(t.gridH)+'</p>';
   t.items.forEach(function(it,i){var k='s'+(i+1);
-   h+='<div class="grid-item" data-k="'+k+'"><div>'+(i+1)+'. '+esc(it)+'</div><div class="scale">'+t.scale.map(function(s,j){return '<label><input type="radio" name="'+k+'" value="'+(j+1)+'"'+(v(k)===String(j+1)?' checked':'')+'><span>'+esc(s)+'</span></label>'}).join('')+'</div><div class="errmsg"></div></div>'});
+   h+='<div class="grid-item" data-k="'+k+'"><div>'+(i+1)+'. '+esc(it)+'</div>'+(i===6&&t.s7Skip?'<p class="hint">'+esc(t.s7Skip)+'</p>':'')+'<div class="scale">'+t.scale.map(function(s,j){return '<label><input type="radio" name="'+k+'" value="'+(j+1)+'"'+(v(k)===String(j+1)?' checked':'')+'><span>'+esc(s)+'</span></label>'}).join('')+'</div><div class="errmsg"></div></div>'});
   h+='</section>';
   h+=card('strategy_other',t.otherStrat,0,'','<textarea name="strategy_other">'+esc(v('strategy_other'))+'</textarea>');
   h+=nav(true,t.next);
@@ -228,11 +229,14 @@ function validate(){
  function req(k){if(!v(k))bad(k,t.errReq,e)}
  function n(k,min,max){if(!v(k))bad(k,t.errReq,e);else if(!isNum(v(k),min,max))bad(k,t.errNum,e)}
  if(step===0){req('group');req('participant_id')}
- if(step===1){for(var i=1;i<=15;i++)req('s'+i)}
+ if(step===1){for(var i=1;i<=15;i++)if(!(i===7&&lang==='en'))req('s'+i)}
  if(step===2){
   req('gender');n('age',1,120);req('major');req('l1');
   if(v('l1')==='other'&&!v('l1_other'))bad('l1',t.errReq,e);
-  n('start_age',0,120);n('study_years',0,120);req('abroad');
+  var nat=v('l1')==='english';
+  if(!nat||v('start_age'))n('start_age',0,120);
+  if(!nat||v('study_years'))n('study_years',0,120);
+  req('abroad');
   if(v('abroad')==='yes'){
    if(!v('stay_value')||!v('stay_unit'))bad('stay',t.errReq,e);
    else if(!isNum(v('stay_value'),0.01,1200))bad('stay',t.errNum,e);
