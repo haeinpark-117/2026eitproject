@@ -49,7 +49,6 @@
   </div>
   <div class="art" id="art"></div>
 </div>
-<div class="nav"><button id="prev">← 이전</button></div>
 <script>
 const STEPS=[
  {n:"동의서",d:"연구대상자 동의서 (ICF)",t:null,u:"https://haeinpark-117.github.io/2026eitproject/icf/",bg:"#cbcbcf"},
@@ -78,10 +77,8 @@ function render(){
   $("go").href=s.u;$("art").innerHTML=ARTS[cur];
   const left=STEPS.slice(cur).reduce((a,x)=>a+(x.t||0),0);
   $("tot").textContent=`남은 시간 약 ${left}분 / 전체 ${total}분`;
-  $("prev").disabled=cur===0;
 }
-$("prev").onclick=()=>{if(cur>0){cur--;render()}};
-document.addEventListener("keydown",e=>{if(e.key==="ArrowRight"&&cur<STEPS.length-1){cur++;render()}if(e.key==="ArrowLeft")$("prev").click()});
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight"&&cur<STEPS.length-1){cur++;render()}if(e.key==="ArrowLeft"&&cur>0){cur--;render()}});
 render();
 </script>
 </body>
