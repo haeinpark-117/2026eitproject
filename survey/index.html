@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026-2 EIT Survey</title>
+<style>
+:root{--ink:#08080f;--ink2:#12121d;--muted:#6a6a7d;--line:#e8e8ef;--accent:#3840f3;--accent-dk:#2a31d4;--accent-soft:#eef0ff;--accent-line:#d9dcff;--pink:#ff1493;--pink-dk:#d10f78;--pink-soft:#fff0f8;--pink-line:#ffcfe8;--soft:#f5f5f9;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:17px/1.68 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;-webkit-font-smoothing:antialiased}
+.topnav{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line)}
+.topnav div{max-width:860px;margin:0 auto;padding:0 16px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:800;letter-spacing:-.02em}.brand b{color:var(--accent);font-weight:800}
+.stepno{font:13px var(--mono);letter-spacing:.08em;color:var(--muted)}
+main{max-width:860px;margin:0 auto;padding:0 16px 72px}
+header{text-align:center;padding:48px 0 24px}
+.pill{display:inline-block;font:13px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:999px;padding:4px 14px}
+header h1{font-size:44px;line-height:1.15;letter-spacing:-.035em;font-weight:800;margin:16px 0 0;color:var(--ink)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:24px 0 0}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;margin:0 0 16px}
+.card.lead{background:var(--accent-soft);border-color:var(--accent-line)}
+.card.bad{border-color:var(--pink);background:var(--pink-soft)}
+h2{font-size:27px;line-height:1.25;letter-spacing:-.025em;font-weight:800;margin:0 0 10px;color:var(--ink)}
+h3{font:15px var(--mono);letter-spacing:.1em;color:var(--muted);margin:32px 0 12px}
+.q{font-weight:700;display:block;margin-bottom:6px;color:var(--ink2);letter-spacing:-.01em}
+.req{color:var(--pink)}
+.hint{color:var(--muted);font-size:15px;margin:0 0 10px}
+.intro{white-space:pre-line}
+label.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;cursor:pointer}
+label.opt:hover{background:var(--accent-soft)}
+label.opt input{margin-top:6px;accent-color:var(--accent)}
+input[type=text],input[type=number],textarea,select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:inherit;width:100%}
+textarea{min-height:96px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:flex;gap:8px;max-width:340px}.row input{flex:1;min-width:0}.row select{width:130px}
+.short{max-width:340px}
+.errmsg{color:var(--pink-dk);font-size:14px;margin-top:6px;display:none}.bad .errmsg{display:block}
+.grid-card{border-top:4px solid var(--accent)}
+.grid-item{padding:18px 0;border-top:1px solid var(--line)}
+.grid-item:first-of-type{border-top:0}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.scale label{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:13px;line-height:1.3;padding:8px 4px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.scale label:hover{background:var(--accent-soft)}
+.scale label:has(input:checked){background:var(--accent);color:#fff;border-color:var(--accent)}
+.scale input{accent-color:var(--accent-dk);margin:0}
+.grid-item.bad{background:var(--pink-soft);border-radius:10px;padding-left:10px;padding-right:10px}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+button{font:inherit;font-weight:700;padding:11px 24px;border-radius:10px;border:2px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button:hover{background:var(--accent-dk);border-color:var(--accent-dk)}
+button.ghost{background:#fff;color:var(--accent)}button.ghost:hover{background:var(--accent-soft);color:var(--accent-dk)}
+button:disabled{opacity:.6;cursor:wait}
+.langs{display:flex;gap:12px;flex-wrap:wrap}
+.langs button{flex:1;min-width:180px;padding:18px}
+.status{color:var(--pink-dk);margin-top:12px;min-height:1.6em}
+[hidden]{display:none!important}
+@media(max-width:560px){header{padding:32px 0 16px}header h1{font-size:32px}h2{font-size:23px}.scale{grid-template-columns:1fr}.scale label{flex-direction:row;text-align:left;font-size:14px}}
+</style>
+</head>
+<body>
+<nav class="topnav"><div><span class="brand">EIT <b>Survey</b></span><span class="stepno" id="stepno"></span></div></nav>
+<main>
+<header><span class="pill">Elicited Imitation · Survey</span><h1 id="title">2026-2 설문지</h1><div class="bar" id="barWrap" hidden><i id="bar"></i></div></header>
+<div id="app"></div>
+</main>
+<script>
+/* After deploying Code.gs as a web app, paste its /exec URL here. */
+var ENDPOINT = 'PASTE_APPS_SCRIPT_WEB_APP_URL_HERE';
+/* Fill this in to show the contact line. The form's 연구 문의 line is currently empty. */
+var CONTACT = '';
+
+var T = {
+ko:{
+ title:'2026-2 설문지',
+ intro:'연구 과제명: 인공지능 기반 외국어 평가 진단 시스템 구축을 위한 EIT 응답 코퍼스 개발\n연구책임자: 박해인 (경희대학교 응용영어통번역학과)\n',
+ contact:'연구 문의: ', irb:'IRB 승인번호: KHSIRB-26-445',
+ privacy:'※ 응답하신 내용은 연구 목적으로만 사용되며, 개인을 식별할 수 있는 형태로 공개되지 않습니다.',
+ group:'참가자 구분', groupOpts:[['00','영어학개론 00분반'],['01','영어학개론 01분반'],['other','기타']],
+ pid:'연구 참여자 번호', pidHint:'연구진에게 배정받으신 연구 참여자 번호를 기입해 주십시오.',
+ s1:'Ⅰ. 과제 수행 전략 설문',
+ s1a:'본 설문은 방금 완료하신 「문장 따라 말하기 과제」(들은 영어 문장을 최대한 똑같이 따라 말하는 과제)를 수행하는 동안 여러분이 실제로 사용한 방법에 관한 것입니다. 아래 각 문항은 과제를 수행할 때 사용할 수 있는 여러 방법을 진술한 것입니다.',
+ s1b:'각 문항의 방법을 방금 과제의 문장 중 어느 정도에서 사용하였는지 가장 잘 나타내는 칸에 표시해 주십시오. 정답이나 오답은 없으며, 실제로 어떻게 하셨는지를 있는 그대로 답해 주시면 됩니다.',
+ gridT:'과제 수행 전략', gridH:'각 문항의 방법을 어느 정도의 문장에서 사용하였는지 선택해 주십시오.',
+ scale:['① 전혀 사용하지 않았다','② 일부 문장에서만 사용하였다','③ 절반 정도의 문장에서 사용하였다','④ 대부분의 문장에서 사용하였다','⑤ 거의 모든 문장에서 사용하였다'],
+ items:['나는 문장의 뜻보다는 가능한 한 많은 단어를 그대로 따라 말하려고 하였다.','나는 개별 단어보다 문장이 전달하려는 핵심 의미를 살려 말하려고 하였다.','나는 내가 따라 말하는 영어의 정확성(문법, 발음 등)에 주의를 기울이려고 하였다.','나는 따라 말하기 전에 문장 전체의 의미를 이해하려고 하였다.','나는 문장 속에서 내가 이미 알고 있는 단어, 표현, 문장 구조를 알아차리려고 하였다.','나는 문장을 들으면서 핵심이 되는 단어나 표현에 특히 주의를 기울였다.','나는 들은 영어 문장을 머릿속으로 한국어로 옮겨 이해한 뒤 다시 영어로 따라 말하였다.','나는 따라 말하기 전에 들은 문장을 마음속으로 한 번 되뇌어 보았다.','나는 문장의 내용을 내가 실제로 겪을 법한 일상 상황과 연결 지어 기억하려고 하였다.','나는 긴 문장을 작은 단위로 나누어 부분별로 이해하고 기억하려고 하였다.','나는 문장 전체보다 특정 부분(예: 문장의 앞부분이나 뒷부분)에 집중하여 그 부분을 우선적으로 따라 말하였다.','나는 정확한 표현이 떠오르지 않을 때, 뜻이 비슷한 다른 표현으로 바꾸어 말하였다.','나는 특정 단어가 떠오르지 않을 때, "something"과 같은 말로 빈자리를 채워 말하였다.','나는 잘 알아듣지 못한 부분을 앞뒤 맥락을 바탕으로 추측하여 말하였다.','나는 뜻을 이해하지 못한 경우, 의미와 관계없이 들린 소리를 그대로 흉내 내어 말하였다.'],
+ otherStrat:'위 문항에 없는 방법을 사용하였다면 어떤 방법이었는지 구체적으로 적어 주십시오.',
+ s2:'Ⅱ. 기본 정보 및 영어 학습 배경 설문',
+ s2a:'아래 문항은 연구 참여자의 기본 정보와 영어 학습 배경을 파악하기 위한 것입니다. 해당하는 곳에 표시하거나 빈칸에 기입해 주십시오. 응답하신 내용은 연구 목적으로만 사용되며, 개인을 식별할 수 있는 형태로 공개되지 않습니다.',
+ h1:'1. 기본 정보', gender:'성별', genderOpts:[['male','남'],['female','여']],
+ age:'연령', ageH:'만 나이를 숫자로 기입해 주십시오. (예: 23)', major:'전공',
+ l1:'모국어', l1Opts:[['korean','한국어'],['english','영어'],['other','기타:']],
+ h2:'2. 영어 학습 배경',
+ startAge:'영어를 처음 배우기 시작한 나이', startAgeH:'만 나이를 숫자로 기입해 주십시오. (예: 8)',
+ years:'총 영어 학습 기간', yearsH:'약 몇 년인지 숫자로 기입해 주십시오. (예: 12)',
+ abroad:'영어권 국가 거주·체류 경험', abroadOpts:[['no','없음'],['yes','있음']],
+ stay:'영어권 국가 거주·체류 기간', stayH:'숫자를 기입하고 단위를 선택해 주십시오. (예: 18 / 개월)', unitPick:'단위 선택', units:[['years','년'],['months','개월']],
+ freq:'현재 영어 사용 빈도 (일상·업무·학업 등)', freqOpts:[['rarely','거의 없음'],['w1_2','주 1~2회'],['w3_5','주 3~5회'],['daily','거의 매일']],
+ speak:'다음 보기 중에서 본인의 영어 말하기 능력을 가장 잘 설명하는 것을 고르세요.',
+ speakOpts:['말하기 불가능','아주 기초적인 단어 또는 문장들만 표현 가능','일상에서의 짧은 대화 가능','개인적인 경험이나 삶을 단순한 문장으로 묘사 가능','특정 전문 분야 또는 주제에 대해 토론/설명 가능','어떠한 상황에서도 자유롭게 언어 구사 가능'],
+ listen:'다음 보기 중에서 본인의 영어 듣기 능력을 가장 잘 설명하는 것을 고르세요.',
+ listenOpts:['듣기 불가능','아주 기초적인 단어 또는 문장들을 듣고 이해 가능','사용 빈도수가 높은 단어 및 표현들을 듣고 이해 가능','일상 대화의 요점 파악 가능','긴 연설 및 강의 내용을 듣고 이해 가능','어떠한 종류의 대화도 편안하게 듣고 이해 가능'],
+ read:'다음 보기 중에서 본인의 영어 읽기 능력을 가장 잘 설명하는 것을 고르세요.',
+ readOpts:['읽기 불가능','기초적인 이름, 단어, 또는 문장을 읽고 이해 가능','짧고 간단한 글을 읽고 이해 가능','일상에서 자주 접하는 내용의 글을 읽고 이해 가능','길고 다소 복잡한 글의 내용을 읽고 이해 가능'],
+ write:'다음 보기 중에서 본인의 영어 쓰기 능력을 가장 잘 설명하는 것을 고르세요.',
+ writeOpts:['쓰기 불가능','짧은 엽서 또는 문서 작성 가능','짧은 내용의 메모 작성 가능','특정 주제에 대해 간단한 글 작성 가능','관심있는 다양한 분야에 관련된 자세한 글 작성 가능','다양한 장르의 글을 자유자재로 매끄럽게 작성 가능'],
+ h3:'3. 공인 영어 시험 점수', h3H:'최근 2년 이내에 응시한 공인 영어 시험이 있는 경우, 아래에 기입해 주십시오. (해당 시험만 작성하시면 됩니다.)',
+ testSuffix:' - 점수/등급 및 응시 시기', testH:'점수(등급)와 응시 시기를 기입해 주십시오. (예: 850 / 2025년 3월)',
+ next:'다음', back:'이전', submit:'제출', sending:'제출 중...',
+ errReq:'필수 응답 문항입니다.', errNum:'올바른 숫자를 기입해 주십시오.', errFix:'표시된 문항을 확인해 주십시오.',
+ errSend:'제출에 실패하였습니다. 입력 내용은 유지되어 있으니 인터넷 연결을 확인한 뒤 다시 제출해 주십시오.',
+ done:'제출이 완료되었습니다.', thanks:'설문에 참여해 주셔서 감사합니다. 이 창을 닫으셔도 됩니다.'
+},
+en:{
+ title:'2026-2 Survey',
+ intro:'Project title: Development of an EIT Response Corpus for Building an AI-Based Foreign Language Assessment and Diagnostic System\nPrincipal investigator: Hae In Park (Department of Applied English Linguistics and Translation Studies, Kyung Hee University)\n',
+ contact:'Research inquiries: ', irb:'IRB approval number: KHSIRB-26-445',
+ privacy:'※ Your responses will be used for research purposes only and will not be disclosed in a form that can identify you.',
+ group:'Participant group', groupOpts:[['00','Introduction to English Linguistics, Section 00'],['01','Introduction to English Linguistics, Section 01'],['other','Other']],
+ pid:'Participant number', pidHint:'Please enter the participant number assigned to you by the research team.',
+ s1:'I. Task Strategy Questionnaire',
+ s1a:'This questionnaire concerns the methods you actually used while completing the sentence repetition task you have just finished (a task in which you repeat English sentences you hear as exactly as possible). Each item below describes a method that can be used when performing the task.',
+ s1b:'For each item, please mark the option that best indicates in how many of the task sentences you used the method. There are no right or wrong answers. Please answer according to what you actually did.',
+ gridT:'Task strategies', gridH:'For each item, please select in how many sentences you used the method.',
+ scale:['① Not at all','② In only some sentences','③ In about half of the sentences','④ In most sentences','⑤ In almost all sentences'],
+ items:['I tried to repeat as many words as possible exactly as I heard them, rather than focusing on the meaning of the sentence.','I tried to convey the main message of the sentence rather than the individual words.','I tried to pay attention to the accuracy (e.g., grammar, pronunciation) of the English I was repeating.','I tried to understand the meaning of the whole sentence before repeating it.','I tried to notice words, expressions, and sentence structures that I already knew in the sentence.','While listening to the sentence, I paid particular attention to key words or expressions.','I translated the English sentence I heard into my first language in my head to understand it, and then repeated it in English.','Before repeating, I silently rehearsed the sentence I heard once in my mind.','I tried to remember the content of the sentence by connecting it to everyday situations that I might actually experience.','I tried to divide long sentences into smaller units so that I could understand and remember them part by part.','I focused on a specific part of the sentence (e.g., the beginning or the end) rather than the whole sentence and prioritized repeating that part.','When I could not think of the exact expression, I replaced it with another expression with a similar meaning.','When I could not think of a particular word, I filled the gap with a word such as "something."','I guessed the parts I could not hear well based on the surrounding context.','When I did not understand the meaning, I imitated the sounds I heard regardless of their meaning.'],
+ otherStrat:'If you used any method not listed above, please describe it in detail.',
+ s2:'II. Background and English Learning Questionnaire',
+ s2a:'The items below are intended to gather basic information about participants and their English learning background. Please mark the appropriate option or fill in the blanks. Your responses will be used for research purposes only and will not be disclosed in a form that can identify you.',
+ h1:'1. Basic Information', gender:'Gender', genderOpts:[['male','Male'],['female','Female']],
+ age:'Age', ageH:'Please enter your age in years as a number. (e.g., 23)', major:'Major',
+ l1:'First language', l1Opts:[['korean','Korean'],['english','English'],['other','Other:']],
+ h2:'2. English Learning Background',
+ startAge:'Age at which you first began learning English', startAgeH:'Please enter your age in years as a number. (e.g., 8)',
+ years:'Total length of English study', yearsH:'Please enter the approximate number of years. (e.g., 12)',
+ abroad:'Experience living or staying in an English-speaking country', abroadOpts:[['no','No'],['yes','Yes']],
+ stay:'Length of residence or stay in an English-speaking country', stayH:'Please enter a number and select the unit. (e.g., 18 / Months)', unitPick:'Select unit', units:[['years','Years'],['months','Months']],
+ freq:'Current frequency of English use (daily life, work, study, etc.)', freqOpts:[['rarely','Rarely'],['w1_2','1-2 times a week'],['w3_5','3-5 times a week'],['daily','Almost every day']],
+ speak:'Choose the option that best describes your English speaking ability.',
+ speakOpts:['Unable to speak','Can express only very basic words or sentences','Can hold short everyday conversations','Can describe personal experiences or life in simple sentences','Can discuss or explain specific professional fields or topics','Can use the language freely in any situation'],
+ listen:'Choose the option that best describes your English listening ability.',
+ listenOpts:['Unable to understand spoken English','Can understand very basic words or sentences','Can understand high-frequency words and expressions','Can grasp the main points of everyday conversations','Can understand long speeches and lectures','Can comfortably understand any kind of conversation'],
+ read:'Choose the option that best describes your English reading ability.',
+ readOpts:['Unable to read','Can understand basic names, words, or sentences','Can understand short, simple texts','Can understand texts on familiar everyday content','Can understand long, somewhat complex texts'],
+ write:'Choose the option that best describes your English writing ability.',
+ writeOpts:['Unable to write','Can write short postcards or documents','Can write short memos','Can write simple texts on specific topics','Can write detailed texts on various fields of interest','Can write fluently and smoothly in various genres'],
+ h3:'3. Standardized English Test Scores', h3H:'If you have taken a standardized English test within the last two years, please enter it below. (Complete only the tests that apply.)',
+ testSuffix:' - score/level and test date', testH:'Please enter your score (level) and test date. (e.g., 850 / March 2025)',
+ next:'Next', back:'Back', submit:'Submit', sending:'Submitting...',
+ errReq:'This item is required.', errNum:'Please enter a valid number.', errFix:'Please check the marked items.',
+ errSend:'Submission failed. Your answers have been kept. Please check your internet connection and submit again.',
+ done:'Your responses have been submitted.', thanks:'Thank you for participating. You may now close this window.'
+}};
+
+var TESTS=[['toeic','TOEIC'],['toeic_speaking','TOEIC Speaking'],['toefl_ibt','TOEFL iBT'],['ielts','IELTS']];
+var A={}, lang=null, step=0, sent=false;
+var sid='s'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+var app=document.getElementById('app');
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function v(k){return A[k]==null?'':A[k]}
+function radios(k,opts){return opts.map(function(o){return '<label class="opt"><input type="radio" name="'+k+'" value="'+esc(o[0])+'"'+(v(k)===String(o[0])?' checked':'')+'><span>'+esc(o[1])+'</span></label>'}).join('')}
+function levels(a){return a.map(function(t,i){return [String(i+1),(i+1)+'. '+t]})}
+function card(k,label,req,hint,body,extra){return '<section class="card" data-k="'+k+'"'+(extra||'')+'><span class="q">'+esc(label)+(req?' <span class="req">*</span>':'')+'</span>'+(hint?'<p class="hint">'+esc(hint)+'</p>':'')+body+'<div class="errmsg"></div></section>'}
+function txt(k,cls){return '<input class="'+(cls||'')+'" type="text" name="'+k+'" value="'+esc(v(k))+'" autocomplete="off">'}
+function num(k,min,max,stp){return '<input class="short" type="number" inputmode="decimal" name="'+k+'" min="'+min+'" max="'+max+'" step="'+stp+'" value="'+esc(v(k))+'">'}
+function nav(backOn,label){return '<div class="status" id="status"></div><div class="nav">'+(backOn?'<button type="button" class="ghost" id="back">'+esc(T[lang].back)+'</button>':'<span></span>')+'<button type="button" id="next">'+esc(label)+'</button></div>'}
+
+function render(){
+ var t=T[lang], h='';
+ document.documentElement.lang=lang;
+ document.getElementById('title').textContent=t.title;
+ document.title=t.title;
+ document.getElementById('barWrap').hidden=false;
+ document.getElementById('bar').style.width=(step/3*100)+'%';
+ document.getElementById('stepno').textContent=(step+1)+' / 3';
+ if(step===0){
+  h+='<section class="card lead"><p class="intro">'+esc(t.intro)+(CONTACT?esc(t.contact+CONTACT)+'\n':'')+esc(t.irb)+'</p><p>'+esc(t.privacy)+'</p></section>';
+  h+=card('group',t.group,1,'',radios('group',t.groupOpts));
+  h+=card('participant_id',t.pid,1,t.pidHint,txt('participant_id','short'));
+  h+=nav(false,t.next);
+ } else if(step===1){
+  h+='<section class="card lead"><h2>'+esc(t.s1)+'</h2><p>'+esc(t.s1a)+'</p><p>'+esc(t.s1b)+'</p></section>';
+  h+='<section class="card grid-card"><span class="q">'+esc(t.gridT)+' <span class="req">*</span></span><p class="hint">'+esc(t.gridH)+'</p>';
+  t.items.forEach(function(it,i){var k='s'+(i+1);
+   h+='<div class="grid-item" data-k="'+k+'"><div>'+(i+1)+'. '+esc(it)+'</div><div class="scale">'+t.scale.map(function(s,j){return '<label><input type="radio" name="'+k+'" value="'+(j+1)+'"'+(v(k)===String(j+1)?' checked':'')+'><span>'+esc(s)+'</span></label>'}).join('')+'</div><div class="errmsg"></div></div>'});
+  h+='</section>';
+  h+=card('strategy_other',t.otherStrat,0,'','<textarea name="strategy_other">'+esc(v('strategy_other'))+'</textarea>');
+  h+=nav(true,t.next);
+ } else {
+  h+='<section class="card lead"><h2>'+esc(t.s2)+'</h2><p>'+esc(t.s2a)+'</p></section><h3>'+esc(t.h1)+'</h3>';
+  h+=card('gender',t.gender,1,'',radios('gender',t.genderOpts));
+  h+=card('age',t.age,1,t.ageH,num('age',1,120,1));
+  h+=card('major',t.major,1,'',txt('major'));
+  h+=card('l1',t.l1,1,'',radios('l1',t.l1Opts)+'<div id="l1o"'+(v('l1')==='other'?'':' hidden')+'>'+txt('l1_other')+'</div>');
+  h+='<h3>'+esc(t.h2)+'</h3>';
+  h+=card('start_age',t.startAge,1,t.startAgeH,num('start_age',0,120,1));
+  h+=card('study_years',t.years,1,t.yearsH,num('study_years',0,120,'any'));
+  h+=card('abroad',t.abroad,1,'',radios('abroad',t.abroadOpts));
+  h+=card('stay',t.stay,1,t.stayH,'<div class="row"><input type="number" inputmode="decimal" name="stay_value" min="0" step="any" value="'+esc(v('stay_value'))+'"><select name="stay_unit"><option value="">'+esc(t.unitPick)+'</option>'+t.units.map(function(u){return '<option value="'+u[0]+'"'+(v('stay_unit')===u[0]?' selected':'')+'>'+esc(u[1])+'</option>'}).join('')+'</select></div>',v('abroad')==='yes'?'':' hidden');
+  h+=card('use_freq',t.freq,1,'',radios('use_freq',t.freqOpts));
+  h+=card('self_speaking',t.speak,1,'',radios('self_speaking',levels(t.speakOpts)));
+  h+=card('self_listening',t.listen,1,'',radios('self_listening',levels(t.listenOpts)));
+  h+=card('self_reading',t.read,1,'',radios('self_reading',levels(t.readOpts)));
+  h+=card('self_writing',t.write,1,'',radios('self_writing',levels(t.writeOpts)));
+  h+='<div id="tests"'+(v('l1')==='english'?' hidden':'')+'><h3>'+esc(t.h3)+'</h3><p class="hint">'+esc(t.h3H)+'</p>';
+  TESTS.forEach(function(x){h+=card('test_'+x[0],x[1]+t.testSuffix,0,t.testH,txt('test_'+x[0]))});
+  h+='</div>'+nav(true,t.submit);
+ }
+ app.innerHTML=h;
+ var b=document.getElementById('back'); if(b)b.onclick=function(){collect();step--;render();scrollTo(0,0)};
+ document.getElementById('next').onclick=onNext;
+ app.onchange=app.oninput=function(e){collect();
+  if(step===2){
+   var o=document.getElementById('l1o'); o.hidden=v('l1')!=='other';
+   document.getElementById('tests').hidden=v('l1')==='english';
+   document.querySelector('[data-k=stay]').hidden=v('abroad')!=='yes';
+  }
+  var c=e.target.closest('.bad'); if(c){c.classList.remove('bad')}
+ };
+}
+function collect(){app.querySelectorAll('input,textarea,select').forEach(function(e){
+ if(e.type==='radio'){if(e.checked)A[e.name]=e.value}else A[e.name]=e.value.trim()})}
+function isNum(x,min,max){if(x===''||isNaN(Number(x)))return false;var n=Number(x);return n>=min&&n<=max}
+function bad(k,msg,list){var c=app.querySelector('[data-k="'+k+'"]');if(!c)return;c.classList.add('bad');var m=c.querySelector('.errmsg');if(m)m.textContent=msg;list.push(c)}
+function validate(){
+ var t=T[lang],e=[];
+ app.querySelectorAll('.bad').forEach(function(c){c.classList.remove('bad')});
+ function req(k){if(!v(k))bad(k,t.errReq,e)}
+ function n(k,min,max){if(!v(k))bad(k,t.errReq,e);else if(!isNum(v(k),min,max))bad(k,t.errNum,e)}
+ if(step===0){req('group');req('participant_id')}
+ if(step===1){for(var i=1;i<=15;i++)req('s'+i)}
+ if(step===2){
+  req('gender');n('age',1,120);req('major');req('l1');
+  if(v('l1')==='other'&&!v('l1_other'))bad('l1',t.errReq,e);
+  n('start_age',0,120);n('study_years',0,120);req('abroad');
+  if(v('abroad')==='yes'){
+   if(!v('stay_value')||!v('stay_unit'))bad('stay',t.errReq,e);
+   else if(!isNum(v('stay_value'),0.01,1200))bad('stay',t.errNum,e);
+  }
+  ['use_freq','self_speaking','self_listening','self_reading','self_writing'].forEach(req);
+ }
+ return e;
+}
+function payload(){
+ var p={submission_id:sid,lang:lang};
+ Object.keys(A).forEach(function(k){p[k]=A[k]});
+ if(v('l1')!=='other')p.l1_other='';
+ if(v('abroad')!=='yes'){p.stay_value='';p.stay_unit='';p.stay_months=''}
+ else p.stay_months=Math.round(Number(v('stay_value'))*(v('stay_unit')==='years'?12:1)*100)/100;
+ if(v('l1')==='english')TESTS.forEach(function(x){p['test_'+x[0]]=''});
+ return p;
+}
+function onNext(){
+ collect();
+ var t=T[lang],e=validate(),st=document.getElementById('status');
+ if(e.length){st.textContent=t.errFix;e[0].scrollIntoView({block:'center'});return}
+ if(step<2){step++;render();scrollTo(0,0);return}
+ var b=document.getElementById('next');b.disabled=true;b.textContent=t.sending;st.textContent='';
+ fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload())})
+ .then(function(r){return r.json()})
+ .then(function(j){if(!j.ok)throw new Error(j.error||'failed');sent=true;
+  document.getElementById('bar').style.width='100%';document.getElementById('stepno').textContent='';
+  app.innerHTML='<section class="card"><h2>'+esc(t.done)+'</h2><p>'+esc(t.thanks)+'</p></section>';scrollTo(0,0)})
+ .catch(function(){b.disabled=false;b.textContent=t.submit;st.textContent=t.errSend});
+}
+window.addEventListener('beforeunload',function(e){if(lang&&!sent&&Object.keys(A).length){e.preventDefault();e.returnValue=''}});
+function start(l){lang=l;render();scrollTo(0,0)}
+var q=new URLSearchParams(location.search).get('lang');
+if(q==='ko'||q==='en')start(q);
+else{app.innerHTML='<section class="card"><h2>언어 선택 / Select a language</h2><div class="langs"><button type="button" data-l="ko">한국어</button><button type="button" data-l="en">English</button></div></section>';
+ app.querySelectorAll('[data-l]').forEach(function(b){b.onclick=function(){start(b.dataset.l)}})}
+</script>
+</body>
+</html>
