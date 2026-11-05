@@ -587,7 +587,7 @@ function endPart(p){
   $('partBar').style.width = '100%';
   state.idx++;
   const last = state.idx >= state.activeParts.length;
-  $('nextBtn').textContent = '다음';
+  $('nextBtn').textContent = last ? '검사 마치기' : '다음';
   $('partNext').hidden = false;
   $('nextBtn').focus({preventScroll:true});
   $('partNext').scrollIntoView({block:'center', behavior:'smooth'});
