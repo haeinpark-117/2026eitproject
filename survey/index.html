@@ -74,6 +74,8 @@ header.compact{padding:24px 0 20px}header.compact h1{font-size:30px;margin-top:1
 .two{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
 .panel>h2+.card,.panel>h2+.two>.card,.panel>.hint+.card,.panel>.hint+.two>.card{border-top:0}
 .panel>.hint{margin-bottom:6px}
+.skipnote{color:var(--pink-dk);font-weight:700;margin:0 0 10px!important}
+.panel>.skipnote+.two>.card{border-top:0}
 .panel .short,.row{max-width:none}
 .grid-item{border-top:1px solid var(--accent-line)}
 .scale label{background:#fff;border-color:var(--accent-line)}
@@ -101,6 +103,7 @@ ko:{
  intro:'연구 과제명: 인공지능 기반 외국어 평가 진단 시스템 구축을 위한 EIT 응답 코퍼스 개발\n연구책임자: 박해인 (경희대학교 응용영어통번역학과)\n',
  contact:'연구 문의: ', irb:'IRB 승인번호: KHSIRB-26-445',
  privacy:'※ 응답하신 내용은 연구 목적으로만 사용되며, 개인을 식별할 수 있는 형태로 공개되지 않습니다.',
+ skipNote:'영어 원어민은 이 섹션을 건너뛰어도 됩니다.',
  studyT:'연구 안내', infoT:'참가자 정보',
  group:'참가자 구분', groupOpts:[['sec00','영어학개론 00분반'],['sec01','영어학개론 01분반'],['other','기타']],
  name:'이름',
@@ -118,8 +121,8 @@ ko:{
  age:'연령', ageH:'만 나이를 숫자로 기입해 주십시오. (예: 23)', major:'전공',
  l1:'모국어', l1Opts:[['korean','한국어'],['english','영어'],['other','기타:']],
  h2:'2. 영어 학습 배경',
- startAge:'영어를 처음 배우기 시작한 나이', startAgeH:'만 나이를 숫자로 기입해 주십시오. (예: 8) 영어 원어민은 건너뛰어도 됩니다.',
- years:'총 영어 학습 기간', yearsH:'약 몇 년인지 숫자로 기입해 주십시오. (예: 12) 영어 원어민은 건너뛰어도 됩니다.',
+ startAge:'영어를 처음 배우기 시작한 나이', startAgeH:'만 나이를 숫자로 기입해 주십시오. (예: 8)',
+ years:'총 영어 학습 기간', yearsH:'약 몇 년인지 숫자로 기입해 주십시오. (예: 12)',
  abroad:'영어권 국가 거주·체류 경험', abroadOpts:[['no','없음'],['yes','있음']],
  stay:'영어권 국가 거주·체류 기간', stayH:'숫자를 기입하고 단위를 선택해 주십시오. (예: 18 / 개월)', unitPick:'단위 선택', units:[['years','년'],['months','개월']],
  freq:'현재 영어 사용 빈도 (일상·업무·학업 등)', freqOpts:[['rarely','거의 없음'],['w1_2','주 1~2회'],['w3_5','주 3~5회'],['daily','거의 매일']],
@@ -143,6 +146,7 @@ en:{
  intro:'Project title: Development of an EIT Response Corpus for Building an AI-Based Foreign Language Assessment and Diagnostic System\nPrincipal investigator: Hae In Park (Department of Applied English Linguistics and Translation Studies, Kyung Hee University)\n',
  contact:'Research inquiries: ', irb:'IRB approval number: KHSIRB-26-445',
  privacy:'※ Your responses will be used for research purposes only and will not be disclosed in a form that can identify you.',
+ skipNote:'Native speakers of English may skip this section.',
  studyT:'Study information', infoT:'Participant information',
  group:'Participant group', groupOpts:[['sec00','Introduction to English Linguistics, Section 00'],['sec01','Introduction to English Linguistics, Section 01'],['other','Other']],
  name:'Name',
@@ -161,8 +165,8 @@ en:{
  age:'Age', ageH:'Please enter your age in years as a number. (e.g., 23)', major:'Major',
  l1:'First language', l1Opts:[['korean','Korean'],['english','English'],['other','Other:']],
  h2:'2. English Learning Background',
- startAge:'Age at which you first began learning English', startAgeH:'Please enter your age in years as a number. (e.g., 8) Native speakers of English may skip this item.',
- years:'Total length of English study', yearsH:'Please enter the approximate number of years. (e.g., 12) Native speakers of English may skip this item.',
+ startAge:'Age at which you first began learning English', startAgeH:'Please enter your age in years as a number. (e.g., 8)',
+ years:'Total length of English study', yearsH:'Please enter the approximate number of years. (e.g., 12)',
  abroad:'Experience living or staying in an English-speaking country', abroadOpts:[['no','No'],['yes','Yes']],
  stay:'Length of residence or stay in an English-speaking country', stayH:'Please enter a number and select the unit. (e.g., 18 / Months)', unitPick:'Select unit', units:[['years','Years'],['months','Months']],
  freq:'Current frequency of English use (daily life, work, study, etc.)', freqOpts:[['rarely','Rarely'],['w1_2','1-2 times a week'],['w3_5','3-5 times a week'],['daily','Almost every day']],
@@ -227,9 +231,9 @@ function render(){
   e+=card('use_freq',t.freq,1,'',radios('use_freq',t.freqOpts));
   e+=pair(card('self_speaking',t.speak,1,'',radios('self_speaking',levels(t.speakOpts))),card('self_listening',t.listen,1,'',radios('self_listening',levels(t.listenOpts))));
   e+=pair(card('self_reading',t.read,1,'',radios('self_reading',levels(t.readOpts))),card('self_writing',t.write,1,'',radios('self_writing',levels(t.writeOpts))));
-  h+=panel('ENGLISH',t.h2,e);
+  h+=panel('ENGLISH',t.h2,'<p class="skipnote">'+esc(t.skipNote)+'</p>'+e);
   var c=TESTS.map(function(x){return card('test_'+x[0],x[1]+t.testSuffix,0,x[0]==='opic'?t.opicH:t.testH,txt('test_'+x[0]))});
-  h+='<div id="tests"'+(v('l1')==='english'?' hidden':'')+'>'+panel('SCORES',t.h3,'<p class="hint">'+esc(t.h3H)+'</p>'+pair(c[0],c[1])+pair(c[2],c[3]))+'</div>'+nav(true,t.submit);
+  h+='<div id="tests">'+panel('SCORES',t.h3,'<p class="skipnote">'+esc(t.skipNote)+'</p><p class="hint">'+esc(t.h3H)+'</p>'+pair(c[0],c[1])+pair(c[2],c[3]))+'</div>'+nav(true,t.submit);
  }
  app.innerHTML=h;
  var b=document.getElementById('back'); if(b)b.onclick=function(){collect();step--;render();scrollTo(0,0)};
@@ -237,7 +241,6 @@ function render(){
  app.onchange=app.oninput=function(e){collect();
   if(step===2){
    var o=document.getElementById('l1o'); o.hidden=v('l1')!=='other';
-   document.getElementById('tests').hidden=v('l1')==='english';
    document.querySelector('[data-k=stay]').hidden=v('abroad')!=='yes';
   }
   var c=e.target.closest('.bad'); if(c){c.classList.remove('bad')}
@@ -260,12 +263,12 @@ function validate(){
   var nat=v('l1')==='english';
   if(!nat||v('start_age'))n('start_age',0,120);
   if(!nat||v('study_years'))n('study_years',0,120);
-  req('abroad');
-  if(v('abroad')==='yes'){
+  if(!nat)req('abroad');
+  if(v('abroad')==='yes'&&(!nat||v('stay_value')||v('stay_unit'))){
    if(!v('stay_value')||!v('stay_unit'))bad('stay',t.errReq,e);
    else if(!isNum(v('stay_value'),0.01,1200))bad('stay',t.errNum,e);
   }
-  ['use_freq','self_speaking','self_listening','self_reading','self_writing'].forEach(req);
+  if(!nat)['use_freq','self_speaking','self_listening','self_reading','self_writing'].forEach(req);
  }
  return e;
 }
@@ -273,9 +276,8 @@ function payload(){
  var p={submission_id:sid,lang:lang};
  Object.keys(A).forEach(function(k){p[k]=A[k]});
  if(v('l1')!=='other')p.l1_other='';
- if(v('abroad')!=='yes'){p.stay_value='';p.stay_unit='';p.stay_months=''}
+ if(v('abroad')!=='yes'||!v('stay_value')||!v('stay_unit')){p.stay_value=v('abroad')==='yes'?v('stay_value'):'';p.stay_unit=v('abroad')==='yes'?v('stay_unit'):'';p.stay_months=''}
  else p.stay_months=Math.round(Number(v('stay_value'))*(v('stay_unit')==='years'?12:1)*100)/100;
- if(v('l1')==='english')TESTS.forEach(function(x){p['test_'+x[0]]=''});
  return p;
 }
 function onNext(){
