@@ -30,7 +30,7 @@ Config changes take effect on the next page load; no redeployment is needed.
 
 Use current Chrome or Edge on a computer with headphones.
 
-1. The RA enters the participant ID, downloads the audio (about 28 MB), plays the sound check, and ticks the box.
+1. The audio (about 28 MB) loads automatically when the page opens. The RA enters the participant ID, plays the sound check, and ticks the box.
 2. The participant reads the instructions and example, then completes the two practice items (`audio/practice.mp3`). The recording announces the answers.
 3. Each part plays once, without pausing, in the original timing. The current item is marked NOW; later items unlock as they are read; answers can be changed until the part ends. Keys a–d or 1–4 also answer the current item.
 4. A 15-second break separates parts. Each part is saved as soon as it ends.

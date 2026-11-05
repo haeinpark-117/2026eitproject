@@ -124,7 +124,7 @@ ol.rules li{margin:4px 0}
   <div class="hero">
     <span class="chip">Research assistant · Setup</span>
     <h1>검사를 준비합니다.</h1>
-    <p class="lede">참여자가 앉기 전에 두 단계를 모두 마쳐 주십시오. 음원은 검사 시작 전에 모두 내려받습니다.</p>
+    <p class="lede">참여자가 앉기 전에 두 단계를 모두 마쳐 주십시오.</p>
   </div>
   <div class="cards">
     <div class="card">
@@ -139,11 +139,11 @@ ol.rules li{margin:4px 0}
     <div class="card pink">
       <span class="tag">Audio</span>
       <h2>음원과 소리 확인</h2>
-      <p>헤드폰을 연결한 뒤 음원을 내려받고, 소리 확인 버튼으로 음량을 맞추십시오.</p>
+      <p>음원은 페이지를 열면 자동으로 준비됩니다. 헤드폰을 연결하고 소리 확인 버튼으로 음량을 맞추십시오.</p>
       <div class="meter" aria-hidden="true"><i id="loadBar"></i></div>
       <div class="row">
-        <button class="btn pinkbtn" id="loadBtn" type="button">음원 내려받기</button>
-        <button class="btn line" id="soundBtn" type="button" disabled>소리 확인</button>
+        <button class="btn pinkbtn" id="soundBtn" type="button" disabled>소리 확인</button>
+        <button class="btn line" id="loadBtn" type="button" hidden>다시 시도</button>
       </div>
       <div class="status" id="loadStatus" role="status"></div>
       <label class="check" style="font-size:15.5px"><input type="checkbox" id="soundOk" disabled><span>헤드폰에서 영어 음성이 편안한 크기로 들렸습니다.</span></label>
@@ -315,7 +315,7 @@ async function loadConfig(){
     const q = new URLSearchParams(location.search).get('parts');
     if (q) state.activeParts = q.split(',').map(Number).filter(p => SCHEDULE[p]);
     $('partsInfo').innerHTML = '<span class="err">데모 모드</span>: 응답이 저장되지 않습니다. 실시할 Part: '+state.activeParts.join(', ');
-    return;
+    return true;
   }
   try {
     const r = await fetch(API+'?action=config', {cache:'no-store'});
@@ -325,8 +325,9 @@ async function loadConfig(){
     $('partsInfo').textContent = '실시할 Part: '+state.activeParts.map(p => p+' ('+LEVEL[p]+')').join(', ');
   } catch(e){
     $('partsInfo').innerHTML = '<span class="err">검사 설정을 불러오지 못했습니다.</span> 인터넷 연결을 확인한 뒤 페이지를 새로 고치십시오.';
-    $('loadBtn').disabled = true;
+    return false;
   }
+  return true;
 }
 
 async function fetchWithProgress(url, onBytes){
@@ -338,26 +339,36 @@ async function fetchWithProgress(url, onBytes){
   return new Blob(chunks, {type:'audio/mpeg'});
 }
 const SIZES = {practice:708155,1:4441403,2:4167227,3:4503995,4:4289339,5:4316987,6:5626811};
-$('loadBtn').addEventListener('click', async () => {
-  $('loadBtn').disabled = true;
-  const files = ['practice'].concat(state.activeParts);
+// Audio is fetched automatically when the page opens, practice file first, so that
+// playback never depends on the network once the test has started.
+let audioReady = null;
+function loadAudio(){
+  $('loadBtn').hidden = true;
+  const files = ['practice'].concat(state.activeParts.filter(p => !state.urls[p]));
   const total = files.reduce((s,f) => s+SIZES[f], 0); let got = 0;
-  try {
-    for (const f of files){
-      $('loadStatus').textContent = '내려받는 중: '+(f === 'practice' ? '연습 문제' : 'Part '+f);
-      const blob = await fetchWithProgress('audio/'+(f === 'practice' ? 'practice' : 'part'+f)+'.mp3', n => {
-        got += n; $('loadBar').style.width = Math.min(100, got/total*100)+'%';
-      });
-      state.urls[f] = URL.createObjectURL(blob);
+  audioReady = (async () => {
+    try {
+      for (const f of files){
+        if (state.urls[f]) continue;
+        $('loadStatus').textContent = '음원 준비 중: '+(f === 'practice' ? '연습 문제' : 'Part '+f);
+        const blob = await fetchWithProgress('audio/'+(f === 'practice' ? 'practice' : 'part'+f)+'.mp3', n => {
+          got += n; $('loadBar').style.width = Math.min(100, got/total*100)+'%';
+        });
+        state.urls[f] = URL.createObjectURL(blob);
+        if (f === 'practice') $('soundBtn').disabled = false;
+      }
+      $('loadBar').style.width = '100%';
+      $('loadStatus').textContent = '음원이 모두 준비되었습니다.';
+      return true;
+    } catch(e){
+      $('loadStatus').innerHTML = '<span class="err">음원을 불러오지 못했습니다.</span> 인터넷 연결을 확인한 뒤 다시 시도를 누르십시오.';
+      $('loadBtn').hidden = false;
+      return false;
     }
-    $('loadBar').style.width = '100%';
-    $('loadStatus').textContent = '음원을 모두 내려받았습니다.';
-    $('soundBtn').disabled = false;
-  } catch(e){
-    $('loadStatus').innerHTML = '<span class="err">음원을 내려받지 못했습니다.</span> 다시 시도하십시오.';
-    $('loadBtn').disabled = false;
-  }
-});
+  })();
+  return audioReady;
+}
+$('loadBtn').addEventListener('click', loadAudio);
 let soundStop = null;
 function stopSoundCheck(){
   if (soundStop){ audio.removeEventListener('timeupdate', soundStop); soundStop = null; }
@@ -434,7 +445,15 @@ $('toPractice').addEventListener('click', () => {
   audio.onended = () => { reveal(); $('pracBar').style.width = '100%'; $('pracCue').innerHTML = '연습 끝<small>&nbsp;</small>'; $('toTest').hidden = false; };
   setTimeout(() => audio.play().catch(() => note('practice autoplay blocked')), 600);
 });
-$('toTest').addEventListener('click', () => { state.idx = 0; startPart(); });
+$('toTest').addEventListener('click', async () => {
+  $('toTest').disabled = true;
+  const ok = state.activeParts.every(p => state.urls[p]) || await audioReady;
+  if (!ok || !state.activeParts.every(p => state.urls[p])){
+    $('pracDone').textContent = '음원을 아직 불러오지 못했습니다. 진행자에게 알려 주십시오.';
+    $('toTest').disabled = false; return;
+  }
+  state.idx = 0; startPart();
+});
 
 /* ---------- Test parts ---------- */
 let partCards = [], partStart = 0, current = -1;
@@ -578,7 +597,7 @@ $('newBtn').addEventListener('click', () => {
   state.finalSaved = true; location.reload();
 });
 
-loadConfig();
+loadConfig().then(ok => { if (ok) loadAudio(); });
 </script>
 </body>
 </html>
