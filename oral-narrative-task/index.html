@@ -37,7 +37,10 @@ main{flex:1;width:100%;max-width:1140px;margin:0 auto;padding:34px 36px 40px}
 h1{font-size:clamp(36px,5vw,54px);line-height:1.08;letter-spacing:-.04em;font-weight:800;margin:20px 0 12px}
 .lede{max-width:620px;margin:0 auto;color:var(--body);font-size:18px}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.cards.single{grid-template-columns:minmax(0,760px);justify-content:center}
+.cards.single{grid-template-columns:minmax(0,900px);justify-content:center}
+#s-instructions .card p{font-size:20px;line-height:1.7;margin-bottom:14px}
+#s-instructions h1{margin:0 0 4px}
+#s-instructions .actions{margin-top:20px}
 .card{position:relative;border-radius:18px;padding:34px 30px 28px;border:1px solid var(--blue-line);background:var(--blue-bg)}
 .card.pink{border-color:var(--pink-line);background:var(--pink-bg)}
 .tag{position:absolute;top:-13px;left:30px;font:600 11.5px/1 var(--mono);letter-spacing:.14em;color:#fff;background:var(--blue);padding:8px 13px;border-radius:99px;text-transform:uppercase}
@@ -70,7 +73,7 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
 .stage .tag{background:var(--c);left:46px}
 .prompt{font-size:clamp(23px,3vw,32px);line-height:1.36;letter-spacing:-.022em;font-weight:700;margin:0;max-width:900px}
 .clockrow{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-top:30px}
-.clock{font-size:clamp(76px,12vw,128px);line-height:.95;letter-spacing:-.05em;font-weight:800;font-variant-numeric:tabular-nums;color:var(--c)}
+.clock{font-size:clamp(48px,7vw,72px);line-height:.95;letter-spacing:-.05em;font-weight:800;font-variant-numeric:tabular-nums;color:var(--c)}
 .cue{font-size:22px;font-weight:700;letter-spacing:-.02em;text-align:right}
 .cue small{display:block;font-weight:400;font-size:16px;color:var(--body);letter-spacing:0}
 .bar{height:8px;border-radius:99px;background:#fff;margin-top:22px;overflow:hidden}
@@ -148,8 +151,7 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
 <!-- INSTRUCTIONS -->
 <section id="s-instructions" hidden>
   <div class="hero" style="margin-bottom:34px">
-    <span class="chip" data-i18n="chip_ins">Instructions · 지시문</span>
-    <h1 data-i18n="h_ins">Please read carefully.</h1>
+    <h1 data-i18n="h_ins">Instructions</h1>
   </div>
   <div class="cards single">
     <div class="card" lang="en" data-only="en">
@@ -162,11 +164,12 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
     </div>
     <div class="card ko" lang="ko" data-only="ko" hidden>
       <span class="tag">한국어</span>
-      <p>이 과제에서는 개인적인 선호에 관한 질문에 답하게 됩니다.</p>
-      <p>먼저 1분 동안 답변을 준비합니다. 준비 시간에 메모를 할 수 있으나, 말할 때 메모를 그대로 읽어서는 안 됩니다.</p>
-      <p>준비 시간이 끝나면 최대 2분 동안 답변합니다. 가능한 한 2분을 모두 채워 말하도록 노력하십시오. 정답이나 오답은 없으며, 의견 자체가 아니라 영어로 생각을 표현하는 방식을 보고자 합니다.</p>
-      <p>답변은 영어로만 하십시오. 단어가 떠오르지 않으면 다른 표현으로 설명하고 계속 말하십시오.</p>
-      <p>답변은 녹음되며, 시작과 종료는 신호음으로 안내됩니다.</p>
+      <p>이 과제에서는 개인적인 선호에 관한 질문에 영어로 답변하게 됩니다.</p>
+      <p>먼저 1분 동안 답변을 준비합니다. 준비 시간에는 메모를 할 수 있지만, 실제 답변할 때 메모를 그대로 읽어서는 안 됩니다.</p>
+      <p>준비 시간이 끝나면 최대 2분 동안 답변합니다. 가능한 한 충분히 답변하여 2분을 모두 활용해 주시기 바랍니다.</p>
+      <p>정답이나 오답은 없습니다. 여러분의 의견 자체보다는 자신의 생각을 영어로 어떻게 표현하는지 살펴보고자 합니다.</p>
+      <p>답변은 반드시 영어로 해 주십시오. 적절한 단어가 떠오르지 않으면 다른 표현으로 바꾸어 설명하면서 계속 답변해 주시면 됩니다.</p>
+      <p>모든 답변은 녹음됩니다. 답변의 시작과 종료는 각각 신호음으로 안내됩니다.</p>
     </div>
   </div>
   <div class="actions">
@@ -223,7 +226,7 @@ const T = {
     p_mic:'Record a short sample, then listen to it. A beep plays at the start, as it will in the task.',
     opt_mic:'Allow microphone access first', b_allow:'Allow microphone', b_test:'Record 4-second test', b_again:'Record again',
     l_ok:'I heard the beep and the test recording clearly.', b_next:'Continue to instructions', b_force:'Continue anyway',
-    chip_ins:'Instructions', h_ins:'Please read carefully.', b_begin:'Begin the 1-minute preparation',
+    h_ins:'Instructions', b_begin:'Begin the 1-minute preparation',
     b_skip:'Start speaking now', b_raend:'Finish my answer', b_raconfirm:'Click again to confirm',
     b_retry:'Retry upload', b_dl:'Download backup', b_new:'New session',
     tag_prepare:'Prepare', tag_speak:'Speak',
@@ -247,15 +250,15 @@ const T = {
     inc:i=>' Incident logged: '+i+'.'
   },
   ko: {
-    step_setup:'설정', step_instructions:'지시문', step_prepare:'준비', step_speak:'답변', step_finish:'완료',
+    step_setup:'설정', step_instructions:'안내문', step_prepare:'준비', step_speak:'답변', step_finish:'완료',
     chip_setup:'연구 보조원 · 설정', h_setup:'세션을 설정하십시오.',
     lede_setup:'참가자가 착석하기 전에 두 단계를 모두 완료하십시오. 여기에서 선택한 마이크로 녹음이 진행됩니다.',
     tag_session:'세션', h_session:'세션 정보', l_pid:'참가자 ID', l_name:'이름',
     tag_mic:'마이크', tag_mic2:'마이크', h_mic:'마이크 및 소리 점검',
     p_mic:'짧게 녹음한 뒤 들어 보십시오. 과제와 동일하게 시작할 때 신호음이 재생됩니다.',
     opt_mic:'먼저 마이크 사용을 허용하십시오', b_allow:'마이크 허용', b_test:'4초 테스트 녹음', b_again:'다시 녹음',
-    l_ok:'신호음과 테스트 녹음이 분명하게 들렸습니다.', b_next:'지시문으로 이동', b_force:'그대로 진행',
-    chip_ins:'지시문', h_ins:'주의 깊게 읽어 주십시오.', b_begin:'1분 준비 시작',
+    l_ok:'신호음과 테스트 녹음이 분명하게 들렸습니다.', b_next:'안내문으로 이동', b_force:'그대로 진행',
+    h_ins:'안내문', b_begin:'1분 준비 시작',
     b_skip:'지금 답변 시작', b_raend:'답변 종료', b_raconfirm:'확인하려면 한 번 더 클릭하십시오',
     b_retry:'다시 업로드', b_dl:'백업 다운로드', b_new:'새 세션',
     tag_prepare:'준비', tag_speak:'답변',
