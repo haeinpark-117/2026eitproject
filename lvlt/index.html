@@ -93,8 +93,11 @@ ol.rules li{margin:4px 0}
 .opt[aria-pressed=true]{background:var(--blue);color:#fff;border-color:var(--blue)}
 .opt[aria-pressed=true] span{color:#fff}
 .opt:disabled{cursor:default}
-.opt.right{background:var(--ok-bg);border-color:var(--ok)}
-.opt.right[aria-pressed=true]{background:var(--ok);border-color:var(--ok)}
+.opt.right,.opt.right[aria-pressed=true]{background:var(--pink);border-color:var(--pink);color:#fff;opacity:1}
+.opt.right span{color:#fff}
+.opt.right::after{content:"정답";margin-left:auto;font:700 11px var(--mono);background:#fff;color:var(--pink);padding:3px 7px;border-radius:99px}
+.opt.mine{background:#fff;border:2px solid var(--blue);color:var(--ink)}
+.opt.mine::after{content:"내 답";margin-left:auto;font:700 11px var(--mono);color:var(--blue)}
 
 /* Part header */
 .sticky{position:sticky;top:60px;z-index:4;background:#fff;padding-top:6px;margin:0 -8px;padding-left:8px;padding-right:8px}
@@ -216,7 +219,7 @@ ol.rules li{margin:4px 0}
   <div class="bar"><i id="pracBar"></i></div>
   <div class="startbox" id="pracStart"><p><b>연습 문제 2개</b>시작을 누르면 음성이 바로 나옵니다. 듣고 답을 고르십시오.</p><button class="btn go" id="pracGo" type="button">&#9654; 시작</button></div>
   <div class="rows" id="pracGrid"></div>
-  <div class="notice" id="pracDone" hidden style="background:var(--ok-bg);border-color:var(--ok);color:var(--ok)">연습 문제의 정답은 1번 a, 2번 b입니다. 궁금한 점이 있으면 지금 진행자에게 질문하십시오.</div>
+  <div class="notice" id="pracDone" hidden style="background:var(--pink-bg);border-color:var(--pink-line);color:var(--pink-deep)">연습 문제의 정답은 1번 a, 2번 b입니다. 궁금한 점이 있으면 지금 진행자에게 질문하십시오.</div>
   <div class="actions"><button class="btn" id="toTest" type="button" hidden>본 검사 시작</button></div>
 </section>
 
@@ -496,7 +499,7 @@ $('toPractice').addEventListener('click', () => {
   let revealed = false;
   function reveal(){
     if (revealed) return; revealed = true;
-    cards.forEach((c,i) => { c.classList.remove('cur'); c.querySelectorAll('.opt').forEach(b => { b.disabled = true; if (b.dataset.c === PRACTICE.correct[i]) b.classList.add('right'); }); });
+    cards.forEach((c,i) => { c.classList.remove('cur'); c.querySelectorAll('.opt').forEach(b => { b.disabled = true; const mine = b.getAttribute('aria-pressed') === 'true'; b.setAttribute('aria-pressed','false'); if (b.dataset.c === PRACTICE.correct[i]) b.classList.add('right'); else if (mine) b.classList.add('mine'); }); });
     $('pracCue').innerHTML = '정답 확인<small>녹음에서 정답을 알려 줍니다</small>';
     $('pracDone').hidden = false;
   }
