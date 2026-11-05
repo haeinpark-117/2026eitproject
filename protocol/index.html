@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>2026 EIT Project · 실험 진행</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--g:#55b98a;--y:#e4e29d;--gr:#cbcbcf;--b:#2f6be6;--k:#1c1c1c;--w:#fff}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Pretendard,system-ui,sans-serif;color:var(--k);min-height:100vh;display:flex;flex-direction:column;transition:background .3s}
+  .num{font-family:Outfit,Pretendard,sans-serif;letter-spacing:-.04em}
+  .top{display:flex;justify-content:space-between;align-items:center;padding:22px 32px;font-size:14px;font-weight:700}
+  .steps{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:0 32px}
+  .s{background:rgba(255,255,255,.55);padding:10px 12px;border-radius:4px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden}
+  .s .tg{flex-shrink:0;width:34px;height:18px;border-radius:9px;background:var(--gr);position:relative}
+  .s .tg::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--k)}
+  .s.done .tg{background:var(--k)} .s.done .tg::after{left:18px;background:#fff}
+  .s.cur{background:var(--k);color:#fff} .s.cur .tg{background:var(--w)}
+  .stage{flex:1;display:grid;grid-template-columns:1.3fr 1fr;align-items:center;gap:30px;padding:30px 32px;max-width:1200px;width:100%;margin:0 auto}
+  .lab{font-size:18px;font-weight:800;letter-spacing:.05em}
+  .big{font-size:clamp(46px,8vw,100px);font-weight:900;letter-spacing:-.045em;line-height:.98;margin:10px 0 12px}
+  .desc{font-size:21px;font-weight:700}
+  .row{display:flex;align-items:center;gap:14px;margin-top:34px;flex-wrap:wrap}
+  .time{font-size:110px;font-weight:800;line-height:.8}
+  .time small{font-size:34px}
+  .go{text-decoration:none;background:var(--k);color:#fff;font-weight:900;font-size:21px;padding:18px 30px;border-radius:40px}
+  .go:hover{background:#000}
+  .art svg{width:100%;max-width:380px;display:block;margin:0 auto}
+  .nav{display:flex;justify-content:space-between;align-items:center;padding:20px 32px 28px;gap:12px}
+  .nav button{background:var(--w);color:var(--k);border:none;font:inherit;font-weight:800;font-size:17px;padding:16px 26px;border-radius:40px;cursor:pointer}
+  .nav button.primary{background:var(--k);color:#fff}
+  .nav button:disabled{opacity:.3;cursor:default}
+  .upnext{font-size:15px;font-weight:700}
+  body.dark{color:#fff} body.dark .go,body.dark .nav button.primary{background:#fff;color:var(--k)} body.dark .s{color:var(--k)} body.dark .s.cur{background:#fff;color:var(--k)} body.dark .s.cur .tg{background:var(--gr)}
+  @media(max-width:800px){.stage{grid-template-columns:1fr}.art{display:none}.steps{grid-template-columns:repeat(3,1fr)}.time{font-size:72px}}
+</style>
+</head>
+<body>
+<div class="top"><span>2026 EIT CORPUS PROJECT · 연구 진행자용</span><span id="tot"></span></div>
+<div class="steps" id="steps"></div>
+<div class="stage">
+  <div>
+    <div class="lab" id="lab"></div>
+    <div class="big" id="big"></div>
+    <div class="desc" id="desc"></div>
+    <div class="row"><div class="time num" id="time"></div><a class="go" id="go" target="_blank" rel="noopener">열기 ↗</a></div>
+  </div>
+  <div class="art" id="art"></div>
+</div>
+<div class="nav"><button id="prev">← 이전</button><span class="upnext" id="upnext"></span><button id="next" class="primary"></button></div>
+<script>
+const STEPS=[
+ {n:"동의서",d:"연구대상자 동의서 (ICF)",t:null,u:"https://haeinpark-117.github.io/2026eitproject/icf/",bg:"#cbcbcf"},
+ {n:"EIT Studio",d:"Elicited Imitation Task",t:15,u:"https://haeinpark-117.github.io/eit-studio/",bg:"#55b98a"},
+ {n:"Exit Survey",d:"배경 설문",t:5,u:"https://haeinpark-117.github.io/2026eitproject/survey/",bg:"#e4e29d"},
+ {n:"Oral Narrative Task",d:"말하기 과제",t:5,u:"https://haeinpark-117.github.io/2026eitproject/oral-narrative-task/",bg:"#2f6be6"},
+ {n:"TOEIC",d:"TOEIC",t:40,u:"https://script.google.com/macros/s/AKfycby9GhHwdjnu74piH58BRUYRYCtQTcXWzeGSKFBiIFY8I4fnnrJiNUCpq7n6yImw7G49/exec",bg:"#1c1c1c",dark:1},
+ {n:"LVLT",d:"Listening Vocabulary Levels Test",t:20,u:"https://haeinpark-117.github.io/2026eitproject/lvlt/",bg:"#55b98a"}
+];
+const AST=f=>`<svg viewBox="0 0 100 100"><g fill="${f}">${[0,45,90,135].map(r=>`<rect x="43" y="4" width="14" height="92" transform="rotate(${r} 50 50)"/>`).join("")}</g></svg>`;
+const FLOWER=f=>`<svg viewBox="0 0 100 100"><g fill="${f}">${[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;return`<circle cx="${50+27*Math.cos(a)}" cy="${50+27*Math.sin(a)}" r="17"/>`}).join("")}<circle cx="50" cy="50" r="30"/></g></svg>`;
+const DOTS=`<svg viewBox="0 0 100 100"><circle cx="27" cy="27" r="22" fill="#1c1c1c"/><circle cx="73" cy="27" r="22" fill="#fff"/><circle cx="27" cy="73" r="22" fill="#fff"/><circle cx="73" cy="73" r="22" fill="#1c1c1c"/></svg>`;
+const HALF=f=>`<svg viewBox="0 0 100 100"><path d="M8 34a42 30 0 0 1 84 0z" fill="#fff"/><path d="M8 66a42 30 0 0 1 84 0z" fill="${f}"/><path d="M8 98a42 30 0 0 1 84 0z" fill="${f}"/></svg>`;
+const ARTS=[FLOWER("#fff"),DOTS,AST("#1c1c1c"),HALF("#1c1c1c"),AST("#e4e29d"),FLOWER("#1c1c1c")];
+let cur=0;try{cur=+localStorage.getItem("eit2026-cur")||0}catch(e){}
+const $=id=>document.getElementById(id);
+const total=STEPS.reduce((a,s)=>a+(s.t||0),0);
+function render(){
+  const s=STEPS[cur];try{localStorage.setItem("eit2026-cur",cur)}catch(e){}
+  document.body.style.background=s.bg;document.body.classList.toggle("dark",!!s.dark);
+  $("steps").innerHTML=STEPS.map((x,i)=>`<div class="s ${i<cur?"done":i===cur?"cur":""}" data-i="${i}"><span class="tg"></span>${i+1}. ${x.n}</div>`).join("");
+  document.querySelectorAll(".s").forEach(el=>el.onclick=()=>{cur=+el.dataset.i;render()});
+  $("lab").textContent=`STEP ${String(cur+1).padStart(2,"0")} / ${String(STEPS.length).padStart(2,"0")}`;
+  $("big").textContent=s.n;$("desc").textContent=s.d;
+  $("time").innerHTML=s.t?`${s.t}<small>분</small>`:`<small style="font-family:Pretendard;letter-spacing:0">시작 전 진행</small>`;
+  $("go").href=s.u;$("art").innerHTML=ARTS[cur];
+  const left=STEPS.slice(cur).reduce((a,x)=>a+(x.t||0),0);
+  $("tot").textContent=`남은 시간 약 ${left}분 / 전체 ${total}분`;
+  $("upnext").textContent=cur<STEPS.length-1?`다음: ${STEPS[cur+1].n}`:"마지막 단계";
+  $("prev").disabled=cur===0;
+  $("next").textContent=cur<STEPS.length-1?"완료 · 다음 →":"세션 종료 · 처음으로";
+}
+$("prev").onclick=()=>{if(cur>0){cur--;render()}};
+$("next").onclick=()=>{cur=cur<STEPS.length-1?cur+1:0;render()};
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight")$("next").click();if(e.key==="ArrowLeft")$("prev").click()});
+render();
+</script>
+</body>
+</html>
