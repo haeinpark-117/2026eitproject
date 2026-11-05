@@ -94,6 +94,11 @@ ol.rules li{margin:4px 0}
 .bar i{display:block;height:100%;width:0;background:var(--blue);transition:width .25s linear}
 .playing{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--pink);margin-right:8px;animation:p 1.3s infinite}
 @keyframes p{50%{opacity:.25}}
+.startbox{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border:1px solid var(--pink-line);background:var(--pink-bg);border-radius:18px;padding:22px 26px;margin-bottom:22px}
+.startbox p{margin:0;color:var(--pink-deep);font-weight:500}
+.startbox b{display:block;font-size:20px;color:var(--ink);letter-spacing:-.02em}
+.btn.go{font-size:18px;padding:16px 34px;background:var(--pink)}
+.btn.go:hover{background:#e00f79}
 .big{font-size:clamp(76px,12vw,128px);line-height:.95;letter-spacing:-.05em;font-weight:800;font-variant-numeric:tabular-nums;color:var(--blue);text-align:center;margin:18px 0}
 .file{font:500 14px var(--mono);word-break:break-all}
 .small{font-size:14px;color:var(--body)}
@@ -165,7 +170,7 @@ ol.rules li{margin:4px 0}
       <span class="tag">How it works</span>
       <h2>검사 방법</h2>
       <ol class="rules">
-        <li>각 문항은 <b>한 번만</b> 들려드립니다. 다시 듣거나 멈출 수 없습니다.</li>
+        <li>Part마다 <b>시작</b>을 누르면 음성이 바로 나옵니다. 각 문항은 <b>한 번만</b> 들려드리며, 다시 듣거나 멈출 수 없습니다.</li>
         <li>지금 듣고 있는 문항에 <b>NOW</b> 표시가 나타납니다. 아직 나오지 않은 문항은 고를 수 없습니다.</li>
         <li>한 Part가 끝나기 전까지는 앞 문항의 답을 바꿀 수 있습니다.</li>
         <li>단어의 뜻을 전혀 모르겠다면 고르지 않고 넘어가십시오.</li>
@@ -181,7 +186,7 @@ ol.rules li{margin:4px 0}
       <p class="answerline" style="margin-top:12px">정답은 b입니다.</p>
     </div>
   </div>
-  <div class="actions"><button class="btn" id="toPractice" type="button">연습 문제 시작</button></div>
+  <div class="actions"><button class="btn" id="toPractice" type="button">연습 문제로</button></div>
 </section>
 
 <!-- PRACTICE -->
@@ -191,6 +196,7 @@ ol.rules li{margin:4px 0}
     <div class="cue" id="pracCue">잠시 후 시작합니다<small>헤드폰으로 들으십시오</small></div>
   </div>
   <div class="bar"><i id="pracBar"></i></div>
+  <div class="startbox" id="pracStart"><p><b>연습 문제 2개</b>시작을 누르면 음성이 바로 나옵니다. 듣고 답을 고르십시오.</p><button class="btn go" id="pracGo" type="button">&#9654; 시작</button></div>
   <div class="grid two" id="pracGrid"></div>
   <div class="notice" id="pracDone" hidden style="background:var(--ok-bg);border-color:var(--ok);color:var(--ok)">연습 문제의 정답은 1번 a, 2번 b입니다. 궁금한 점이 있으면 지금 진행자에게 질문하십시오.</div>
   <div class="actions"><button class="btn" id="toTest" type="button" hidden>본 검사 시작</button></div>
@@ -205,18 +211,9 @@ ol.rules li{margin:4px 0}
   </div>
   <div class="bar"><i id="partBar"></i></div>
   </div>
+  <div class="startbox" id="partStart"><p><b id="partStartTitle">Part 1 · 24문항</b>시작을 누르면 음성이 바로 나옵니다. 음성은 한 번만 나오며 멈출 수 없습니다.</p><button class="btn go" id="partGo" type="button">&#9654; 시작</button></div>
   <div class="grid" id="partGrid"></div>
-</section>
-
-<!-- BREAK -->
-<section id="s-break" hidden>
-  <div class="hero">
-    <span class="chip" id="breakChip">Next part</span>
-    <h1 id="breakTitle">다음 Part</h1>
-    <div class="big" id="breakClock">15</div>
-    <p class="lede">잠시 쉬십시오. 다음 Part가 자동으로 시작됩니다.</p>
-    <p class="status" id="breakSave"></p>
-  </div>
+  <div class="actions" id="partNext" hidden><p class="status" id="partSave" style="width:100%;text-align:center;margin:0"></p><button class="btn" id="nextBtn" type="button">다음 Part로</button></div>
 </section>
 
 <!-- DONE -->
@@ -258,7 +255,6 @@ const PRACTICE = {
 };
 const EXAMPLE = ['먹었다','기다렸다','보았다','잤다'];
 const LEVEL = {1:'1,000-word level',2:'2,000-word level',3:'3,000-word level',4:'4,000-word level',5:'5,000-word level',6:'Academic Word List'};
-const BREAK_SECONDS = 15;
 const L = ['A','B','C','D'];
 const DEMO = API.indexOf('PASTE_') === 0 || new URLSearchParams(location.search).has('demo');
 
@@ -272,8 +268,8 @@ audio.preload = 'auto';
 if (DEMO) window.__audio = audio; // test hook (demo mode only)
 
 function show(name){
-  ['setup','intro','practice','part','break','done'].forEach(s => $('s-'+s).hidden = s !== name);
-  const step = {setup:'setup',intro:'intro',practice:'practice',part:'test',break:'test',done:'done'}[name];
+  ['setup','intro','practice','part','done'].forEach(s => $('s-'+s).hidden = s !== name);
+  const step = {setup:'setup',intro:'intro',practice:'practice',part:'test',done:'done'}[name];
   const order = ['setup','intro','practice','test','done'];
   document.querySelectorAll('#steps li').forEach(li => {
     const i = order.indexOf(li.dataset.s), j = order.indexOf(step);
@@ -425,7 +421,8 @@ $('toPractice').addEventListener('click', () => {
     const c = card(i+1, o, (ch, el) => setPressed(el, ch));
     setLocked(c, true); grid.appendChild(c); return c;
   });
-  $('toTest').hidden = true; $('pracDone').hidden = true;
+  $('toTest').hidden = true; $('pracDone').hidden = true; $('pracStart').hidden = false;
+  $('pracCue').innerHTML = '대기 중<small>시작을 누르십시오</small>'; $('pracBar').style.width = '0';
   audio.src = state.urls.practice; audio.currentTime = 0;
   audio.ontimeupdate = () => {
     const t = audio.currentTime;
@@ -443,7 +440,7 @@ $('toPractice').addEventListener('click', () => {
     $('pracDone').hidden = false;
   }
   audio.onended = () => { reveal(); $('pracBar').style.width = '100%'; $('pracCue').innerHTML = '연습 끝<small>&nbsp;</small>'; $('toTest').hidden = false; };
-  setTimeout(() => audio.play().catch(() => note('practice autoplay blocked')), 600);
+  $('pracGo').onclick = () => { $('pracStart').hidden = true; audio.play().catch(() => { note('practice play failed'); $('pracStart').hidden = false; }); };
 });
 $('toTest').addEventListener('click', async () => {
   $('toTest').disabled = true;
@@ -463,7 +460,9 @@ function startPart(){
   state.answers[p] = OPTIONS[p].map(() => ({choice:'', rtMs:null, changes:0}));
   $('partChip').textContent = 'Part '+(state.idx+1)+' of '+state.activeParts.length;
   $('partTitle').textContent = 'Part '+p;
-  $('partCue').innerHTML = '<span class="playing"></span>곧 시작합니다<small>'+LEVEL[p]+'</small>';
+  $('partCue').innerHTML = '대기 중<small>'+LEVEL[p]+'</small>';
+  $('partStartTitle').textContent = 'Part '+p+' · '+OPTIONS[p].length+'문항';
+  $('partStart').hidden = false; $('partNext').hidden = true;
   $('partBar').style.width = '0';
   const grid = $('partGrid'); grid.innerHTML = '';
   current = -1;
@@ -476,7 +475,11 @@ function startPart(){
   audio.ontimeupdate = () => tick(p);
   audio.onended = () => endPart(p);
   audio.onwaiting = () => note('P'+p+' audio waiting at '+audio.currentTime.toFixed(1)+'s');
-  audio.play().catch(() => { note('P'+p+' autoplay blocked'); showResume(p); });
+  $('partGo').onclick = () => {
+    $('partStart').hidden = true;
+    $('partCue').innerHTML = '<span class="playing"></span>곧 시작합니다<small>'+LEVEL[p]+'</small>';
+    audio.play().catch(() => { note('P'+p+' play failed'); showResume(p); });
+  };
 }
 function showResume(p){
   $('partCue').innerHTML = '<button class="btn" type="button" id="resumeBtn">음원 재생</button>';
@@ -515,18 +518,18 @@ document.addEventListener('keydown', e => {
 function endPart(p){
   partCards.forEach(c => { c.classList.remove('cur'); c.classList.add('closed'); c.querySelectorAll('.opt').forEach(b => b.disabled = true); });
   savePart(p);
+  $('partCue').innerHTML = 'Part '+p+' 끝<small>'+LEVEL[p]+'</small>';
+  $('partBar').style.width = '100%';
   state.idx++;
-  if (state.idx >= state.activeParts.length){ finish(); return; }
-  const next = state.activeParts[state.idx];
-  $('breakChip').textContent = 'Part '+(state.idx+1)+' of '+state.activeParts.length;
-  $('breakTitle').textContent = 'Part '+next+' 준비';
-  show('break');
-  let s = BREAK_SECONDS; $('breakClock').textContent = s;
-  const timer = setInterval(() => {
-    s--; $('breakClock').textContent = Math.max(0,s);
-    if (s <= 0){ clearInterval(timer); startPart(); }
-  }, 1000);
+  const last = state.idx >= state.activeParts.length;
+  $('nextBtn').textContent = last ? '검사 마치기' : 'Part '+state.activeParts[state.idx]+'로';
+  $('partNext').hidden = false;
+  $('nextBtn').focus({preventScroll:true});
+  $('partNext').scrollIntoView({block:'center', behavior:'smooth'});
 }
+$('nextBtn').addEventListener('click', () => {
+  if (state.idx >= state.activeParts.length) finish(); else startPart();
+});
 document.addEventListener('visibilitychange', () => { if (document.hidden && !audio.paused) note('page hidden during audio'); });
 window.addEventListener('beforeunload', e => {
   if (state.sessionId && !state.finalSaved){ e.preventDefault(); e.returnValue = ''; }
@@ -554,13 +557,13 @@ async function post(body){
   throw new Error(last || 'save failed');
 }
 function savePart(p){
-  $('breakSave').textContent = 'Part '+p+' 응답을 저장하는 중입니다.';
+  $('partSave').textContent = 'Part '+p+' 응답을 저장하는 중입니다.';
   state.saved[p] = 'pending';
   return post(payload(p)).then(() => {
-    state.saved[p] = 'ok'; $('breakSave').textContent = 'Part '+p+' 응답이 저장되었습니다.';
+    state.saved[p] = 'ok'; $('partSave').textContent = 'Part '+p+' 응답이 저장되었습니다.';
   }).catch(err => {
     state.saved[p] = 'fail'; note('save P'+p+' failed: '+err.message);
-    $('breakSave').textContent = 'Part '+p+' 저장에 실패했습니다. 검사는 계속하며, 마지막에 다시 저장합니다.';
+    $('partSave').textContent = 'Part '+p+' 저장에 실패했습니다. 검사는 계속하며, 마지막에 다시 저장합니다.';
   });
 }
 async function finish(){
