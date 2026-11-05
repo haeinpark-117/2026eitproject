@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Oral Narrative Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b0b12; --body:#55566a; --line:#e4e4ee; --bg:#fff;
+  --blue:#2f35f5; --blue-deep:#2328c9; --blue-bg:#ebedff; --blue-line:#cfd3fb;
+  --pink:#ff1a8c; --pink-deep:#6e1148; --pink-bg:#ffedf6; --pink-line:#fbcfe6;
+  --ok:#0a7d4f; --warn-bg:#fff6dd; --warn-line:#f1dc9c; --warn-ink:#6b5200; --err:#c8102e;
+  --sans:Inter,"Noto Sans KR",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body.ko{word-break:keep-all}
+body{min-height:100vh;background:var(--bg);color:var(--ink);font:400 17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+body::before{content:"";position:fixed;inset:60px 0 auto;height:130px;background:radial-gradient(60% 100% at 50% 0,#eeeefe 0,transparent 100%);z-index:-1}
+nav{height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid var(--line);background:#fff}
+.brand{font-weight:800;letter-spacing:-.02em;font-size:17px}
+.brand b{color:var(--blue);font-weight:800}
+.lang{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.lang button{font:600 14px var(--sans);padding:7px 13px;border:0;background:#fff;color:var(--body);cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--blue);color:#fff}
+.steps{display:flex;gap:26px;list-style:none;margin:0;padding:0;font-size:15px;color:#8a8b9c}
+.steps .on{color:var(--ink);font-weight:600}
+.steps .done{color:var(--blue)}
+main{flex:1;width:100%;max-width:1140px;margin:0 auto;padding:34px 36px 40px}
+[hidden]{display:none!important}
+.hero{text-align:center;margin-bottom:38px}
+.chip{display:inline-block;font:600 13px/1 var(--mono);letter-spacing:.14em;color:var(--blue);background:var(--blue-bg);border:1px solid var(--blue-line);padding:10px 15px;border-radius:99px;text-transform:uppercase}
+h1{font-size:clamp(36px,5vw,54px);line-height:1.08;letter-spacing:-.04em;font-weight:800;margin:20px 0 12px}
+.lede{max-width:620px;margin:0 auto;color:var(--body);font-size:18px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.cards.single{grid-template-columns:minmax(0,760px);justify-content:center}
+.card{position:relative;border-radius:18px;padding:34px 30px 28px;border:1px solid var(--blue-line);background:var(--blue-bg)}
+.card.pink{border-color:var(--pink-line);background:var(--pink-bg)}
+.tag{position:absolute;top:-13px;left:30px;font:600 11.5px/1 var(--mono);letter-spacing:.14em;color:#fff;background:var(--blue);padding:8px 13px;border-radius:99px;text-transform:uppercase}
+.pink .tag{background:var(--pink)}
+h2{font-size:22px;letter-spacing:-.025em;margin:0 0 10px;font-weight:800}
+.card p{margin:0 0 11px;color:#3e3f56}
+.pink p{color:var(--pink-deep)}
+label{display:block;font-weight:600;font-size:15px;margin:14px 0 6px}
+label small{font-weight:400;color:var(--body)}
+input[type=text],select{width:100%;font:500 16px var(--sans);color:var(--ink);padding:11px 13px;border:1px solid var(--blue-line);border-radius:10px;background:#fff}
+.pink select{border-color:var(--pink-line)}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.btn{font:700 16px var(--sans);color:#fff;background:var(--blue);border:0;border-radius:10px;padding:14px 22px;cursor:pointer}
+.btn:hover{background:var(--blue-deep)}
+.btn:disabled{background:#c9cad8;cursor:not-allowed}
+.btn.line{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.pinkbtn{background:var(--pink)}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}
+.meter{height:10px;border-radius:99px;background:#fff;border:1px solid var(--pink-line);overflow:hidden;margin:14px 0}
+.meter i{display:block;height:100%;width:0;background:var(--pink);transition:width .08s linear}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:500;margin-top:14px;color:var(--pink-deep)}
+.check input{margin-top:5px;width:18px;height:18px;accent-color:var(--pink)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.notice{max-width:760px;margin:22px auto 0;padding:13px 16px;border-radius:10px;background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn-ink);font-size:15.5px}
+.status{font-size:15px;margin-top:10px;color:var(--pink-deep);min-height:24px}
+.ko{font-family:"Noto Sans KR",var(--sans);word-break:keep-all}
+/* Task stage */
+.stage{--c:var(--blue);--bgc:var(--blue-bg);--ln:var(--blue-line);border:1px solid var(--ln);background:var(--bgc);border-radius:22px;padding:42px 46px 36px;position:relative;margin-top:14px}
+.stage.speak{--c:var(--pink);--bgc:var(--pink-bg);--ln:var(--pink-line)}
+.stage .tag{background:var(--c);left:46px}
+.prompt{font-size:clamp(23px,3vw,32px);line-height:1.36;letter-spacing:-.022em;font-weight:700;margin:0;max-width:900px}
+.clockrow{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-top:30px}
+.clock{font-size:clamp(76px,12vw,128px);line-height:.95;letter-spacing:-.05em;font-weight:800;font-variant-numeric:tabular-nums;color:var(--c)}
+.cue{font-size:22px;font-weight:700;letter-spacing:-.02em;text-align:right}
+.cue small{display:block;font-weight:400;font-size:16px;color:var(--body);letter-spacing:0}
+.bar{height:8px;border-radius:99px;background:#fff;margin-top:22px;overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:var(--c)}
+.lvl{margin-top:10px;height:6px;background:#fff;border-radius:99px;overflow:hidden}
+.lvl i{display:block;height:100%;width:0;background:var(--ink);opacity:.55}
+.rec{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--pink);margin-right:8px;animation:p 1.3s infinite}
+@keyframes p{50%{opacity:.25}}
+.raend{display:block;margin:20px auto 0;background:none;border:0;font:500 14px var(--sans);color:var(--body);text-decoration:underline;cursor:pointer}
+.file{font:500 14px var(--mono);word-break:break-all}
+.err{color:var(--err);font-weight:600}
+@media (prefers-reduced-motion:reduce){.rec{animation:none}}
+@media (max-width:820px){
+  nav{padding:0 16px}.steps{display:none}
+  main{padding:26px 16px 32px}
+  .cards{grid-template-columns:1fr;gap:28px}
+  .stage{padding:34px 22px 26px}.stage .tag{left:22px}
+  .clockrow{flex-direction:column;align-items:flex-start}.cue{text-align:left}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">Oral Narrative <b>Task</b></div>
+  <ol class="steps" id="steps">
+    <li data-s="setup" data-i18n="step_setup">Setup</li><li data-s="instructions" data-i18n="step_instructions">Instructions</li>
+    <li data-s="prepare" data-i18n="step_prepare">Prepare</li><li data-s="speak" data-i18n="step_speak">Speak</li><li data-s="finish" data-i18n="step_finish">Finish</li>
+  </ol>
+  <div class="lang" id="lang" role="group" aria-label="Language / 언어">
+    <button type="button" data-l="en" aria-pressed="true">EN</button>
+    <button type="button" data-l="ko" aria-pressed="false">한국어</button>
+  </div>
+</nav>
+<main>
+
+<!-- RA SETUP -->
+<section id="s-setup">
+  <div class="hero">
+    <span class="chip" data-i18n="chip_setup">Research assistant · Setup</span>
+    <h1 data-i18n="h_setup">Set up the session.</h1>
+    <p class="lede" data-i18n="lede_setup">Complete both steps before seating the participant. The microphone chosen here is used for the recording.</p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <span class="tag" data-i18n="tag_session">Session</span>
+      <h2 data-i18n="h_session">Session details</h2>
+      <label for="pid"><span data-i18n="l_pid">Participant ID</span> <small data-i18n="l_pid2">code only, no names</small></label>
+      <input id="pid" type="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="e.g., P001">
+    </div>
+    <div class="card pink">
+      <span class="tag" data-i18n="tag_mic">Microphone</span>
+      <h2 data-i18n="h_mic">Microphone and sound check</h2>
+      <p data-i18n="p_mic">Record a short sample, then listen to it. A beep plays at the start, as it will in the task.</p>
+      <label for="mic" data-i18n="tag_mic2">Microphone</label>
+      <select id="mic" disabled><option data-i18n="opt_mic">Allow microphone access first</option></select>
+      <div class="meter" aria-hidden="true"><i id="setupLevel"></i></div>
+      <div class="row">
+        <button class="btn pinkbtn" id="micBtn" type="button" data-i18n="b_allow">Allow microphone</button>
+        <button class="btn line" id="testBtn" type="button" disabled data-i18n="b_test">Record 4-second test</button>
+      </div>
+      <div class="status" id="micStatus" role="status"></div>
+      <audio id="testAudio" controls hidden style="width:100%;margin-top:8px"></audio>
+      <label class="check" style="font-size:15.5px"><input type="checkbox" id="micOk" disabled><span data-i18n="l_ok">I heard the beep and the test recording clearly.</span></label>
+    </div>
+  </div>
+  <div class="notice" id="setupNotice" hidden role="alert"></div>
+  <div class="actions">
+    <button class="btn" id="setupNext" type="button" disabled data-i18n="b_next">Continue to instructions</button>
+    <button class="btn line" id="setupForce" type="button" hidden data-i18n="b_force">Continue anyway</button>
+  </div>
+</section>
+
+<!-- INSTRUCTIONS -->
+<section id="s-instructions" hidden>
+  <div class="hero" style="margin-bottom:34px">
+    <span class="chip" data-i18n="chip_ins">Instructions · 지시문</span>
+    <h1 data-i18n="h_ins">Please read carefully.</h1>
+  </div>
+  <div class="cards single">
+    <div class="card" lang="en" data-only="en">
+      <span class="tag">English</span>
+      <p>In this task, you will answer a question about your personal preference.</p>
+      <p>You will have 1 minute to prepare your answer. You may take notes during this time, but you will not be able to read your notes word for word while speaking.</p>
+      <p>After the preparation time, you will have up to 2 minutes to give your answer. Please try to keep speaking for the full 2 minutes. There is no right or wrong answer. We are interested in how you express your ideas in English, not in your opinion itself.</p>
+      <p>Please speak only in English. If you cannot think of a word, try to explain it in another way and continue speaking.</p>
+      <p>Your answer will be audio-recorded. A beep will tell you when to start and when to stop.</p>
+    </div>
+    <div class="card ko" lang="ko" data-only="ko" hidden>
+      <span class="tag">한국어</span>
+      <p>이 과제에서는 개인적인 선호에 관한 질문에 답하게 됩니다.</p>
+      <p>먼저 1분 동안 답변을 준비합니다. 준비 시간에 메모를 할 수 있으나, 말할 때 메모를 그대로 읽어서는 안 됩니다.</p>
+      <p>준비 시간이 끝나면 최대 2분 동안 답변합니다. 가능한 한 2분을 모두 채워 말하도록 노력하십시오. 정답이나 오답은 없으며, 의견 자체가 아니라 영어로 생각을 표현하는 방식을 보고자 합니다.</p>
+      <p>답변은 영어로만 하십시오. 단어가 떠오르지 않으면 다른 표현으로 설명하고 계속 말하십시오.</p>
+      <p>답변은 녹음되며, 시작과 종료는 신호음으로 안내됩니다.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn" id="beginBtn" type="button" data-i18n="b_begin">Begin the 1-minute preparation</button>
+  </div>
+</section>
+
+<!-- PREPARE / SPEAK -->
+<section id="s-task" hidden>
+  <div class="stage" id="stage">
+    <span class="tag" id="stageTag">Prepare</span>
+    <p class="prompt" lang="en">Some university students prefer to live on their own. Others prefer to live with their families. Which would you prefer, and why? Use specific reasons and examples to support your answer.</p>
+    <div class="clockrow">
+      <div class="clock" id="clock" role="timer">1:00</div>
+      <div class="cue" id="cue" aria-live="polite"></div>
+    </div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="lvl" id="lvlWrap" hidden aria-hidden="true"><i id="taskLevel"></i></div>
+  </div>
+  <button class="raend" id="raEnd" type="button" hidden data-i18n="b_raend">RA only: end recording early</button>
+</section>
+
+<!-- FINISH -->
+<section id="s-finish" hidden>
+  <div class="hero">
+    <span class="chip" id="finishChip">Saving</span>
+    <h1 id="finishTitle">Saving your recording.</h1>
+    <p class="lede" id="finishText">Please stay on this page.</p>
+  </div>
+  <div class="notice" id="finishNotice" hidden role="alert"></div>
+  <div class="actions">
+    <button class="btn" id="retryBtn" type="button" hidden data-i18n="b_retry">Retry upload</button>
+    <button class="btn line" id="downloadBtn" type="button" hidden data-i18n="b_dl">Download backup</button>
+    <button class="btn line" id="newBtn" type="button" hidden data-i18n="b_new">New session</button>
+  </div>
+</section>
+</main>
+
+<script>
+/* Paste the Apps Script web app URL (ends in /exec) here after deploying. */
+const API_URL = 'https://script.google.com/macros/s/AKfycbxhbr-Su_umv-BZe7E8slQhfkXO1AAMpSvOZc1sNoa4Oc2q6oUKBuU2V8tnVLgYrPu7/exec';
+const PREP_SECONDS = 60;
+const SPEAK_SECONDS = 120;
+const BITRATE = 128000;
+
+const T = {
+  en: {
+    step_setup:'Setup', step_instructions:'Instructions', step_prepare:'Prepare', step_speak:'Speak', step_finish:'Finish',
+    chip_setup:'Research assistant · Setup', h_setup:'Set up the session.',
+    lede_setup:'Complete both steps before seating the participant. The microphone chosen here is used for the recording.',
+    tag_session:'Session', h_session:'Session details', l_pid:'Participant ID', l_pid2:'code only, no names',
+    tag_mic:'Microphone', tag_mic2:'Microphone', h_mic:'Microphone and sound check',
+    p_mic:'Record a short sample, then listen to it. A beep plays at the start, as it will in the task.',
+    opt_mic:'Allow microphone access first', b_allow:'Allow microphone', b_test:'Record 4-second test', b_again:'Record again',
+    l_ok:'I heard the beep and the test recording clearly.', b_next:'Continue to instructions', b_force:'Continue anyway',
+    chip_ins:'Instructions', h_ins:'Please read carefully.', b_begin:'Begin the 1-minute preparation',
+    b_raend:'RA only: end recording early', b_raconfirm:'Click again to confirm',
+    b_retry:'Retry upload', b_dl:'Download backup', b_new:'New session',
+    tag_prepare:'Prepare', tag_speak:'Speak',
+    cue_prep:'Prepare your answer<small>You may take notes.</small>', cue_wait:'Wait for the beep',
+    cue_rec:'Recording<small>Please speak in English.</small>',
+    mic_lost:'The microphone disconnected. Allow it again.', mic_ok:'Microphone connected. Speak and watch the level bar.',
+    mic_unsupported:'This browser cannot record audio. Use current Chrome or Edge.',
+    mic_failed:'Microphone access failed. Allow the microphone in the browser and try again.',
+    mic_changed:'Microphone changed. Run the test again.', mic_open_failed:'That microphone could not be opened.',
+    test_rec:'Beep, then recording for 4 seconds. Speak now.', test_done:'Play the sample, then confirm below.',
+    checking:'Checking storage',
+    dup:(p,n)=>'Participant '+p+' already has '+n+' saved recording(s). Check the ID. Continuing adds a new recording and keeps the earlier one.',
+    no_storage:'The storage service could not be reached. The session can run, but you may need to download the recording from the final screen.',
+    stop_t:'Session stopped.', stop_x:'Please call the researcher.', stop_c:'Stopped',
+    stop_n:'The microphone disconnected before recording began. Nothing was recorded. Reconnect it and start a new session.',
+    save_t:'Saving your recording.', save_x:'Please stay on this page.', save_c:'Saving',
+    ty:'Thank you.', fin_c:'Finished', fin_call:'Please call the researcher.', fin_x:'You have finished this task. Please let the researcher know.',
+    fail:e=>'RA: the recording was not saved to Drive ('+e+'). Retry, or download the backup before leaving this page.',
+    saved:(f,s)=>'RA: saved as '+f+' ('+s+' s).',
+    low:' Warning: the input level was very low, so the recording may be silent. Check it in Drive.',
+    inc:i=>' Incident logged: '+i+'.'
+  },
+  ko: {
+    step_setup:'설정', step_instructions:'지시문', step_prepare:'준비', step_speak:'답변', step_finish:'완료',
+    chip_setup:'연구 보조원 · 설정', h_setup:'세션을 설정하십시오.',
+    lede_setup:'참가자가 착석하기 전에 두 단계를 모두 완료하십시오. 여기에서 선택한 마이크로 녹음이 진행됩니다.',
+    tag_session:'세션', h_session:'세션 정보', l_pid:'참가자 ID', l_pid2:'이름이 아닌 코드만 입력',
+    tag_mic:'마이크', tag_mic2:'마이크', h_mic:'마이크 및 소리 점검',
+    p_mic:'짧게 녹음한 뒤 들어 보십시오. 과제와 동일하게 시작할 때 신호음이 재생됩니다.',
+    opt_mic:'먼저 마이크 사용을 허용하십시오', b_allow:'마이크 허용', b_test:'4초 테스트 녹음', b_again:'다시 녹음',
+    l_ok:'신호음과 테스트 녹음이 분명하게 들렸습니다.', b_next:'지시문으로 이동', b_force:'그대로 진행',
+    chip_ins:'지시문', h_ins:'주의 깊게 읽어 주십시오.', b_begin:'1분 준비 시작',
+    b_raend:'연구 보조원 전용: 녹음 조기 종료', b_raconfirm:'확인하려면 한 번 더 클릭하십시오',
+    b_retry:'다시 업로드', b_dl:'백업 다운로드', b_new:'새 세션',
+    tag_prepare:'준비', tag_speak:'답변',
+    cue_prep:'답변을 준비하십시오<small>메모를 할 수 있습니다.</small>', cue_wait:'신호음을 기다리십시오',
+    cue_rec:'녹음 중<small>영어로 답변하십시오.</small>',
+    mic_lost:'마이크 연결이 끊어졌습니다. 다시 허용하십시오.', mic_ok:'마이크가 연결되었습니다. 말하면서 입력 수준을 확인하십시오.',
+    mic_unsupported:'이 브라우저에서는 녹음할 수 없습니다. 최신 Chrome 또는 Edge를 사용하십시오.',
+    mic_failed:'마이크에 접근하지 못했습니다. 브라우저에서 마이크를 허용한 뒤 다시 시도하십시오.',
+    mic_changed:'마이크가 변경되었습니다. 테스트를 다시 진행하십시오.', mic_open_failed:'해당 마이크를 열 수 없습니다.',
+    test_rec:'신호음 후 4초 동안 녹음됩니다. 말씀하십시오.', test_done:'녹음을 재생한 뒤 아래에서 확인하십시오.',
+    checking:'저장소 확인 중',
+    dup:(p,n)=>'참가자 '+p+'의 녹음이 이미 '+n+'건 저장되어 있습니다. ID를 확인하십시오. 계속하면 기존 녹음은 유지되고 새 녹음이 추가됩니다.',
+    no_storage:'저장소에 연결할 수 없습니다. 세션은 진행할 수 있으나 마지막 화면에서 녹음을 다운로드해야 할 수 있습니다.',
+    stop_t:'세션이 중단되었습니다.', stop_x:'연구자를 불러 주십시오.', stop_c:'중단',
+    stop_n:'녹음 시작 전에 마이크 연결이 끊어져 녹음된 내용이 없습니다. 마이크를 다시 연결한 뒤 새 세션을 시작하십시오.',
+    save_t:'녹음을 저장하고 있습니다.', save_x:'이 페이지에 머물러 주십시오.', save_c:'저장 중',
+    ty:'감사합니다.', fin_c:'완료', fin_call:'연구자를 불러 주십시오.', fin_x:'과제를 마쳤습니다. 연구자에게 알려 주십시오.',
+    fail:e=>'연구 보조원: 녹음이 Drive에 저장되지 않았습니다('+e+'). 다시 업로드하거나, 이 페이지를 떠나기 전에 백업을 다운로드하십시오.',
+    saved:(f,s)=>'연구 보조원: '+f+'(으)로 저장되었습니다('+s+'초).',
+    low:' 경고: 입력 수준이 매우 낮아 무음일 수 있습니다. Drive에서 확인하십시오.',
+    inc:i=>' 기록된 문제: '+i+'.'
+  }
+};
+let lang = 'en';
+const t = k => T[lang][k];
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = T[l][el.dataset.i18n]; });
+  document.querySelectorAll('[data-only]').forEach(el => { el.hidden = el.dataset.only !== l; });
+  document.querySelectorAll('#lang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.l === l));
+  document.body.classList.toggle('ko', l === 'ko');
+  if (state.tested) $('testBtn').textContent = t('b_again');
+}
+
+const $ = id => document.getElementById(id);
+const screens = ['setup', 'instructions', 'task', 'finish'];
+const state = {
+  stream: null, audioCtx: null, analyser: null, meterTimer: null, peak: 0,
+  recorder: null, blob: null, mime: '', fileExt: '', endTimer: null,
+  micReady: false, tested: false, unsaved: false, wakeLock: null,
+  session: { id: '', pid: '', startedAt: '', actual: 0, endedEarly: false, incident: '' }
+};
+
+function show(name, step) {
+  screens.forEach(s => { $('s-' + s).hidden = s !== name; });
+  const order = ['setup', 'instructions', 'prepare', 'speak', 'finish'];
+  const at = order.indexOf(step || name);
+  document.querySelectorAll('#steps li').forEach(li => {
+    const i = order.indexOf(li.dataset.s);
+    li.className = i === at ? 'on' : i < at ? 'done' : '';
+  });
+  window.scrollTo(0, 0);
+}
+
+function pickMime() {
+  const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
+  return types.find(t => MediaRecorder.isTypeSupported(t)) || '';
+}
+
+function kstNow() {
+  const d = new Date(Date.now() + 9 * 3600e3);
+  return d.toISOString().slice(0, 19).replace('T', ' ');
+}
+
+function ensureAudio() {
+  if (!state.audioCtx) state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return state.audioCtx.state === 'suspended' ? state.audioCtx.resume() : Promise.resolve();
+}
+
+async function beep(ms = 600) {
+  await ensureAudio();
+  const ctx = state.audioCtx, osc = ctx.createOscillator(), gain = ctx.createGain(), t = ctx.currentTime;
+  osc.frequency.value = 1000;
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(.35, t + .01);
+  gain.gain.setValueAtTime(.35, t + ms / 1000 - .02);
+  gain.gain.linearRampToValueAtTime(0, t + ms / 1000);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(t); osc.stop(t + ms / 1000);
+  return new Promise(r => setTimeout(r, ms + 40));
+}
+
+/* Microphone */
+async function openMic(deviceId) {
+  if (state.stream) state.stream.getTracks().forEach(t => t.stop());
+  const audio = { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false };
+  if (deviceId) audio.deviceId = { exact: deviceId };
+  state.stream = await navigator.mediaDevices.getUserMedia({ audio });
+  await ensureAudio();
+  const src = state.audioCtx.createMediaStreamSource(state.stream);
+  state.analyser = state.audioCtx.createAnalyser();
+  state.analyser.fftSize = 1024;
+  src.connect(state.analyser);
+  state.stream.getAudioTracks()[0].addEventListener('ended', onMicLost);
+  startMeter();
+}
+
+function startMeter() {
+  clearInterval(state.meterTimer);
+  const buf = new Float32Array(state.analyser.fftSize);
+  state.meterTimer = setInterval(() => {
+    state.analyser.getFloatTimeDomainData(buf);
+    let max = 0;
+    for (const v of buf) max = Math.max(max, Math.abs(v));
+    state.peak = Math.max(state.peak, max);
+    const w = Math.min(100, Math.sqrt(max) * 120) + '%';
+    $('setupLevel').style.width = w;
+    $('taskLevel').style.width = w;
+  }, 80);
+}
+
+function onMicLost() {
+  if (state.recorder && state.recorder.state === 'recording') {
+    state.session.incident = 'microphone disconnected during recording';
+    if (state.endTimer) state.endTimer();
+  } else if (!$('s-setup').hidden) {
+    resetMicCheck(t('mic_lost'));
+  } else {
+    state.session.incident = 'microphone disconnected before recording';
+    state.unsaved = false;
+    finishScreen(t('stop_t'), t('stop_x'), t('stop_c'));
+    notice(t('stop_n'));
+    $('newBtn').hidden = false;
+  }
+}
+
+function resetMicCheck(msg) {
+  $('micOk').checked = false; $('micOk').disabled = true;
+  $('testAudio').hidden = true;
+  $('micStatus').textContent = msg || '';
+  validateSetup();
+}
+
+$('micBtn').onclick = async () => {
+  try {
+    if (!window.MediaRecorder || !pickMime()) throw new Error('unsupported');
+    await openMic();
+    const devices = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audioinput');
+    const current = state.stream.getAudioTracks()[0].getSettings().deviceId;
+    $('mic').innerHTML = '';
+    devices.forEach((d, i) => {
+      const o = new Option(d.label || 'Microphone ' + (i + 1), d.deviceId, false, d.deviceId === current);
+      $('mic').add(o);
+    });
+    $('mic').disabled = false; $('testBtn').disabled = false; $('micBtn').hidden = true;
+    state.micReady = true;
+    resetMicCheck(t('mic_ok'));
+  } catch (e) {
+    $('micStatus').innerHTML = '<span class="err"></span>';
+    $('micStatus').firstChild.textContent = e.message === 'unsupported' ? t('mic_unsupported') : t('mic_failed');
+  }
+};
+
+$('mic').onchange = async () => {
+  try { await openMic($('mic').value); resetMicCheck(t('mic_changed')); }
+  catch { resetMicCheck(t('mic_open_failed')); }
+};
+
+$('testBtn').onclick = async () => {
+  const btn = $('testBtn');
+  btn.disabled = true; $('mic').disabled = true;
+  $('testAudio').hidden = true;
+  $('micStatus').textContent = t('test_rec');
+  await beep(400);
+  const chunks = [], mime = pickMime(), rec = new MediaRecorder(state.stream, { mimeType: mime });
+  rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  rec.onstop = () => {
+    $('testAudio').src = URL.createObjectURL(new Blob(chunks, { type: mime }));
+    $('testAudio').hidden = false;
+    $('micStatus').textContent = t('test_done');
+    $('micOk').disabled = false;
+    btn.disabled = false; $('mic').disabled = false;
+    state.tested = true;
+    btn.removeAttribute('data-i18n');
+    btn.textContent = t('b_again');
+  };
+  rec.start();
+  setTimeout(() => rec.stop(), 4000);
+};
+
+function validateSetup() {
+  const ok = /^[A-Za-z0-9_-]{1,32}$/.test($('pid').value.trim()) && $('micOk').checked;
+  $('setupNext').disabled = !ok;
+  $('setupNotice').hidden = true; $('setupForce').hidden = true;
+}
+$('pid').oninput = validateSetup;
+$('micOk').onchange = validateSetup;
+
+function setupWarn(msg) {
+  $('setupNotice').textContent = msg;
+  $('setupNotice').hidden = false;
+  $('setupForce').hidden = false;
+}
+
+$('setupNext').onclick = async () => {
+  const pid = $('pid').value.trim(), btn = $('setupNext');
+  btn.disabled = true; btn.textContent = t('checking');
+  try {
+    const res = await fetch(API_URL + '?action=check&pid=' + encodeURIComponent(pid));
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+    if (data.count > 0) setupWarn(t('dup')(pid, data.count));
+    else return goInstructions();
+  } catch {
+    setupWarn(t('no_storage'));
+  }
+  btn.disabled = false; btn.textContent = t('b_next');
+};
+$('setupForce').onclick = () => goInstructions();
+
+function goInstructions() {
+  const s = state.session;
+  s.id = crypto.randomUUID();
+  s.pid = $('pid').value.trim();
+  show('instructions');
+}
+
+/* Task */
+function countdown(total, onDone) {
+  const startedAt = performance.now();
+  let done = false;
+  const render = () => {
+    const left = Math.max(0, total - (performance.now() - startedAt) / 1000);
+    const secs = Math.ceil(left);
+    $('clock').textContent = Math.floor(secs / 60) + ':' + String(secs % 60).padStart(2, '0');
+    $('bar').style.width = (left / total * 100) + '%';
+    if (left <= 0) finish();
+  };
+  const timer = setInterval(render, 100);
+  const finish = () => { if (done) return; done = true; clearInterval(timer); onDone(); };
+  render();
+  return finish;
+}
+
+function setCue(html) { $('cue').innerHTML = html; }
+
+$('beginBtn').onclick = async () => {
+  $('beginBtn').disabled = true;
+  state.session.startedAt = kstNow();
+  state.unsaved = true;
+  $('lang').hidden = true;
+  await ensureAudio();
+  try { state.wakeLock = await navigator.wakeLock?.request('screen'); } catch {}
+  $('stage').classList.remove('speak');
+  $('stageTag').textContent = t('tag_prepare');
+  setCue(t('cue_prep'));
+  show('task', 'prepare');
+  countdown(PREP_SECONDS, startSpeaking);
+};
+
+async function startSpeaking() {
+  if ($('s-task').hidden) return;
+  $('stage').classList.add('speak');
+  $('stageTag').textContent = t('tag_speak');
+  $('clock').textContent = '2:00';
+  $('bar').style.width = '100%';
+  setCue(t('cue_wait'));
+  show('task', 'speak');
+  await beep();
+
+  state.mime = pickMime();
+  const chunks = [];
+  const rec = state.recorder = new MediaRecorder(state.stream, { mimeType: state.mime, audioBitsPerSecond: BITRATE });
+  rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  rec.onerror = () => {
+    state.session.incident = 'recorder error';
+    if (state.endTimer) state.endTimer();
+  };
+
+  let t0 = 0;
+  const stopped = new Promise(res => { rec.onstop = res; });
+  rec.onstart = () => {
+    t0 = performance.now();
+    state.peak = 0;
+    setCue('<span class="rec"></span>' + t('cue_rec'));
+    $('lvlWrap').hidden = false;
+    $('raEnd').hidden = false;
+    state.endTimer = countdown(SPEAK_SECONDS, () => { if (rec.state === 'recording') rec.stop(); });
+  };
+  rec.start(1000);
+  await stopped;
+
+  state.session.actual = Math.round((performance.now() - t0) / 100) / 10;
+  state.blob = new Blob(chunks, { type: state.mime });
+  state.fileExt = state.mime.includes('mp4') ? 'm4a' : state.mime.includes('ogg') ? 'ogg' : 'webm';
+  clearInterval(state.meterTimer);
+  await beep();
+  saveRecording();
+}
+
+const raEnd = $('raEnd');
+raEnd.onclick = () => {
+  if (raEnd.dataset.armed) {
+    state.session.endedEarly = true;
+    raEnd.hidden = true;
+    if (state.endTimer) state.endTimer();
+    return;
+  }
+  raEnd.dataset.armed = '1';
+  raEnd.textContent = t('b_raconfirm');
+  setTimeout(() => { delete raEnd.dataset.armed; raEnd.textContent = t('b_raend'); }, 4000);
+};
+
+/* Saving */
+function finishScreen(title, text, chip) {
+  $('finishTitle').textContent = title;
+  $('finishText').textContent = text;
+  $('finishChip').textContent = chip;
+  show('finish');
+}
+function notice(msg) { $('finishNotice').textContent = msg; $('finishNotice').hidden = false; }
+
+function toBase64(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(blob);
+  });
+}
+
+async function postOnce(body) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 120000);
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST', redirect: 'follow', signal: ctl.signal,
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Save failed');
+    return data;
+  } finally { clearTimeout(timer); }
+}
+
+async function saveRecording() {
+  finishScreen(t('save_t'), t('save_x'), t('save_c'));
+  $('finishNotice').hidden = true;
+  $('retryBtn').hidden = true;
+  const s = state.session;
+  try {
+    if (!state.blob.size) throw new Error('The recording is empty.');
+    const body = JSON.stringify({
+      sessionId: s.id, participantId: s.pid, startedAt: s.startedAt,
+      prepSeconds: PREP_SECONDS, plannedSeconds: SPEAK_SECONDS, actualSeconds: s.actual,
+      endedEarly: s.endedEarly, incident: s.incident, peakLevel: Math.round(state.peak * 1000) / 1000,
+      mimeType: state.mime, userAgent: navigator.userAgent, audioBase64: await toBase64(state.blob)
+    });
+    let last;
+    for (let i = 0; i < 3; i++) {
+      try {
+        const data = await postOnce(body);
+        return onSaved(data);
+      } catch (e) {
+        last = e;
+        await new Promise(r => setTimeout(r, 2000 * (i + 1)));
+      }
+    }
+    throw last;
+  } catch (e) {
+    finishScreen(t('ty'), t('fin_call'), t('fin_c'));
+    notice(t('fail')(e.message));
+    $('retryBtn').hidden = false; $('downloadBtn').hidden = false;
+  }
+}
+
+function onSaved(data) {
+  state.unsaved = false;
+  try { state.wakeLock?.release(); } catch {}
+  finishScreen(t('ty'), t('fin_x'), t('fin_c'));
+  const s = state.session;
+  let msg = t('saved')(data.fileName, s.actual);
+  if (state.peak < 0.02) msg += t('low');
+  if (s.incident) msg += t('inc')(s.incident);
+  notice(msg);
+  $('downloadBtn').hidden = true; $('newBtn').hidden = false;
+}
+
+document.querySelectorAll('#lang button').forEach(b => { b.onclick = () => setLang(b.dataset.l); });
+$('retryBtn').onclick = saveRecording;
+$('downloadBtn').onclick = () => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(state.blob);
+  a.download = 'ONT_' + state.session.pid + '_backup.' + state.fileExt;
+  a.click();
+  state.unsaved = false;
+  $('newBtn').hidden = false;
+};
+$('newBtn').onclick = () => location.reload();
+
+window.addEventListener('beforeunload', e => {
+  if (state.unsaved) { e.preventDefault(); e.returnValue = ''; }
+});
+</script>
+</body>
+</html>
