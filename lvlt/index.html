@@ -79,6 +79,14 @@ ol.rules li{margin:4px 0}
 .item.cur .now{visibility:visible}
 .item.locked{opacity:.38}
 .item.closed{opacity:.6}
+/* Row layout: one item per row, options side by side */
+.rows{display:flex;flex-direction:column;gap:8px}
+.rows.two{max-width:none}
+.item.r{display:grid;grid-template-columns:60px repeat(4,minmax(0,1fr));gap:8px;align-items:stretch;padding:7px 8px;border-radius:12px}
+.item.r .num{flex-direction:column;justify-content:center;margin:0;font:800 19px/1.1 var(--sans)}
+.item.r .now{margin-top:5px;font-size:9.5px;padding:3px 6px}
+.item.r .opt{border:1px solid var(--line);padding:10px 11px;align-items:center;min-height:46px}
+.item.r .opt[aria-pressed=true]{border-color:var(--blue)}
 .opt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;font:500 15.5px/1.35 var(--sans);color:var(--ink);background:transparent;border:1px solid transparent;border-radius:9px;padding:7px 8px;cursor:pointer;word-break:keep-all}
 .opt span{font:600 14px/1.45 var(--mono);color:var(--body);flex:none}
 .opt:hover:not(:disabled){background:var(--blue-bg)}
@@ -116,6 +124,7 @@ ol.rules li{margin:4px 0}
   .parthead{flex-direction:column;align-items:flex-start}.cue{text-align:left}
 }
 @media (max-width:420px){.grid,.grid.two{grid-template-columns:1fr}}
+@media (max-width:760px){.item.r{grid-template-columns:44px 1fr 1fr}.item.r .num{grid-row:span 2}}
 </style>
 </head>
 <body>
@@ -139,10 +148,10 @@ ol.rules li{margin:4px 0}
     <div class="card">
       <span class="tag">Session</span>
       <h2>세션 정보</h2>
-      <label for="pid">참여자 ID <small>코드만 입력, 이름 금지</small></label>
+      <label for="pid">참여자 ID <small>영문·숫자 코드</small></label>
       <input id="pid" type="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="예: P001">
-      <label for="ra">진행자 <small>이니셜</small></label>
-      <input id="ra" type="text" maxlength="40" autocomplete="off" spellcheck="false" placeholder="예: HP">
+      <label for="pname">참여자 이름</label>
+      <input id="pname" type="text" maxlength="40" autocomplete="off" spellcheck="false" placeholder="예: 홍길동">
       <label>실시할 수준 <small>연구자 선택, 누르면 켜고 끔</small></label>
       <div class="levels" id="levels" role="group" aria-label="실시할 수준"></div>
       <p class="small" id="partsInfo" style="margin-top:12px">검사 설정을 불러오는 중입니다.</p>
@@ -203,7 +212,7 @@ ol.rules li{margin:4px 0}
   </div>
   <div class="bar"><i id="pracBar"></i></div>
   <div class="startbox" id="pracStart"><p><b>연습 문제 2개</b>시작을 누르면 음성이 바로 나옵니다. 듣고 답을 고르십시오.</p><button class="btn go" id="pracGo" type="button">&#9654; 시작</button></div>
-  <div class="grid two" id="pracGrid"></div>
+  <div class="rows" id="pracGrid"></div>
   <div class="notice" id="pracDone" hidden style="background:var(--ok-bg);border-color:var(--ok);color:var(--ok)">연습 문제의 정답은 1번 a, 2번 b입니다. 궁금한 점이 있으면 지금 진행자에게 질문하십시오.</div>
   <div class="actions"><button class="btn" id="toTest" type="button" hidden>본 검사 시작</button></div>
 </section>
@@ -218,7 +227,7 @@ ol.rules li{margin:4px 0}
   <div class="bar"><i id="partBar"></i></div>
   </div>
   <div class="startbox" id="partStart"><p><b id="partStartTitle">Part 1 · 24문항</b>시작을 누르면 음성이 바로 나옵니다. 음성은 한 번만 나오며 멈출 수 없습니다.</p><button class="btn go" id="partGo" type="button">&#9654; 시작</button></div>
-  <div class="grid" id="partGrid"></div>
+  <div class="rows" id="partGrid"></div>
   <div class="actions" id="partNext" hidden><p class="status" id="partSave" style="width:100%;text-align:center;margin:0"></p><button class="btn" id="nextBtn" type="button">다음 Part로</button></div>
 </section>
 
@@ -266,7 +275,7 @@ const DEMO = API.indexOf('PASTE_') === 0 || new URLSearchParams(location.search)
 
 const $ = id => document.getElementById(id);
 const state = {
-  pid:'', ra:'', sessionId:'', startedAt:'', activeParts:[3,4,5,6], showScore:false,
+  pid:'', pname:'', sessionId:'', startedAt:'', activeParts:[3,4,5,6], showScore:false,
   urls:{}, answers:{}, incidents:[], saved:{}, finalSaved:false, score:null, idx:0
 };
 const audio = new Audio();
@@ -288,10 +297,11 @@ function kst(d){ return new Date(d.getTime()+9*3600e3).toISOString().replace('T'
 function note(msg){ state.incidents.push(kst(new Date()).slice(11)+' '+msg); }
 
 /* ---------- Card rendering ---------- */
-function card(num, opts, onPick){
+function card(num, opts, onPick, row){
   const el = document.createElement('div');
-  el.className = 'item';
-  el.innerHTML = '<div class="num"><span>'+num+'.</span><span class="now">NOW</span></div>';
+  el.className = row ? 'item r' : 'item';
+  el.innerHTML = row ? '<div class="num"><span>'+num+'</span><span class="now">NOW</span></div>'
+                     : '<div class="num"><span>'+num+'.</span><span class="now">NOW</span></div>';
   opts.forEach((t,i) => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'opt'; b.dataset.c = L[i];
@@ -418,10 +428,10 @@ $('soundBtn').addEventListener('click', () => {
   $('soundOk').disabled = false;
 });
 function setupReady(){
-  const okId = /^[A-Za-z0-9_-]{1,32}$/.test($('pid').value.trim());
+  const okId = /^[A-Za-z0-9_-]{1,32}$/.test($('pid').value.trim()) && $('pname').value.trim().length > 0;
   $('toIntro').disabled = !(okId && $('soundOk').checked && state.activeParts.length > 0);
 }
-['pid','soundOk'].forEach(id => $(id).addEventListener('input', setupReady));
+['pid','pname','soundOk'].forEach(id => $(id).addEventListener('input', setupReady));
 $('soundOk').addEventListener('change', setupReady);
 
 $('toIntro').addEventListener('click', async () => {
@@ -436,7 +446,7 @@ $('toIntro').addEventListener('click', async () => {
   stopSoundCheck();
   state.activeParts.sort((a,b) => a-b);
   document.querySelectorAll('.lv').forEach(b => b.disabled = true);
-  state.pid = pid; state.ra = $('ra').value.trim(); state.sessionId = uuid();
+  state.pid = pid; state.pname = $('pname').value.trim(); state.sessionId = uuid();
   state.startedAt = kst(new Date());
   $('pidTag').textContent = pid;
   $('exampleGrid').innerHTML = '';
@@ -458,7 +468,7 @@ $('toPractice').addEventListener('click', () => {
   show('practice');
   const grid = $('pracGrid'); grid.innerHTML = '';
   const cards = PRACTICE.options.map((o,i) => {
-    const c = card(i+1, o, (ch, el) => setPressed(el, ch));
+    const c = card(i+1, o, (ch, el) => setPressed(el, ch), true);
     setLocked(c, true); grid.appendChild(c); return c;
   });
   $('toTest').hidden = true; $('pracDone').hidden = true; $('pracStart').hidden = false;
@@ -507,7 +517,7 @@ function startPart(){
   const grid = $('partGrid'); grid.innerHTML = '';
   current = -1;
   partCards = OPTIONS[p].map((o,i) => {
-    const c = card(i+1, o, (ch, el) => pick(p, i, ch, el));
+    const c = card(i+1, o, (ch, el) => pick(p, i, ch, el), true);
     setLocked(c, true); grid.appendChild(c); return c;
   });
   show('part');
@@ -536,7 +546,8 @@ function tick(p){
       $('partCue').innerHTML = '<span class="playing"></span>'+(k+1)+'번 / '+on.length+'<small>'+LEVEL[p]+'</small>';
       const r = partCards[k].getBoundingClientRect();
       const top = document.querySelector('#s-part .sticky').getBoundingClientRect().bottom;
-      if (r.top < top + 8 || r.bottom > innerHeight - 10) partCards[k].scrollIntoView({block:'center', behavior:'smooth'});
+      const target = scrollY + r.top - (top + (innerHeight - top) / 2 - r.height / 2);
+      if (k > 0) window.scrollTo({top: Math.max(0, target), behavior: 'smooth'});
     }
   }
   if (t >= SCHEDULE[p].end && k === on.length-1) partCards[k].classList.remove('cur');
@@ -578,7 +589,7 @@ window.addEventListener('beforeunload', e => {
 /* ---------- Saving ---------- */
 function payload(p, final){
   return {
-    sessionId: state.sessionId, participantId: state.pid, raName: state.ra, startedAt: state.startedAt,
+    sessionId: state.sessionId, participantId: state.pid, participantName: state.pname, startedAt: state.startedAt,
     activeParts: state.activeParts, part: p, final: !!final, incidents: state.incidents.slice(),
     userAgent: navigator.userAgent,
     answers: p == null ? [] : state.answers[p].map((a,i) => ({item:i+1, choice:a.choice, rtMs:a.rtMs, changes:a.changes}))
@@ -628,7 +639,7 @@ async function saveAll(){
 }
 $('retryBtn').addEventListener('click', saveAll);
 $('backupBtn').addEventListener('click', () => {
-  const data = {sessionId:state.sessionId, participantId:state.pid, raName:state.ra, startedAt:state.startedAt,
+  const data = {sessionId:state.sessionId, participantId:state.pid, participantName:state.pname, startedAt:state.startedAt,
     activeParts:state.activeParts, answers:state.answers, incidents:state.incidents, userAgent:navigator.userAgent};
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}));

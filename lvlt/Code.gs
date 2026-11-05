@@ -37,7 +37,7 @@ const SEED_TARGETS = {
 };
 
 const SESSION_HEADERS = [
-  'Last saved (KST)', 'Session ID', 'Participant ID', 'RA', 'Started at (KST)', 'Form version',
+  'Last saved (KST)', 'Session ID', 'Participant ID', 'Participant name', 'Started at (KST)', 'Form version',
   'Parts administered', 'P1 1K', 'P2 2K', 'P3 3K', 'P4 4K', 'P5 5K', 'P6 AWL',
   'Total correct', 'Total items', 'Completed', 'Incidents', 'Browser'
 ];
@@ -106,7 +106,7 @@ function doGet(e) {
 }
 
 /**
- * Body (JSON, sent as text/plain): { sessionId, participantId, raName, startedAt,
+ * Body (JSON, sent as text/plain): { sessionId, participantId, participantName, startedAt,
  *   activeParts, part, answers: [{ item, choice, rtMs, changes }], incidents, final, userAgent }
  * One POST per part, plus a final POST ({ final: true, part: null }) at the end.
  */
@@ -171,7 +171,7 @@ function upsertSession_(sessionId, pid, d, stamp, c) {
   for (let i = 0; i < data.length; i++) if (String(data[i][1]) === sessionId) { rowIndex = i + 2; break; }
   if (rowIndex === -1) {
     rowIndex = ses.getLastRow() + 1;
-    ses.getRange(rowIndex, 1, 1, 7).setValues([[stamp, sessionId, pid, safe_(d.raName), safe_(d.startedAt),
+    ses.getRange(rowIndex, 1, 1, 7).setValues([[stamp, sessionId, pid, safe_(d.participantName), safe_(d.startedAt),
       c.formVersion, safe_((d.activeParts || []).join(','))]]);
     ses.getRange(rowIndex, 18).setValue(safe_(d.userAgent));
   }
