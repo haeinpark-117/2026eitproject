@@ -34,7 +34,7 @@ Use current Chrome or Edge on a computer with headphones.
 2. The participant reads the instructions and example, then completes the two practice items (`audio/practice.mp3`). The recording announces the answers.
 3. Each part plays once after 시작 is pressed, without pausing, in the original timing. The current item is marked NOW; later items unlock as they are read; answers can be changed until the part ends. Keys a–d or 1–4 also answer the current item.
 4. Each part has its own page: the participant presses 시작 and the audio plays at once. When the part ends, it is saved and a button leads to the next part page. (The paper version has a fixed 15-second gap between parts; here the participant controls the gap.)
-5. The final screen confirms saving. If saving fails, press 다시 저장, or download the backup JSON and send it to the PI.
+5. The final screen confirms saving. If saving fails, press 다시 저장, or download the backup CSV (one row per item: response, RT, changes) and send it to the PI.
 
 Testing without saving: open the page with `?demo` (and optionally `&parts=3,6`).
 

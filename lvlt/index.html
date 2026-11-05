@@ -253,7 +253,7 @@ ol.rules li{margin:4px 0}
       <p class="small">세션 ID: <span class="file" id="doneSession"></span></p>
       <div class="row" style="margin-top:12px">
         <button class="btn line" id="retryBtn" type="button" hidden>다시 저장</button>
-        <button class="btn line" id="backupBtn" type="button">응답 백업 파일 받기</button>
+        <button class="btn line" id="backupBtn" type="button">응답 백업 (CSV)</button>
         <button class="btn" id="newBtn" type="button">새 참여자</button>
       </div>
     </div>
@@ -647,17 +647,25 @@ async function saveAll(){
     $('doneStatus').textContent = DEMO ? '데모 모드이므로 저장하지 않았습니다.' : '모든 응답이 Google 시트에 저장되었습니다.';
     if (j.total){ $('doneScore').hidden = false; $('doneScore').textContent = '점수: '+j.total; }
   } catch(e){
-    $('doneStatus').innerHTML = '<span class="err">저장하지 못했습니다.</span> 인터넷 연결을 확인한 뒤 다시 저장을 누르십시오. 계속 실패하면 백업 파일을 받아 연구 책임자에게 전달하십시오.';
+    $('doneStatus').innerHTML = '<span class="err">저장하지 못했습니다.</span> 인터넷 연결을 확인한 뒤 다시 저장을 누르십시오. 계속 실패하면 응답 백업 (CSV)을 받아 연구 책임자에게 전달하십시오.';
     $('retryBtn').hidden = false;
   }
 }
 $('retryBtn').addEventListener('click', saveAll);
 $('backupBtn').addEventListener('click', () => {
-  const data = {sessionId:state.sessionId, participantId:state.pid, participantName:state.pname, startedAt:state.startedAt,
-    activeParts:state.activeParts, answers:state.answers, incidents:state.incidents, userAgent:navigator.userAgent};
+  // Long format, one row per item: same columns as the Responses tab, minus Key/Correct
+  // (the answer key is never sent to the browser; score with the Key tab).
+  const LV = {1:'1K',2:'2K',3:'3K',4:'4K',5:'5K',6:'AWL'};
+  const q = v => { const t = String(v == null ? '' : v); return /[",\n]/.test(t) ? '"'+t.replace(/"/g,'""')+'"' : t; };
+  const rows = [['Session ID','Participant ID','Participant name','Started at (KST)','Part','Level','Item','Response','RT from item onset (ms)','Changes','Saved to Sheet']];
+  state.activeParts.forEach(p => (state.answers[p] || []).forEach((a,i) => rows.push([
+    state.sessionId, state.pid, state.pname, state.startedAt, p, LV[p], i+1,
+    a.choice, a.rtMs == null ? '' : a.rtMs, a.changes, state.saved[p] === 'ok' ? 'yes' : 'no'])));
+  if (state.incidents.length) rows.push(['# incidents: '+state.incidents.join(' | ')]);
+  const csv = '\ufeff' + rows.map(r => r.map(q).join(',')).join('\r\n');   // BOM so Excel reads Korean
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}));
-  a.download = 'LVLT_'+state.pid+'_'+state.startedAt.replace(/[^0-9]/g,'').slice(0,12)+'.json';
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  a.download = 'LVLT_'+state.pid+'_'+state.startedAt.replace(/[^0-9]/g,'').slice(0,12)+'.csv';
   a.click();
 });
 $('newBtn').addEventListener('click', () => {
