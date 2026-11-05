@@ -4,14 +4,15 @@
  * 1. Run setup() once. It creates the "ICF log" spreadsheet inside the 연구참여동의서 folder.
  * 2. Deploy as a web app:  Execute as: Me    Who has access: Anyone
  *
- * Each submission is saved as a PDF (연구대상자 설명서 + 동의서) in the same folder
+ * Each submission is saved as a PDF (연구대상자 설명서 + 동의서) in the 동의서 PDF subfolder
  * and logged in the spreadsheet.
  *
  * The consent text below must match icf/index.html. Edit both together.
  */
 
 const CONFIG = {
-  FOLDER_ID: '1z4h0XdTUIeGVPijLkWdRKJ7fo25q7AIi', // 2026 EIT Corpus Project/Instruments/연구참여동의서
+  FOLDER_ID: '1z4h0XdTUIeGVPijLkWdRKJ7fo25q7AIi',     // 2026 EIT Corpus Project/Instruments/연구참여동의서 (ICF log)
+  PDF_FOLDER_ID: '1B612rFqOpTrB-cKSReV_e3YXaSmKGJ4S', // 연구참여동의서/동의서 PDF
   SHEET_NAME: 'ICF log',
   TIMEZONE: 'Asia/Seoul',
   EXPLAINER: '강지혜 / 이민서',
@@ -141,7 +142,7 @@ function setup() {
     props.setProperty('SHEET_ID', id);
   }
   Logger.log('Log sheet: ' + SpreadsheetApp.openById(id).getUrl());
-  Logger.log('PDF folder: ' + DriveApp.getFolderById(CONFIG.FOLDER_ID).getUrl());
+  Logger.log('PDF folder: ' + DriveApp.getFolderById(CONFIG.PDF_FOLDER_ID).getUrl());
 }
 
 function json_(obj) {
@@ -185,7 +186,7 @@ function doPost(e) {
     const fileName = '동의서_' + stamp + '_' + safeName + '.pdf';
     const pdf = Utilities.newBlob(buildConsentHtml(data, true), 'text/html', 'consent.html')
       .getAs('application/pdf').setName(fileName);
-    const file = DriveApp.getFolderById(CONFIG.FOLDER_ID).createFile(pdf);
+    const file = DriveApp.getFolderById(CONFIG.PDF_FOLDER_ID).createFile(pdf);
 
     sh.appendRow([Utilities.formatDate(data.timestamp, CONFIG.TIMEZONE, 'yyyy-MM-dd HH:mm:ss'), d.submission_id,
       clean_(name), CONFIG.EXPLAINER]
@@ -208,7 +209,7 @@ function testPdf() {
   const data = { timestamp: new Date(), name: '테스트', explainer: CONFIG.EXPLAINER, answers: answers };
   const pdf = Utilities.newBlob(buildConsentHtml(data, true), 'text/html', 'consent.html')
     .getAs('application/pdf').setName('동의서_TEST.pdf');
-  Logger.log(DriveApp.getFolderById(CONFIG.FOLDER_ID).createFile(pdf).getUrl());
+  Logger.log(DriveApp.getFolderById(CONFIG.PDF_FOLDER_ID).createFile(pdf).getUrl());
 }
 
 /* ---------------------------------------------------------------- */
