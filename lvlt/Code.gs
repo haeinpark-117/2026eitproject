@@ -153,6 +153,7 @@ function doPost(e) {
     }
 
     upsertSession_(sessionId, pid, d, stamp, c);
+    buildParticipants();
     const totals = sessionTotals_(sessionId);
     const reply = { ok: true, part: part, saved: true };
     if (d.final && c.showScore) reply.total = totals.correct + ' / ' + totals.items;
@@ -212,6 +213,52 @@ function rescoreAll() {
     const cells = [1, 2, 3, 4, 5, 6].map(function (p) { return t.byPart[p] == null ? '' : t.byPart[p]; });
     ses.getRange(i + 2, 8, 1, 8).setValues([cells.concat([t.correct, t.items])]);
   });
+  buildParticipants();
+}
+
+/**
+ * Participant-level (wide) views, one row per session, rebuilt from Sessions and Responses.
+ *   Participants         : responses as letters (A-D, blank = no answer)
+ *   Participants (0-1)   : the same items scored 1/0 against the Key tab (for Rasch/IRT)
+ * Rebuilt after every save and after rescoreAll(); run by hand any time.
+ * Columns cover all 150 items; parts that were not given stay blank (not 0).
+ */
+function buildParticipants() {
+  const items = [];
+  Object.keys(PARTS).forEach(function (p) {
+    for (let i = 1; i <= PARTS[p].n; i++) items.push({ p: Number(p), i: i, col: PARTS[p].level + '_' + ('0' + i).slice(-2) });
+  });
+  const meta = ['Participant ID', 'Participant name', 'Session ID', 'Started at (KST)', 'Completed',
+    'Parts administered', 'P1 1K', 'P2 2K', 'P3 3K', 'P4 4K', 'P5 5K', 'P6 AWL', 'Total correct', 'Total items'];
+  const byKey = {};
+  rows_('Responses', RESPONSE_HEADERS.length).forEach(function (r) {
+    byKey[String(r[1]) + '|' + Number(r[3]) + '|' + Number(r[5])] = { resp: String(r[7]), correct: Number(r[9]) };
+  });
+  const letters = [], scored = [];
+  rows_('Sessions', SESSION_HEADERS.length).forEach(function (r) {
+    const sid = String(r[1]);
+    const head = [r[2], r[3], sid, r[4], r[15], r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14]];
+    const a = head.slice(), b = head.slice();
+    items.forEach(function (it) {
+      const x = byKey[sid + '|' + it.p + '|' + it.i];
+      a.push(x ? x.resp : '');
+      b.push(x ? x.correct : '');
+    });
+    letters.push(a); scored.push(b);
+  });
+  const header = meta.concat(items.map(function (it) { return it.col; }));
+  writeTab_('Participants', header, letters);
+  writeTab_('Participants (0-1)', header, scored);
+}
+
+function writeTab_(name, header, rows) {
+  const book = book_();
+  const sh = book.getSheetByName(name) || book.insertSheet(name);
+  sh.clearContents();
+  sh.getRange(1, 1, 1, header.length).setValues([header]).setFontWeight('bold');
+  if (rows.length) sh.getRange(2, 1, rows.length, header.length).setValues(rows);
+  sh.setFrozenRows(1);
+  sh.setFrozenColumns(2);
 }
 
 function keyMap_() {
