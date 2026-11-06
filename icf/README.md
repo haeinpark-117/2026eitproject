@@ -1,7 +1,7 @@
 # Informed consent (ICF), online
 
 Consent page (GitHub Pages) with a Google Apps Script backend.
-Participants read the 연구대상자 설명서, answer the seven consent items, and type their name in place of a signature. No copy is sent or offered to the participant.
+Participants first choose 한국어 or English, then read the 연구대상자 설명서 / Participant Information Sheet, answer the seven consent items, and type their name in place of a signature. The PDF is generated in the language the participant chose. No copy is sent or offered to the participant.
 Each submission is saved as a PDF (설명서 + 동의서) in Drive > 2026 EIT Corpus Project > Instruments > 연구참여동의서 > 동의서 PDF. The log Sheet (ICF log) stays in 연구참여동의서.
 
 ## Deploy
@@ -19,8 +19,8 @@ After editing `Code.gs`, use Deploy > Manage deployments > Edit > New version so
 
 | Where | Content |
 |---|---|
-| PDF, `동의서_<yyyyMMdd-HHmmss>_<성명>.pdf` | 연구대상자 설명서 and 동의서 with the participant's answers, typed name, submission date and time (KST), and the explainers (강지혜 / 이민서) |
-| ICF log, tab `log` | Submission time, ID, name, explainers, items 1–7 (예/아니오), PDF link |
+| PDF, `동의서_<yyyyMMdd-HHmmss>_<성명>.pdf` (Korean) or `Consent_<yyyyMMdd-HHmmss>_<name>.pdf` (English) | 연구대상자 설명서 and 동의서 with the participant's answers, typed name, submission date and time (KST), and the explainers (강지혜 / 이민서) |
+| ICF log, tab `log` | Submission time, ID, name, explainers, items 1–7 (stored as 예/아니오 in both languages), PDF link, form version, language (ko/en) |
 
 ## Running a session
 
@@ -31,4 +31,6 @@ After editing `Code.gs`, use Deploy > Manage deployments > Edit > New version so
 
 ## Editing the text
 
-The consent text (`STUDY`, `INFO_SECTIONS`, `CONSENT_INTRO`, `CONSENT_ITEMS`, `PRIVACY_TABLE`, `PRIVACY_NOTE`, `FOOTER`) appears in both `Code.gs` (PDF) and `index.html` (page). Edit both together so the PDF matches what participants saw. The explainer names are `CONFIG.EXPLAINER` in both files.
+All consent text, in both languages, is in one `CONTENT` object (`CONTENT.ko`, `CONTENT.en`) that appears in both `Code.gs` (PDF) and `index.html` (page). Edit both together so the PDF matches what participants saw. Interface text for the page (buttons, error messages) is in `UI` in `index.html` only. Explainer names are `CONTENT.ko.EXPLAINER` and `CONTENT.en.EXPLAINER`.
+
+The English text is a translation of the IRB-approved Korean form. Confirm it against the version submitted to the IRB before use.
