@@ -1,4 +1,4 @@
-# 교통비 지급 동의서 (Transportation Fee Payment Consent), online
+# 교통비 지급 동의서 (Payment Agreement Form), online
 
 Same design and backend as `icf/`. Page URL: https://haeinpark-117.github.io/2026eitproject/compensation/ The page posts to the same Apps Script web app with `form: 'fare'`; the code is the FARE section at the end of `icf/Code.gs`. Participants choose 한국어 or English, then enter their name, bank, and account number and answer the two confirmation items.
 
