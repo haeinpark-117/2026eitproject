@@ -591,7 +591,7 @@ const FARE = {
   "filePrefix": "교통비지급동의서"
  },
  "en": {
-  "title": "Transportation Fee Payment Consent Form",
+  "title": "Payment Agreement Form",
   "notice": "The transportation fee (KRW 20,000) will be paid through the Office of Research Affairs, Kyung Hee University, 1 to 2 weeks after the date of your participation.",
   "name": "Full name",
   "bank": "Bank",
@@ -604,7 +604,7 @@ const FARE = {
   "q2no": "I do not agree (the transportation fee will not be paid)",
   "submitted": "Submitted",
   "dateFmt": "MMMM d, yyyy",
-  "filePrefix": "TransportFee"
+  "filePrefix": "PaymentAgreement"
  }
 };
 
