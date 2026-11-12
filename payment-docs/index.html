@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>신분증·통장 사본 제출 | 2026 EIT Project</title>
+<style>
+:root{--ink:#08080f;--ink2:#12121d;--muted:#6a6a7d;--line:#e8e8ef;--accent:#3840f3;--accent-dk:#2a31d4;--accent-soft:#eef0ff;--accent-line:#d9dcff;--pink:#ff1493;--pink-dk:#d10f78;--pink-soft:#fff0f8;--pink-line:#ffcfe8;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:17px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;-webkit-font-smoothing:antialiased}
+.topnav{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line)}
+.topnav div{max-width:960px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:800;letter-spacing:-.02em}.brand b{color:var(--accent);font-weight:800}
+.stepno{font:13px var(--mono);letter-spacing:.08em;color:var(--muted)}
+main{max-width:960px;margin:0 auto;padding:0 20px 72px}
+header{text-align:center;padding:52px 0 36px;background:radial-gradient(ellipse 60% 70% at 50% 0,#f5f5fc,transparent)}
+.pill{display:inline-block;font:13px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:999px;padding:4px 14px}
+header h1{font-size:52px;line-height:1.15;letter-spacing:-.045em;font-weight:800;margin:16px 0 0}
+.sub{color:var(--muted);margin:10px 0 0;font-size:16px}
+.bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;max-width:420px;margin:22px auto 0}
+.bar i{display:block;height:100%;width:50%;background:var(--accent);transition:width .2s}
+.panel{position:relative;border-radius:22px;padding:40px 30px 24px;border:1px solid var(--accent-line);background:var(--accent-soft);margin:30px 0 0}
+.panel.pk{background:var(--pink-soft);border-color:var(--pink-line)}
+.badge{position:absolute;top:-15px;left:28px;background:var(--accent);color:#fff;font:700 13px var(--mono);letter-spacing:.14em;padding:6px 16px;border-radius:999px}
+.pk>.badge{background:var(--pink)}
+h2{font-size:26px;line-height:1.25;letter-spacing:-.025em;font-weight:800;margin:0 0 10px}
+p{margin:0 0 12px}
+ul{margin:0 0 12px;padding-left:22px}
+.note{font-size:15px;color:var(--muted)}
+.field{padding:16px 0;border-top:1px solid var(--accent-line)}
+.field:first-of-type{border-top:0}
+.q{font-weight:700;display:block;margin-bottom:6px;color:var(--ink2)}
+.req{color:var(--pink)}
+.hint{color:var(--muted);font-size:15px;margin:0 0 8px}
+input[type=text]{font:inherit;padding:10px 12px;border:1px solid var(--accent-line);border-radius:10px;background:#fff;color:inherit;width:100%;max-width:420px}
+input[type=file]{font:inherit;font-size:15px;padding:8px 10px;border:1px solid var(--accent-line);border-radius:10px;background:#fff;color:var(--muted);width:100%;max-width:520px}
+input[type=file]::file-selector-button{font:inherit;font-weight:700;font-size:15px;margin-right:12px;padding:6px 16px;border-radius:8px;border:2px solid var(--accent);background:#fff;color:var(--accent);cursor:pointer}
+input[type=file]::file-selector-button:hover{background:var(--accent-soft)}
+input:focus{outline:2px solid var(--accent);outline-offset:1px}
+label.chk{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;background:#fff;border:1px solid var(--accent-line);cursor:pointer;max-width:720px;font-weight:600}
+label.chk input{margin-top:6px;accent-color:var(--accent);width:18px;height:18px;flex:0 0 auto}
+.bad{background:var(--pink-soft);outline:2px solid var(--pink);outline-offset:-2px;border-radius:10px;padding-left:12px;padding-right:12px}
+.errmsg{color:var(--pink-dk);font-size:14px;margin-top:6px;display:none}.bad .errmsg{display:block}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
+button{font:inherit;font-weight:700;padding:12px 30px;border-radius:12px;border:2px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button:hover{background:var(--accent-dk);border-color:var(--accent-dk)}
+button:disabled{opacity:.6;cursor:wait}
+.status{color:var(--pink-dk);margin-top:12px;min-height:1.6em}
+.done{text-align:center}
+@media(max-width:700px){header{padding:32px 0 20px}header h1{font-size:34px}.panel{padding:36px 16px 18px}}
+</style>
+</head>
+<body>
+<nav class="topnav"><div><span class="brand">EIT <b>Payment</b></span><span class="stepno">DOCUMENTS</span></div></nav>
+<main>
+<header><span class="pill">ID &amp; Bank Info</span><h1>신분증·통장 사본 제출</h1><p class="sub">인공지능 기반 외국어 평가 진단 시스템 구축을 위한 EIT 응답 코퍼스 개발</p><div class="bar"><i id="bar"></i></div></header>
+
+<div id="app">
+  <section class="panel pk"><span class="badge">NOTICE</span><h2>사례비 지급 서류 제출</h2>
+    <p>사례비 지급을 위해 신분증 사본과 통장 사본을 제출해 주십시오.</p>
+    <p class="note">JPG, PNG, HEIC, PDF 파일을 제출할 수 있습니다. 휴대폰으로 촬영한 사진도 됩니다.</p>
+  </section>
+
+  <section class="panel"><span class="badge">PAYEE</span>
+    <div class="field" data-k="name">
+      <span class="q">성명 <span class="req">*</span></span>
+      <p class="hint">신분증과 통장에 표기된 성명과 같게 입력해 주십시오.</p>
+      <input type="text" id="name" autocomplete="off">
+      <div class="errmsg">성명을 입력해 주십시오.</div>
+    </div>
+  </section>
+
+  <section class="panel"><span class="badge">UPLOAD</span>
+    <div class="field" data-k="idcard">
+      <span class="q">신분증 사본 <span class="req">*</span></span>
+      <p class="hint">주민등록증 또는 운전면허증. 글자가 선명하게 보이도록 촬영해 주십시오.</p>
+      <input type="file" id="idcard" accept="image/*,application/pdf">
+      <div class="errmsg">신분증 사본을 첨부해 주십시오.</div>
+    </div>
+    <div class="field" data-k="bank">
+      <span class="q">통장 사본 <span class="req">*</span></span>
+      <p class="hint">은행명, 계좌번호, 예금주가 보이는 면. 본인 명의 계좌여야 합니다.</p>
+      <input type="file" id="bank" accept="image/*,application/pdf">
+      <div class="errmsg">통장 사본을 첨부해 주십시오.</div>
+    </div>
+  </section>
+
+  <section class="panel"><span class="badge">CONSENT</span><h2>개인정보 수집·이용 동의</h2>
+    <ul>
+      <li>수집 항목: 신분증 사본(주민등록번호 포함), 통장 사본(은행명, 계좌번호, 예금주)</li>
+      <li>수집 목적: 연구 참여 사례비 지급</li>
+      <li>동의를 거부할 수 있으나, 이 경우 사례비 지급이 어려울 수 있습니다.</li>
+    </ul>
+    <div class="field" data-k="agree">
+      <label class="chk"><input type="checkbox" id="agree">위 내용을 확인하였으며 개인정보 수집·이용에 동의합니다.</label>
+      <div class="errmsg">동의해 주십시오.</div>
+    </div>
+  </section>
+
+  <div class="status" id="status"></div>
+  <div class="nav"><span></span><button type="button" id="submit">제출</button></div>
+</div>
+</main>
+
+<script>
+/* Apps Script web app: 지급 서류 > 신분증·통장 사본 제출 (payment-docs/Code.gs). Open with ?demo to test without saving. */
+var ENDPOINT = 'https://script.google.com/macros/s/AKfycbzjOeEJ-1dV2RbQZR9PAC7HBuFS6krTDJTpCDCfEia3zGSQ4JNMrANW3cy_-xYkogqSew/exec';
+var Q = new URLSearchParams(location.search);
+var DEMO = Q.has('demo');
+var TOKEN = /^[0-9a-f]{32}$/.test(Q.get('t') || '') ? Q.get('t') : '';
+var MAX_BYTES = 5 * 1024 * 1024;
+var LABEL = { idcard: '신분증 사본', bank: '통장 사본' };
+var ALLOWED = ['image/jpeg', 'image/png', 'image/heic', 'image/heif', 'application/pdf'];
+var sid = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+var sent = false;
+
+var $ = function (id) { return document.getElementById(id); };
+var app = $('app'), statusEl = $('status');
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+function mark(k, msg, list) {
+  var c = app.querySelector('[data-k="' + k + '"]');
+  if (!c) return;
+  if (msg) c.querySelector('.errmsg').textContent = msg;
+  c.classList.add('bad');
+  if (list) list.push(c);
+}
+function unmark(e) { var c = e.target.closest('.bad'); if (c) c.classList.remove('bad'); }
+app.addEventListener('input', unmark);
+app.addEventListener('change', unmark);
+
+function readDataUrl(blob) {
+  return new Promise(function (res, rej) {
+    var r = new FileReader();
+    r.onload = function () { res(r.result); };
+    r.onerror = function () { rej(new Error('read')); };
+    r.readAsDataURL(blob);
+  });
+}
+
+/* 큰 사진은 긴 변 2000px JPEG로 줄여서 업로드 (글자 판독에 충분한 해상도) */
+function shrinkImage(file) {
+  return new Promise(function (res) {
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function () {
+      var s = Math.min(1, 2000 / Math.max(img.width, img.height));
+      var c = document.createElement('canvas');
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(function (b) { res(b || file); }, 'image/jpeg', 0.88);
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); res(file); };
+    img.src = url;
+  });
+}
+
+function prepare(k, file) {
+  var mime = file.type || '', name = file.name;
+  if (ALLOWED.indexOf(mime) < 0) return Promise.reject({ k: k, msg: 'JPG, PNG, HEIC, PDF 파일만 제출할 수 있습니다.' });
+  var shrink = (mime === 'image/jpeg' || mime === 'image/png') && file.size > 1.5 * 1024 * 1024;
+  return (shrink ? shrinkImage(file) : Promise.resolve(file)).then(function (blob) {
+    if (blob !== file) { mime = 'image/jpeg'; name = name.replace(/\.[^.]+$/, '') + '.jpg'; }
+    if (blob.size > MAX_BYTES) throw { k: k, msg: '파일이 너무 큽니다. 다시 촬영하거나 용량을 줄여 주십시오.' };
+    return readDataUrl(blob);
+  }).then(function (u) { return { name: name, mimeType: mime, data: u.split(',')[1] }; });
+}
+
+$('submit').addEventListener('click', function () {
+  var errs = [];
+  statusEl.textContent = '';
+  app.querySelectorAll('.bad').forEach(function (c) { c.classList.remove('bad'); });
+  var name = $('name').value.trim();
+  if (!name) mark('name', null, errs);
+  ['idcard', 'bank'].forEach(function (k) { if (!$(k).files[0]) mark(k, LABEL[k] + '을 첨부해 주십시오.', errs); });
+  if (!$('agree').checked) mark('agree', null, errs);
+  if (errs.length) { statusEl.textContent = '표시된 항목을 확인해 주십시오.'; errs[0].scrollIntoView({ block: 'center' }); return; }
+
+  var btn = $('submit');
+  function fail(msg) { btn.disabled = false; btn.textContent = '제출'; statusEl.textContent = msg; }
+  if (!DEMO && !/^https:\/\/script\.google\.com\//.test(ENDPOINT)) { fail('저장 서버(Apps Script 웹앱)가 아직 연결되지 않았습니다. 연구조원에게 알려 주십시오.'); return; }
+  btn.disabled = true; btn.textContent = '파일 준비 중...';
+
+  var files = {};
+  prepare('idcard', $('idcard').files[0])
+    .then(function (f) { files.idcard = f; return prepare('bank', $('bank').files[0]); })
+    .then(function (f) {
+      files.bank = f;
+      btn.textContent = '제출 중...';
+      var body = { form: 'docs', submission_id: sid, token: TOKEN, name: name, consent: true, files: files };
+      if (DEMO) return { ok: true, demo: true };
+      return fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json(); }, function () { throw { net: true }; });
+    })
+    .then(function (j) { if (!j || !j.ok) throw { server: (j && j.error) || 'unknown' }; sent = true; done(name, j); })
+    .catch(function (x) {
+      if (x && x.k) { mark(x.k, x.msg); fail('표시된 항목을 확인해 주십시오.'); }
+      else if (x && x.server) fail('저장 중 서버 오류가 발생하였습니다 (' + x.server + '). 연구조원에게 알려 주십시오.');
+      else if (x && x.net) fail('제출에 실패하였습니다. 입력 내용은 유지되어 있으니 인터넷 연결을 확인한 뒤 다시 제출해 주십시오.');
+      else fail('서버 응답을 읽지 못하였습니다. 연구조원에게 알려 주십시오.');
+    });
+});
+
+function done(name, j) {
+  $('bar').style.width = '100%';
+  app.innerHTML = '<section class="panel done"><span class="badge">DONE</span><h2>제출이 완료되었습니다.</h2>' +
+    '<p>' + esc(name) + ' 님, 감사합니다.</p>' + (j.demo ? '<p class="note">데모 모드: 저장되지 않았습니다.</p>' : '') +
+    '<p class="note">이 창은 닫으셔도 됩니다.</p></section>';
+  scrollTo(0, 0);
+}
+
+window.addEventListener('beforeunload', function (e) {
+  if (!sent && ($('name').value.trim() || $('idcard').files.length || $('bank').files.length)) { e.preventDefault(); e.returnValue = ''; }
+});
+</script>
+</body>
+</html>
