@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>교통비 지급 동의서 | 2026 EIT Project</title>
+<style>
+:root{--ink:#08080f;--ink2:#12121d;--muted:#6a6a7d;--line:#e8e8ef;--accent:#3840f3;--accent-dk:#2a31d4;--accent-soft:#eef0ff;--accent-line:#d9dcff;--pink:#ff1493;--pink-dk:#d10f78;--pink-soft:#fff0f8;--pink-line:#ffcfe8;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:17px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;-webkit-font-smoothing:antialiased}
+.topnav{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line)}
+.topnav div{max-width:960px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:800;letter-spacing:-.02em}.brand b{color:var(--accent);font-weight:800}
+.stepno{font:13px var(--mono);letter-spacing:.08em;color:var(--muted)}
+main{max-width:960px;margin:0 auto;padding:0 20px 72px}
+header{text-align:center;padding:52px 0 36px;background:radial-gradient(ellipse 60% 70% at 50% 0,#f5f5fc,transparent)}
+header.compact{padding:24px 0 20px}
+.pill{display:inline-block;font:13px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:999px;padding:4px 14px}
+header h1{font-size:52px;line-height:1.15;letter-spacing:-.045em;font-weight:800;margin:16px 0 0}
+header.compact h1{font-size:30px;margin-top:10px}
+.sub{color:var(--muted);margin:10px 0 0;font-size:16px}
+.bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;max-width:420px;margin:22px auto 0}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.panel{position:relative;border-radius:22px;padding:40px 30px 24px;border:1px solid var(--accent-line);background:var(--accent-soft);margin:30px 0 0}
+.panel.pk{background:var(--pink-soft);border-color:var(--pink-line)}
+.badge{position:absolute;top:-15px;left:28px;background:var(--accent);color:#fff;font:700 13px var(--mono);letter-spacing:.14em;padding:6px 16px;border-radius:999px}
+.pk>.badge{background:var(--pink)}
+h2{font-size:26px;line-height:1.25;letter-spacing:-.025em;font-weight:800;margin:0 0 10px}
+h3{font-size:19px;letter-spacing:-.015em;margin:26px 0 6px}
+p{margin:0 0 12px}
+.pre{white-space:pre-line}
+ul{margin:0 0 12px;padding-left:22px}
+table{width:100%;border-collapse:collapse;margin:6px 0 14px;background:#fff;border-radius:12px;overflow:hidden;font-size:15.5px}
+td,th{border:1px solid var(--accent-line);padding:9px 12px;vertical-align:top;text-align:left}
+th,td.k{background:#f7f7ff;font-weight:700;color:var(--ink2)}
+td.k{width:24%;white-space:nowrap}
+.note{font-size:15px;color:var(--muted)}
+.item{padding:16px 0;border-top:1px solid var(--accent-line)}
+.item:first-of-type{border-top:0}
+.item .t{font-weight:600;color:var(--ink2)}
+.item .tag{font:12px var(--mono);letter-spacing:.08em;color:var(--muted);margin-left:6px}
+.yn{display:flex;gap:8px;margin-top:10px}
+.yn{flex-wrap:wrap}
+.yn label{flex:0 0 auto;min-width:120px;padding-left:16px;padding-right:16px;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 0;border:1px solid var(--accent-line);border-radius:10px;background:#fff;cursor:pointer;font-weight:600}
+.yn label:hover{background:var(--accent-soft)}
+.yn label:has(input:checked){background:var(--accent);color:#fff;border-color:var(--accent)}
+.yn label.no:has(input:checked){background:var(--ink2);border-color:var(--ink2)}
+.yn input{accent-color:var(--accent-dk);margin:0}
+.bad{background:var(--pink-soft);outline:2px solid var(--pink);outline-offset:-2px;border-radius:10px;padding-left:12px;padding-right:12px}
+.errmsg{color:var(--pink-dk);font-size:14px;margin-top:6px;display:none}.bad .errmsg{display:block}
+.field{padding:16px 0;border-top:1px solid var(--accent-line)}
+.field:first-of-type{border-top:0}
+.q{font-weight:700;display:block;margin-bottom:6px;color:var(--ink2)}
+.req{color:var(--pink)}
+.hint{color:var(--muted);font-size:15px;margin:0 0 8px}
+input[type=text]{font:inherit;padding:10px 12px;border:1px solid var(--accent-line);border-radius:10px;background:#fff;color:inherit;width:100%;max-width:420px}
+input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.fixed{display:inline-block;padding:10px 14px;border-radius:10px;background:#fff;border:1px dashed var(--accent-line);font-weight:700}
+label.chk{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;background:#fff;border:1px solid var(--accent-line);cursor:pointer;max-width:720px}
+label.chk input{margin-top:6px;accent-color:var(--accent);width:18px;height:18px}
+.stop{border:2px solid var(--pink);background:var(--pink-soft);border-radius:14px;padding:16px 18px;color:var(--pink-dk);font-weight:700;margin-top:20px}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
+button{font:inherit;font-weight:700;padding:12px 30px;border-radius:12px;border:2px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button:hover{background:var(--accent-dk);border-color:var(--accent-dk)}
+button.ghost{background:#fff;color:var(--accent)}button.ghost:hover{background:var(--accent-soft)}
+button:disabled{opacity:.6;cursor:wait}
+.status{color:var(--pink-dk);margin-top:12px;min-height:1.6em}
+.done{text-align:center}
+.done .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.langs{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.langs button{flex:1;min-width:180px;padding:18px}
+[hidden]{display:none!important}
+@media(max-width:700px){header{padding:32px 0 20px}header h1{font-size:34px}.panel{padding:36px 16px 18px}td.k{white-space:normal}.yn label{flex:1}}
+</style>
+</head>
+<body>
+<nav class="topnav"><div><span class="brand">EIT <b>Payment</b></span><span class="stepno" id="stepno"></span></div></nav>
+<main>
+<header id="hdr"><span class="pill">Transportation Fee</span><h1 id="title">교통비 지급 동의서<br>Transportation Fee Payment Consent Form</h1><p class="sub" id="sub"></p><div class="bar"><i id="bar"></i></div></header>
+<div id="app"></div>
+</main>
+<script>
+/* Same Apps Script web app as icf/ (Code.gs routes form: 'fare'). Open with ?demo to test without saving. */
+var ENDPOINT = 'https://script.google.com/macros/s/AKfycbxYLqs5G_VfsvFWNtRGhj5Tyy53hCOkkbtuciCqlWG2cdp66EUUMfb_S7I9UMyVjdC8/exec';
+var DEMO = new URLSearchParams(location.search).has('demo');
+
+/* Form text: copied verbatim from the FARE object in icf/Code.gs. Edit both together. */
+var FARE = {
+ "ko": {
+  "title": "교통비 지급 동의서",
+  "notice": "교통비(20,000원)는 경희대학교 연구처를 통해 연구 참여일로부터 1-2주 후 지급될 예정입니다.",
+  "name": "성명",
+  "bank": "은행",
+  "account": "계좌번호",
+  "q1": "귀하는 신분증 및 통장 사본을 연구원에게 제출했습니까?",
+  "q1yes": "예",
+  "q1no": "아니오",
+  "q2": "본인은 교통비를 수령 하는데 필요한 개인정보 수집에 동의하며 상기 금액의 수령을 확인합니다.",
+  "q2yes": "동의합니다",
+  "q2no": "동의하지 않습니다 (교통비가 지급되지 않음)",
+  "submitted": "제출 일시",
+  "dateFmt": "yyyy년 MM월 dd일",
+  "filePrefix": "교통비지급동의서"
+ },
+ "en": {
+  "title": "Transportation Fee Payment Consent Form",
+  "notice": "The transportation fee (KRW 20,000) will be paid through the Office of Research Affairs, Kyung Hee University, 1 to 2 weeks after the date of your participation.",
+  "name": "Full name",
+  "bank": "Bank",
+  "account": "Account number",
+  "q1": "Have you submitted copies of your ID and bankbook to the researcher?",
+  "q1yes": "Yes",
+  "q1no": "No",
+  "q2": "I agree to the collection of the personal information required to receive the transportation fee, and I confirm receipt of the amount stated above.",
+  "q2yes": "I agree",
+  "q2no": "I do not agree (the transportation fee will not be paid)",
+  "submitted": "Submitted",
+  "dateFmt": "MMMM d, yyyy",
+  "filePrefix": "TransportFee"
+ }
+};
+var STUDY_TITLE = {"ko": "인공지능 기반 외국어 평가 진단 시스템 구축을 위한 EIT 응답 코퍼스 개발", "en": "Development of an EIT Response Corpus for Building an AI-Based Foreign Language Assessment and Diagnostic System"};
+
+var UI = {
+ ko: { req:'필수', nameErr:'성명을 입력해 주십시오.', bankErr:'은행을 입력해 주십시오.', accErr:'계좌번호를 숫자로 입력해 주십시오.', accHint:'숫자만 입력해 주십시오. (- 포함 가능)',
+  ansErr:'응답해 주십시오.', check:'표시된 항목을 확인해 주십시오.', submit:'제출', sending:'제출 중...',
+  noServer:'저장 서버(Apps Script 웹앱)가 아직 연결되지 않았습니다. 연구조원에게 알려 주십시오.',
+  serverErr:function(x){return '저장 중 서버 오류가 발생하였습니다 ('+x+'). 연구조원에게 알려 주십시오.'},
+  netErr:'제출에 실패하였습니다. 입력 내용은 유지되어 있으니 인터넷 연결을 확인한 뒤 다시 제출해 주십시오.',
+  readErr:'서버 응답을 읽지 못하였습니다. 연구조원에게 알려 주십시오.',
+  doneT:'제출이 완료되었습니다.', thanks:function(n){return n+' 님, 감사합니다.'}, demo:'데모 모드: 저장되지 않았습니다.', again:'처음 화면으로' },
+ en: { req:'Required', nameErr:'Please enter your full name.', bankErr:'Please enter your bank.', accErr:'Please enter your account number in digits.', accHint:'Digits only (hyphens allowed).',
+  ansErr:'Please answer this item.', check:'Please check the highlighted items.', submit:'Submit', sending:'Submitting...',
+  noServer:'The storage server (Apps Script web app) is not connected yet. Please let the research assistant know.',
+  serverErr:function(x){return 'A server error occurred while saving ('+x+'). Please let the research assistant know.'},
+  netErr:'Submission failed. Your answers have been kept; please check the internet connection and submit again.',
+  readErr:'The server response could not be read. Please let the research assistant know.',
+  doneT:'Your form has been submitted.', thanks:function(n){return 'Thank you, '+n+'.'}, demo:'Demo mode: nothing was saved.', again:'Back to start' }
+};
+
+var lang=null, T, U, V={name:'',bank:'',account:'',q1:'',q2:''}, sent=false;
+var sid='f'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+var app=document.getElementById('app');
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function panel(badge,title,body,cls){return '<section class="panel '+(cls||'')+'"><span class="badge">'+esc(badge)+'</span>'+(title?'<h2>'+esc(title)+'</h2>':'')+body+'</section>'}
+
+function chooseLang(){
+ app.innerHTML=panel('LANGUAGE','언어 선택 / Select a language','<div class="langs"><button type="button" data-l="ko">한국어</button><button type="button" data-l="en">English</button></div>');
+ app.querySelectorAll('[data-l]').forEach(function(b){b.onclick=function(){start(b.getAttribute('data-l'))}});
+}
+function start(l){
+ lang=l; T=FARE[l]; U=UI[l];
+ document.documentElement.lang=l; document.title=T.title+' | 2026 EIT Project';
+ document.getElementById('title').textContent=T.title;
+ document.getElementById('sub').textContent=STUDY_TITLE[l];
+ document.getElementById('bar').style.width='50%';
+ render(); scrollTo(0,0);
+}
+function radio(name,opts){
+ return '<div class="yn">'+opts.map(function(o){return '<label class="'+(o.no?'no':'')+'"><input type="radio" name="'+name+'" value="'+o.v+'"'+(V[name]===o.v?' checked':'')+'>'+esc(o.t)+'</label>'}).join('')+'</div>';
+}
+function render(){
+ var f='';
+ f+='<div class="field" data-k="name"><span class="q">'+esc(T.name)+' <span class="req">*</span></span><input type="text" id="name" autocomplete="off" value="'+esc(V.name)+'"><div class="errmsg">'+esc(U.nameErr)+'</div></div>';
+ f+='<div class="field" data-k="bank"><span class="q">'+esc(T.bank)+' <span class="req">*</span></span><input type="text" id="bank" autocomplete="off" value="'+esc(V.bank)+'"><div class="errmsg">'+esc(U.bankErr)+'</div></div>';
+ f+='<div class="field" data-k="account"><span class="q">'+esc(T.account)+' <span class="req">*</span></span><p class="hint">'+esc(U.accHint)+'</p><input type="text" id="account" inputmode="numeric" autocomplete="off" value="'+esc(V.account)+'"><div class="errmsg">'+esc(U.accErr)+'</div></div>';
+ var q='';
+ q+='<div class="item" data-k="q1"><div class="t">'+esc(T.q1)+' <span class="req">*</span></div>'+radio('q1',[{v:'예',t:T.q1yes},{v:'아니오',t:T.q1no,no:true}])+'<div class="errmsg">'+esc(U.ansErr)+'</div></div>';
+ q+='<div class="item" data-k="q2"><div class="t">'+esc(T.q2)+' <span class="req">*</span></div>'+radio('q2',[{v:'동의',t:T.q2yes},{v:'비동의',t:T.q2no,no:true}])+'<div class="errmsg">'+esc(U.ansErr)+'</div></div>';
+ app.innerHTML=panel('NOTICE',T.title,'<p>'+esc(T.notice)+'</p>','pk')+panel('PAYEE','',f)+panel('CONFIRM','',q)+
+  '<div class="status" id="status"></div><div class="nav"><span></span><button type="button" id="next">'+esc(U.submit)+'</button></div>';
+ document.getElementById('next').onclick=onSubmit;
+ app.onchange=app.oninput=function(e){collect();var c=e.target.closest('.bad');if(c)c.classList.remove('bad')};
+}
+function collect(){
+ V.name=document.getElementById('name').value.trim();
+ V.bank=document.getElementById('bank').value.trim();
+ V.account=document.getElementById('account').value.trim();
+ app.querySelectorAll('input[type=radio]:checked').forEach(function(e){V[e.name]=e.value});
+}
+function mark(k,list){var c=app.querySelector('[data-k="'+k+'"]');if(c){c.classList.add('bad');list.push(c)}}
+function onSubmit(){
+ collect();
+ var st=document.getElementById('status'),e=[];st.textContent='';
+ app.querySelectorAll('.bad').forEach(function(c){c.classList.remove('bad')});
+ if(!V.name)mark('name',e);
+ if(!V.bank)mark('bank',e);
+ if(!/^[0-9][0-9-]*[0-9]$/.test(V.account))mark('account',e);
+ if(!V.q1)mark('q1',e);
+ if(!V.q2)mark('q2',e);
+ if(e.length){st.textContent=U.check;e[0].scrollIntoView({block:'center'});return}
+ var b=document.getElementById('next');b.disabled=true;b.textContent=U.sending;
+ function fail(msg){b.disabled=false;b.textContent=U.submit;st.textContent=msg}
+ if(!DEMO&&!/^https:\/\/script\.google\.com\//.test(ENDPOINT)){fail(U.noServer);return}
+ var body={form:'fare',submission_id:sid,lang:lang,name:V.name,bank:V.bank,account:V.account,q1:V.q1,q2:V.q2};
+ var req=DEMO?Promise.resolve({ok:true,demo:true}):fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)})
+  .then(function(r){return r.json()},function(){throw {net:true}});
+ req.then(function(j){if(!j.ok)throw {server:j.error||'unknown'};sent=true;done(j)})
+  .catch(function(x){if(x&&x.server)fail(U.serverErr(x.server));else if(x&&x.net)fail(U.netErr);else fail(U.readErr)});
+}
+function done(j){
+ document.getElementById('bar').style.width='100%';
+ var h='<p>'+esc(U.thanks(V.name))+'</p>'+(j.demo?'<p class="note">'+esc(U.demo)+'</p>':'')+
+  '<div class="btns"><button type="button" class="ghost" id="again">'+esc(U.again)+'</button></div>';
+ app.innerHTML=panel('DONE',U.doneT,h,'done');
+ scrollTo(0,0);
+ document.getElementById('again').onclick=function(){location.href=location.pathname+(DEMO?'?demo':'')};
+}
+window.addEventListener('beforeunload',function(e){if(!sent&&(V.name||V.account)){e.preventDefault();e.returnValue=''}});
+chooseLang();
+</script>
+</body>
+</html>

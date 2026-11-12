@@ -8,6 +8,7 @@
  * in the 동의서 PDF subfolder and logged in the spreadsheet.
  *
  * CONTENT below must match icf/index.html. Edit both together.
+ * The same web app also receives the 교통비 지급 동의서 (fare/index.html); see the FARE section at the end.
  */
 
 const CONFIG = {
@@ -432,6 +433,7 @@ function doPost(e) {
   const lock = LockService.getScriptLock();
   try {
     const d = JSON.parse(e.postData.contents);
+    if (d.form === 'fare') return farePost_(d);
     const lang = d.lang === 'en' ? 'en' : 'ko';
     const name = String(d.name || '').trim();
     if (!d.submission_id || !name || d.sign !== true) return json_({ ok: false, error: 'missing fields' });
@@ -557,4 +559,129 @@ function buildConsentHtml(data, eligible) {
     '</table><p class="foot">' + esc(C.FOOTER) + '</p></div>';
 
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' + css + '</style></head><body>' + info + consent + '</body></html>';
+}
+
+/* ---------------------------------------------------------------- */
+/* 교통비 지급 동의서 (fare/index.html posts here with form: 'fare')  */
+/* ---------------------------------------------------------------- */
+
+const FARE_CONFIG = {
+  PDF_FOLDER_ID: '12MrYjnlh8GyAZyl9WfaFEQenrNo1xhga',                 // 지급 서류/교통비지급동의서 PDF
+  SHEET_ID: '1RLQvthVbD8Mqk5Qo4CVamExG3PI9QKQzqggJCvr0VAA',          // 지급 서류/교통비 log (first tab)
+  FORM_VERSION: 'FARE 2026-11-12 (ko/en)'
+};
+
+// Stored values: q1 = 예/아니오, q2 = 동의/비동의 (same in both languages)
+// FARE text must match fare/index.html. Edit both together.
+const FARE = {
+ "ko": {
+  "title": "교통비 지급 동의서",
+  "notice": "교통비(20,000원)는 경희대학교 연구처를 통해 연구 참여일로부터 1-2주 후 지급될 예정입니다.",
+  "name": "성명",
+  "bank": "은행",
+  "account": "계좌번호",
+  "q1": "귀하는 신분증 및 통장 사본을 연구원에게 제출했습니까?",
+  "q1yes": "예",
+  "q1no": "아니오",
+  "q2": "본인은 교통비를 수령 하는데 필요한 개인정보 수집에 동의하며 상기 금액의 수령을 확인합니다.",
+  "q2yes": "동의합니다",
+  "q2no": "동의하지 않습니다 (교통비가 지급되지 않음)",
+  "submitted": "제출 일시",
+  "dateFmt": "yyyy년 MM월 dd일",
+  "filePrefix": "교통비지급동의서"
+ },
+ "en": {
+  "title": "Transportation Fee Payment Consent Form",
+  "notice": "The transportation fee (KRW 20,000) will be paid through the Office of Research Affairs, Kyung Hee University, 1 to 2 weeks after the date of your participation.",
+  "name": "Full name",
+  "bank": "Bank",
+  "account": "Account number",
+  "q1": "Have you submitted copies of your ID and bankbook to the researcher?",
+  "q1yes": "Yes",
+  "q1no": "No",
+  "q2": "I agree to the collection of the personal information required to receive the transportation fee, and I confirm receipt of the amount stated above.",
+  "q2yes": "I agree",
+  "q2no": "I do not agree (the transportation fee will not be paid)",
+  "submitted": "Submitted",
+  "dateFmt": "MMMM d, yyyy",
+  "filePrefix": "TransportFee"
+ }
+};
+
+function farePost_(d) {
+  const lang = d.lang === 'en' ? 'en' : 'ko';
+  const name = String(d.name || '').trim();
+  const bank = String(d.bank || '').trim();
+  const account = String(d.account || '').replace(/[^0-9-]/g, '');
+  if (!d.submission_id || !name || !bank || !account) return json_({ ok: false, error: 'missing fields' });
+  if (['예', '아니오'].indexOf(d.q1) < 0 || ['동의', '비동의'].indexOf(d.q2) < 0) return json_({ ok: false, error: 'missing answers' });
+
+  const lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(20000);
+    const sh = SpreadsheetApp.openById(FARE_CONFIG.SHEET_ID).getSheets()[0];
+    const last = sh.getLastRow();
+    if (last > 1) {
+      const ids = sh.getRange(2, 2, last - 1, 1).getValues();
+      for (let r = 0; r < ids.length; r++) {
+        if (ids[r][0] === d.submission_id) return json_({ ok: true, duplicate: true });
+      }
+    }
+    const data = { timestamp: new Date(), lang: lang, name: name, bank: bank, account: account, q1: d.q1, q2: d.q2 };
+    const T = FARE[lang];
+    const stamp = Utilities.formatDate(data.timestamp, CONFIG.TIMEZONE, 'yyyyMMdd-HHmmss');
+    const safeName = name.replace(/[\\/:*?"<>|]/g, '').slice(0, 30) || 'noname';
+    const blob = Utilities.newBlob(buildFareHtml(data), 'text/html', 'fare.html')
+      .getAs('application/pdf').setName(T.filePrefix + '_' + stamp + '_' + safeName + '.pdf');
+    const file = DriveApp.getFolderById(FARE_CONFIG.PDF_FOLDER_ID).createFile(blob);
+    sh.appendRow([Utilities.formatDate(data.timestamp, CONFIG.TIMEZONE, 'yyyy-MM-dd HH:mm:ss'), d.submission_id,
+      clean_(name), clean_(bank), "'" + account, d.q1, d.q2, file.getUrl(), FARE_CONFIG.FORM_VERSION, lang]);
+    return json_({ ok: true, fileName: file.getName() });
+  } finally {
+    try { lock.releaseLock(); } catch (ignore) {}
+  }
+}
+
+/** Creates one Korean and one English sample 교통비 PDF (not logged). Delete them afterwards. */
+function testFarePdf() {
+  ['ko', 'en'].forEach(function (lang) {
+    const blob = Utilities.newBlob(buildFareHtml({ timestamp: new Date(), lang: lang, name: 'TEST', bank: 'TEST', account: '000-000', q1: '예', q2: '동의' }), 'text/html', 'fare.html')
+      .getAs('application/pdf').setName(FARE[lang].filePrefix + '_TEST.pdf');
+    Logger.log(DriveApp.getFolderById(FARE_CONFIG.PDF_FOLDER_ID).createFile(blob).getUrl());
+  });
+}
+
+function buildFareHtml(data) {
+  const T = FARE[data.lang];
+  const dateS = Utilities.formatDate(data.timestamp, CONFIG.TIMEZONE, T.dateFmt);
+  const timeS = Utilities.formatDate(data.timestamp, CONFIG.TIMEZONE, 'HH:mm:ss');
+  function box(on, label) { return on ? '<span class="on">■ ' + esc(label) + '</span>' : '<span class="off">□ ' + esc(label) + '</span>'; }
+  const css = `
+    body { font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif; font-size: 10.5pt; line-height: 1.6; color: #111; margin: 0; }
+    h1 { font-size: 16pt; text-align: center; margin: 0 0 6pt; }
+    .sub { text-align: center; font-size: 9.5pt; color: #444; margin-bottom: 16pt; }
+    .notice { border: 1px solid #555; background: #f3f3f3; padding: 8pt 10pt; margin-bottom: 14pt; }
+    table { width: 100%; border-collapse: collapse; margin: 0 0 14pt; }
+    td { border: 1px solid #555; padding: 6pt 8pt; vertical-align: top; }
+    .k { width: 28%; background: #eee; font-weight: bold; }
+    .on { font-weight: bold; }
+    .off { color: #888; }
+    .opts { margin-top: 4pt; }
+    .opts span { display: inline-block; margin-right: 16pt; }
+  `;
+  const body =
+    '<h1>' + esc(T.title) + '</h1>' +
+    '<div class="sub">' + esc(CONTENT[data.lang].STUDY.title) + '</div>' +
+    '<div class="notice">' + esc(T.notice) + '</div>' +
+    '<table>' +
+    '<tr><td class="k">' + esc(T.name) + '</td><td><b>' + esc(data.name) + '</b></td></tr>' +
+    '<tr><td class="k">' + esc(T.bank) + '</td><td>' + esc(data.bank) + '</td></tr>' +
+    '<tr><td class="k">' + esc(T.account) + '</td><td>' + esc(data.account) + '</td></tr>' +
+    '</table>' +
+    '<table>' +
+    '<tr><td>' + esc(T.q1) + '<div class="opts">' + box(data.q1 === '예', T.q1yes) + box(data.q1 === '아니오', T.q1no) + '</div></td></tr>' +
+    '<tr><td>' + esc(T.q2) + '<div class="opts">' + box(data.q2 === '동의', T.q2yes) + box(data.q2 === '비동의', T.q2no) + '</div></td></tr>' +
+    '</table>' +
+    '<p>' + esc(T.submitted) + ': ' + esc(dateS) + ' ' + timeS + ' (KST)</p>';
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' + css + '</style></head><body>' + body + '</body></html>';
 }
