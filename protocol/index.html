@@ -45,13 +45,13 @@
     <div class="lab" id="lab"></div>
     <div class="big" id="big"></div>
     <div class="desc" id="desc"></div>
-    <div class="row"><div class="time num" id="time"></div><a class="go" id="go" target="_blank" rel="noopener">열기 ↗</a></div>
+    <div class="row"><div class="time num" id="time"></div><span id="gos" style="display:flex;gap:12px;flex-wrap:wrap"></span></div>
   </div>
   <div class="art" id="art"></div>
 </div>
 <script>
 const STEPS=[
- {n:"동의서",d:"연구대상자 동의서 (ICF)",t:null,u:"https://haeinpark-117.github.io/2026eitproject/icf/",bg:"#cbcbcf"},
+ {n:"동의서",d:"연구대상자 동의서 → 교통비 지급 동의서 순서로 작성",t:null,u:"https://haeinpark-117.github.io/2026eitproject/icf/",links:[{l:"① 연구 동의서",u:"https://haeinpark-117.github.io/2026eitproject/icf/"},{l:"② 교통비 동의서",u:"https://haeinpark-117.github.io/2026eitproject/compensation/"}],bg:"#cbcbcf"},
  {n:"EIT Studio",d:"Elicited Imitation Task",t:15,u:"https://haeinpark-117.github.io/eit-studio/",bg:"#55b98a"},
  {n:"Exit Survey",d:"배경 설문",t:5,u:"https://haeinpark-117.github.io/2026eitproject/survey/",bg:"#e4e29d"},
  {n:"Oral Narrative Task",d:"말하기 과제",t:5,u:"https://haeinpark-117.github.io/2026eitproject/oral-narrative-task/",bg:"#2f6be6"},
@@ -74,7 +74,7 @@ function render(){
   $("lab").textContent=`STEP ${String(cur+1).padStart(2,"0")} / ${String(STEPS.length).padStart(2,"0")}`;
   $("big").textContent=s.n;$("desc").textContent=s.d;
   $("time").innerHTML=s.t?`${s.t}<small>분</small>`:`<small style="font-family:Pretendard;letter-spacing:0">시작 전 진행</small>`;
-  $("go").href=s.u;$("art").innerHTML=ARTS[cur];
+  $("gos").innerHTML=(s.links||[{l:"열기",u:s.u}]).map(x=>`<a class="go" href="${x.u}" target="_blank" rel="noopener">${x.l} ↗</a>`).join("");$("art").innerHTML=ARTS[cur];
   const left=STEPS.slice(cur).reduce((a,x)=>a+(x.t||0),0);
   $("tot").textContent=`남은 시간 약 ${left}분 / 전체 ${total}분`;
 }
