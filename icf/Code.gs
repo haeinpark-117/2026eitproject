@@ -8,7 +8,7 @@
  * in the 동의서 PDF subfolder and logged in the spreadsheet.
  *
  * CONTENT below must match icf/index.html. Edit both together.
- * The same web app also receives the 교통비 지급 동의서 (fare/index.html); see the FARE section at the end.
+ * The same web app also receives the 교통비 지급 동의서 (compensation/index.html); see the FARE section at the end.
  */
 
 const CONFIG = {
@@ -562,7 +562,7 @@ function buildConsentHtml(data, eligible) {
 }
 
 /* ---------------------------------------------------------------- */
-/* 교통비 지급 동의서 (fare/index.html posts here with form: 'fare')  */
+/* 교통비 지급 동의서 (compensation/index.html posts here with form: 'fare')  */
 /* ---------------------------------------------------------------- */
 
 const FARE_CONFIG = {
@@ -572,7 +572,7 @@ const FARE_CONFIG = {
 };
 
 // Stored values: q1 = 예/아니오, q2 = 동의/비동의 (same in both languages)
-// FARE text must match fare/index.html. Edit both together.
+// FARE text must match compensation/index.html. Edit both together.
 const FARE = {
  "ko": {
   "title": "교통비 지급 동의서",
